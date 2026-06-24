@@ -12,17 +12,17 @@ export default function Footer() {
   return (
     <footer style={{ backgroundColor: '#1a1a1a', color: '#fff', fontFamily: 'sans-serif' }}>
       <div style={{ width: '100%', padding: '80px 24px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '110px' }} className="flex-col md:flex-row">
-        
+
         {/* Column 1: Brand & Contact */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', fontWeight: 400, color: '#fff' }}>
             Talukder Furniture
           </h2>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#d0d0d0', fontSize: '13px', lineHeight: 1.6 }}>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
               <Contact size={16} style={{ marginTop: '3px', flexShrink: 0 }} />
-              <span>Talukder Group of Industries, House #21, Road #21, Nikunja 2, Dhaka-1229,<br/>Bangladesh</span>
+              <span>Talukder Group of Industries, House #21, Road #21, Nikunja 2, Dhaka-1229,<br />Bangladesh</span>
             </div>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <Phone size={16} style={{ flexShrink: 0 }} />
@@ -35,25 +35,25 @@ export default function Footer() {
           </div>
 
           <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
-            <a href="#" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <a href="https://www.facebook.com/share/1EDKxts4Nu/?mibextid=wwXIfr" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
               </svg>
             </a>
-            <a href="#" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <a href="https://www.facebook.com/share/1EDKxts4Nu/?mibextid=wwXIfr" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
                 <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
               </svg>
             </a>
-            <a href="#" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <a href="https://www.instagram.com/talukder_plastic/" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
               </svg>
             </a>
-            <a href="#" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <a href="https://www.instagram.com/talukder_plastic/" style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -124,10 +124,10 @@ export default function Footer() {
             Copyright ©{currentYear} Talukder. All Rights Reserved.
           </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <button 
+            <button
               onClick={scrollToTop}
-              style={{ 
-                width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#222', 
+              style={{
+                width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#222',
                 border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', color: '#fff', transition: 'background-color 0.2s'
               }}

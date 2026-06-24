@@ -10,9 +10,9 @@ export const COMPANY = {
   phone: '+880 1966-333355',
   email: 'info@talukder-group.com.bd',
   social: {
-    facebook: 'https://facebook.com/talukderfurniture',
+    facebook: 'https://www.facebook.com/share/1EDKxts4Nu/?mibextid=wwXIfr',
     twitter: 'https://twitter.com/talukderfurniture',
-    instagram: 'https://instagram.com/talukderfurniture',
+    instagram: 'https://www.instagram.com/talukder_plastic/',
     telegram: 'https://t.me/talukderfurniture',
   },
   openTime: 'Sat - Thu: 9:00am - 6:00pm',
@@ -20,11 +20,11 @@ export const COMPANY = {
 
 // Navigation items
 export const NAV_CATEGORIES = [
-  { label: 'Office Furniture', slug: 'office-furniture' },
+  { label: 'Office Furniture', slug: 'office' },
   { label: 'Living Room', slug: 'living-room' },
   { label: 'Dining Room', slug: 'dining-room' },
-  { label: 'Bedroom Collection', slug: 'bedroom-collection' },
-  { label: 'Institutional Furniture', slug: 'institutional-furniture' },
+  { label: 'Bedroom', slug: 'bedroom' },
+  { label: 'Institutional ', slug: 'institutional' },
   { label: 'Other Furniture', slug: 'other-furniture' },
   { label: 'Kids Collection', slug: 'kids-collection' },
 ];

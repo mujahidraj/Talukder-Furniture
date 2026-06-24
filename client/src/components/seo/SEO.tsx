@@ -20,7 +20,7 @@ export default function SEO({
   url = 'https://talukder-furniture.com',
   schema
 }: SEOProps) {
-  
+
   const siteTitle = title ? `${title} | ${name}` : `${name} - Premium Craftsmanship for Your Home`;
   const siteDescription = description || "Discover our meticulously crafted furniture collections. Talukder Furniture brings timeless elegance and uncompromising quality to your living spaces.";
 
@@ -32,14 +32,14 @@ export default function SEO({
     "image": image,
     "@id": url,
     "url": url,
-    "telephone": "+15551234567",
+    "telephone": "+8801966333355",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Furniture Avenue",
-      "addressLocality": "New York",
-      "addressRegion": "NY",
-      "postalCode": "10001",
-      "addressCountry": "US"
+      "streetAddress": "Talukder Group of Industries, House #21, Road #21,",
+      "addressLocality": " Nikunja 2",
+      "addressRegion": "Dhaka",
+      "postalCode": "1229",
+      "addressCountry": "Bangladesh"
     }
   };
 
@@ -50,7 +50,7 @@ export default function SEO({
       {/* Standard metadata tags */}
       <title>{siteTitle}</title>
       <meta name='description' content={siteDescription} />
-      
+
       {/* Facebook tags */}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={siteTitle} />
@@ -58,7 +58,7 @@ export default function SEO({
       <meta property="og:image" content={image} />
       <meta property="og:url" content={url} />
       <meta property="og:site_name" content={name} />
-      
+
       {/* Twitter tags */}
       <meta name="twitter:creator" content="@talukderfurniture" />
       <meta name="twitter:card" content="summary_large_image" />
