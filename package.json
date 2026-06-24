@@ -1,0 +1,22 @@
+{
+  "name": "talukder-furniture",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Talukder Furniture — Multi-page catalog/showcase website with admin panel",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspace=client && npm run build --workspace=server",
+    "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "prettier": "^3.4.0"
+  }
+}

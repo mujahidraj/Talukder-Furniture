@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           Int             @id @default(autoincrement())
+  name         String
+  email        String          @unique
+  passwordHash String
+  role         String          @default("admin") // admin | superadmin
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  bulkImports  BulkImportLog[]
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String
+  slug      String     @unique
+  parentId  Int?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  imageUrl  String?
+  order     Int        @default(0)
+  isActive  Boolean    @default(true)
+  products  Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Product {
+  id                   Int              @id @default(autoincrement())
+  name                 String
+  slug                 String           @unique
+  sku                  String?          @unique
+  categoryId           Int
+  category             Category         @relation(fields: [categoryId], references: [id])
+  materials            String?
+  colors               Json?            // [{name: "Antique", hex: "#8B7355"}, ...]
+  sizes                Json?            // [{label: "Default", dimensions: "..."}, ...]
+  overview             String?          @db.Text
+  keyFeatures          String?          @db.Text
+  careMaintenance      String?          @db.Text
+  warrantyInfo         String?          @db.Text
+  returnExchangePolicy String?          @db.Text
+  priceDisplay         String?          // Legacy display price
+  basePrice            Float?
+  discountPercentage   Float?
+  isFeatured           Boolean          @default(false)
+  isActive             Boolean          @default(true)
+  metaTitle            String?
+  metaDescription      String?
+  images               ProductImage[]
+  variants             ProductVariant[]
+  viewCount            Int              @default(0)
+  enquiryCount         Int              @default(0)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  thumbUrl  String? // Generated thumbnail
+  altText   String?
+  isPrimary Boolean @default(false)
+  order     Int     @default(0)
+}
+
+model ProductVariant {
+  id          Int     @id @default(autoincrement())
+  productId   Int
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  colorName   String?
+  colorHex    String?
+  swatchImage String?
+  sizeLabel   String?
+  order       Int     @default(0)
+}
+
+model ContactLead {
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String
+  phone           String?
+  referenceNumber String?
+  message         String   @db.Text
+  source          String   @default("contact-form") // contact-form | faq-form
+  category        String?  // FAQ category for faq-form submissions
+  status          String   @default("new") // new | seen | resolved
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Store {
+  id       Int     @id @default(autoincrement())
+  name     String
+  address  String
+  phone    String?
+  email    String?
+  hours    String?
+  imageUrl String?
+  mapUrl   String? // Google Maps embed URL or "Get Directions" link
+  lat      Float?
+  lng      Float?
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+}
+
+model JobPost {
+  id                Int      @id @default(autoincrement())
+  title             String
+  department        String?
+  location          String?
+  type              String   @default("full-time") // full-time | part-time | contract
+  description       String   @db.Text
+  requirements      String?  @db.Text
+  applyInstructions String?  @db.Text
+  isActive          Boolean  @default(true)
+  postedAt          DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ContentBlock {
+  id      Int     @id @default(autoincrement())
+  page    String  // terms | privacy | shipping | returns | license | about
+  section String  // e.g. "hero", "mission", "vision", "team"
+  title   String?
+  body    String  @db.Text
+  order   Int     @default(0)
+}
+
+model FaqItem {
+  id        Int    @id @default(autoincrement())
+  groupName String // "How To Inquire", "Exchanges & Returns", "Refund Questions"
+  question  String
+  answer    String @db.Text
+  order     Int    @default(0)
+}
+
+model HeroSlide {
+  id       Int     @id @default(autoincrement())
+  imageUrl String
+  title    String?
+  subtitle String?
+  ctaText  String?
+  ctaLink  String?
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+}
+
+model TrustBadge {
+  id          Int    @id @default(autoincrement())
+  icon        String // icon identifier (e.g. "delivery", "returns", "support", "discounts")
+  title       String
+  description String
+  order       Int    @default(0)
+}
+
+model TeamMember {
+  id       Int     @id @default(autoincrement())
+  name     String
+  title    String
+  imageUrl String?
+  order    Int     @default(0)
+}
+
+model BulkImportLog {
+  id           Int      @id @default(autoincrement())
+  adminId      Int
+  admin        Admin    @relation(fields: [adminId], references: [id])
+  fileName     String
+  totalRows    Int
+  successCount Int      @default(0)
+  failCount    Int      @default(0)
+  errorReport  Json?
+  status       String   @default("pending") // pending | processing | completed | failed
+  createdAt    DateTime @default(now())
+}
+
+model SiteSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String @db.Text
+}
