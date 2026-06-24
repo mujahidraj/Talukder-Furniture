@@ -11,13 +11,28 @@ export default function ProductListPage() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterFeatured, setFilterFeatured] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [categories, setCategories] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
     fetchProducts();
-  }, [sort, search, filterStatus, filterFeatured, currentPage]); 
+  }, [sort, search, filterStatus, filterFeatured, filterCategory, currentPage]); 
+
+  useEffect(() => {
+    api.get('/categories').then(res => {
+      const flatCats: any[] = [];
+      res.data.forEach((main: any) => {
+        flatCats.push(main);
+        if (main.children) {
+          main.children.forEach((sub: any) => flatCats.push({ ...sub, name: `— ${sub.name}` }));
+        }
+      });
+      setCategories(flatCats);
+    }).catch(console.error);
+  }, []);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -25,6 +40,7 @@ export default function ProductListPage() {
       let url = `/products?admin=true&sort=${sort}&q=${search}&limit=20&page=${currentPage}`;
       if (filterStatus !== 'all') url += `&status=${filterStatus}`;
       if (filterFeatured !== 'all') url += `&isFeatured=${filterFeatured}`;
+      if (filterCategory !== 'all') url += `&category=${filterCategory}`;
       
       const res = await api.get(url);
       setProducts(res.data.products || []);
@@ -102,6 +118,18 @@ export default function ProductListPage() {
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={filterCategory}
+              onChange={(e) => { setFilterCategory(e.target.value); setCurrentPage(1); }}
+              className="border border-gray-200 rounded-lg text-sm px-3 py-2 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent flex-1 min-w-[140px]"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
             <select
               value={sort}
               onChange={(e) => { setSort(e.target.value); setCurrentPage(1); }}

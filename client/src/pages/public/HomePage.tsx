@@ -92,13 +92,13 @@ const heroSlides = [
 ];
 
 const categoryPills = [
-  { name: 'Office Furniture', slug: 'office-furniture', image: IMG.catOffice },
-  { name: 'Living Furniture', slug: 'living-furniture', image: IMG.catLiving },
+  { name: 'Office Furniture', slug: 'office', image: IMG.catOffice },
+  { name: 'Living Furniture', slug: 'living-room', image: IMG.catLiving },
   { name: 'Dining Room', slug: 'dining-room', image: IMG.catDining },
   { name: 'Bed Room', slug: 'bedroom', image: IMG.catBed },
-  { name: 'Kids Room', slug: 'kids-room', image: IMG.catKids },
-  { name: 'Industrial Furniture', slug: 'industrial-furniture', image: IMG.catIndustrial },
-  { name: 'Hospital Furniture', slug: 'hospital-furniture', image: IMG.catHospital },
+  { name: 'Kids Room', slug: 'study-room', image: IMG.catKids },
+  { name: 'Industrial Furniture', slug: 'industrial', image: IMG.catIndustrial },
+  { name: 'Hospital Furniture', slug: 'hospital', image: IMG.catHospital },
 ];
 
 const products = [
