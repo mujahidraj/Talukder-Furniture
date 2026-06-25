@@ -38,6 +38,7 @@ const AdminHeroSlideForm = lazy(() => import('./pages/admin/heroSlides/HeroSlide
 const AdminTrustBadges = lazy(() => import('./pages/admin/trustBadges/TrustBadgeListPage'));
 const AdminTeamMembers = lazy(() => import('./pages/admin/team/TeamListPage'));
 const AdminLeads = lazy(() => import('./pages/admin/leads/LeadsPage'));
+const AdminUsers = lazy(() => import('./pages/admin/users/AdminUserListPage'));
 
 // Loading fallback
 const PageLoader = () => (
@@ -95,7 +96,8 @@ function App() {
           <Route path="categories" element={<AdminCategories />} />
           <Route path="stores" element={<AdminStores />} />
           <Route path="stores/new" element={<AdminStoreForm />} />
-          <Route path="stores/:id/edit" element={<AdminStoreForm />} />
+          <Route path="stores/edit/:id" element={<AdminStoreForm />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="jobs" element={<AdminJobs />} />
           <Route path="jobs/new" element={<AdminJobForm />} />
           <Route path="jobs/:id/edit" element={<AdminJobForm />} />

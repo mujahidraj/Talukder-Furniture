@@ -76,7 +76,7 @@ export const heroSlideController = {
         if (oldSlide && oldSlide.imageUrl.startsWith('/uploads/')) {
           const oldPath = path.join(process.cwd(), oldSlide.imageUrl);
           if (fs.existsSync(oldPath)) {
-            try { fs.unlinkSync(oldPath); } catch (e) {}
+            try { fs.unlinkSync(oldPath); } catch (e) { /* ignore */ }
           }
         }
       }

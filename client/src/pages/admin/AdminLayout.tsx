@@ -13,7 +13,8 @@ import {
   LogOut,
   Menu,
   X,
-  Upload
+  Upload,
+  Users
 } from 'lucide-react';
 import useAuthStore from '../../stores/useAuthStore';
 import useUIStore from '../../stores/useUIStore';
@@ -28,6 +29,7 @@ const adminLinks = [
   { name: 'Leads / Inbox', path: '/admin/leads', icon: MessageSquare },
   { name: 'Hero Slides', path: '/admin/hero-slides', icon: ImageIcon },
   { name: 'FAQs', path: '/admin/faqs', icon: HelpCircle },
+  { name: 'Users', path: '/admin/users', icon: Users },
 ];
 
 export default function AdminLayout() {

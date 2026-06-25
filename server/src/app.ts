@@ -23,6 +23,7 @@ import bulkImportRoutes from './routes/bulkImport.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import sitemapRoutes from './routes/sitemap.routes.js';
+import adminUserRoutes from './routes/adminUser.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,6 +80,7 @@ app.use('/api/team-members', teamRoutes);
 app.use('/api/admin/bulk-import', bulkImportRoutes);
 app.use('/api/admin/dashboard', dashboardRoutes);
 app.use('/api/admin/upload', uploadRoutes);
+app.use('/api/admin/users', adminUserRoutes);
 app.use('/', sitemapRoutes);
 
 // Health check

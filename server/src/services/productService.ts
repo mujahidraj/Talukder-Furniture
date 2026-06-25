@@ -59,7 +59,7 @@ export const getProducts = async (query: any = {}) => {
     }
   }
 
-  let orderBy: any = { createdAt: 'desc' };
+  let orderBy: any;
   switch (sort) {
     case 'name-asc':
     case 'name_asc':

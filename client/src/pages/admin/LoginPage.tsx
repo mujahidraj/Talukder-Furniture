@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, AlertCircle } from 'lucide-react';
+import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import useAuthStore from '../../stores/useAuthStore';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('admin@talukder-furniture.com');
-  const [password, setPassword] = useState('Admin@123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { login, isLoading, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
@@ -100,14 +101,21 @@ export default function LoginPage() {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 bg-gray-50 border border-gray-300 rounded-lg py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:text-sm"
+                  className="block w-full pl-10 pr-10 bg-gray-50 border border-gray-300 rounded-lg py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:text-sm"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                </button>
               </div>
             </div>
 
@@ -125,13 +133,7 @@ export default function LoginPage() {
               </button>
             </div>
             
-            <div className="text-center mt-4">
-              <p className="text-xs text-gray-500">
-                Demo Credentials:<br/>
-                Email: <strong>admin@talukder-furniture.com</strong><br/>
-                Password: <strong>Admin@123456</strong>
-              </p>
-            </div>
+
           </form>
         </div>
       </div>
