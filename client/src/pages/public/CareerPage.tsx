@@ -100,7 +100,7 @@ export default function CareerPage() {
                     <span className="flex items-center gap-1"><Clock size={14} /> {job.type}</span>
                   </div>
                 </div>
-                <button className="btn btn-outline whitespace-nowrap">Apply Now</button>
+                <Link to={`/career/${job.id}`} className="btn btn-outline whitespace-nowrap">View Details & Apply</Link>
               </div>
             ))}
           </div>

@@ -16,6 +16,7 @@ const ContactPage = lazy(() => import('./pages/public/ContactPage'));
 const FaqPage = lazy(() => import('./pages/public/FaqPage'));
 const StoreListPage = lazy(() => import('./pages/public/StoreListPage'));
 const WishlistPage = lazy(() => import('./pages/public/WishlistPage'));
+const JobDetailsPage = lazy(() => import('./pages/public/JobDetailsPage'));
 const CareerPage = lazy(() => import('./pages/public/CareerPage'));
 const StaticContentPage = lazy(() => import('./pages/public/StaticContentPage'));
 const NotFoundPage = lazy(() => import('./pages/public/NotFoundPage'));
@@ -78,6 +79,7 @@ function App() {
           <Route path="/stores" element={<StoreListPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/career" element={<CareerPage />} />
+          <Route path="/career/:id" element={<JobDetailsPage />} />
           <Route path="/terms" element={<StaticContentPage />} />
           <Route path="/privacy" element={<StaticContentPage />} />
           <Route path="/shipping" element={<StaticContentPage />} />

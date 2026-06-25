@@ -41,8 +41,10 @@ export default function AdminLayout() {
     // Check if token exists in localStorage, if not redirect to login
     if (!localStorage.getItem('admin_token')) {
       navigate('/admin/login');
+    } else if (!admin) {
+      checkAuth();
     }
-  }, [navigate]);
+  }, [navigate, admin, checkAuth]);
 
   const handleLogout = () => {
     logout();
