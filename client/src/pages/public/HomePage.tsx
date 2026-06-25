@@ -463,12 +463,6 @@ export default function HomePage() {
                 alt="Curated Space"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
-              {/* Fake sparkle icon placeholder */}
-              <div style={{ position: 'absolute', bottom: '24px', right: '24px', opacity: 0.8 }}>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
-                  <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="white" />
-                </svg>
-              </div>
             </div>
 
             {/* Right — Content and Slider */}

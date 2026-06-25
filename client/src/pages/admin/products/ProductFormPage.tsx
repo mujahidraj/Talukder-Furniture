@@ -367,6 +367,15 @@ export default function ProductFormPage() {
               </div>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Return & Exchange Policy</label>
+              <textarea
+                name="returnExchangePolicy" rows={3} value={formData.returnExchangePolicy} onChange={handleChange}
+                placeholder="e.g. 7 days easy return policy"
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+              />
+            </div>
+
           </div>
         </div>
 

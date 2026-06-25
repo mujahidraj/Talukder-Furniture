@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Edit, Trash2, Filter } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Filter, Eye } from 'lucide-react';
 import api from '../../../lib/api';
 
 export default function ProductListPage() {
@@ -223,7 +223,7 @@ export default function ProductListPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-semibold text-primary">{product.name}</p>
+                          <Link to={`/admin/products/${product.id}`} className="font-semibold text-primary hover:underline block">{product.name}</Link>
                           {product.isFeatured && <span className="text-[10px] uppercase tracking-wider text-accent font-bold">Featured</span>}
                         </div>
                       </div>
@@ -256,7 +256,10 @@ export default function ProductListPage() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link to={`/admin/products/${product.id}/edit`} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded">
+                        <Link to={`/admin/products/${product.id}`} className="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded" title="View Details">
+                          <Eye size={16} />
+                        </Link>
+                        <Link to={`/admin/products/${product.id}/edit`} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Edit">
                           <Edit size={16} />
                         </Link>
                         <button onClick={() => handleDelete(product.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded">
@@ -312,7 +315,7 @@ export default function ProductListPage() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary text-sm truncate">{product.name}</p>
+                    <Link to={`/admin/products/${product.id}`} className="font-semibold text-primary text-sm truncate block hover:underline">{product.name}</Link>
                     <p className="text-xs text-gray-500 mt-0.5">{product.sku || 'No SKU'}</p>
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                       <span className="text-sm font-medium text-gray-900">
@@ -336,11 +339,14 @@ export default function ProductListPage() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 flex-shrink-0">
-                    <Link to={`/admin/products/${product.id}/edit`} className="p-2 text-blue-600 hover:bg-blue-50 rounded">
-                      <Edit size={16} />
+                    <Link to={`/admin/products/${product.id}`} className="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-lg">
+                      <Eye size={18} />
+                    </Link>
+                    <Link to={`/admin/products/${product.id}/edit`} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                      <Edit size={18} />
                     </Link>
                     <button onClick={() => handleDelete(product.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
-                      <Trash2 size={16} />
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
