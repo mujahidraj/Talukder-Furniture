@@ -321,11 +321,11 @@ export default function HomePage() {
             ))}
 
             {/* Navigation Arrows positioned on the side slides */}
-            <button className="hero-prev absolute left-[2%] md:left-[4%] top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 md:bg-white/20 hover:bg-white/60 backdrop-blur-sm transition-all flex items-center justify-center border-none cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-[#1a1a1a]">
-              <ChevronLeft className="w-5 h-5 md:w-7 md:h-7" strokeWidth={1.5} />
+            <button className="hero-prev absolute left-[2%] md:left-[4%] top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 md:bg-white/20 hover:bg-white/60 backdrop-blur-sm transition-all flex items-center justify-center border-none cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-[#1a1a1a]">
+              <ChevronLeft className="w-6 h-6 md:w-7 md:h-7" strokeWidth={1.5} />
             </button>
-            <button className="hero-next absolute right-[2%] md:right-[4%] top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 md:bg-white/20 hover:bg-white/60 backdrop-blur-sm transition-all flex items-center justify-center border-none cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-[#1a1a1a]">
-              <ChevronRight className="w-5 h-5 md:w-7 md:h-7" strokeWidth={1.5} />
+            <button className="hero-next absolute right-[2%] md:right-[4%] top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 md:bg-white/20 hover:bg-white/60 backdrop-blur-sm transition-all flex items-center justify-center border-none cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-[#1a1a1a]">
+              <ChevronRight className="w-6 h-6 md:w-7 md:h-7" strokeWidth={1.5} />
             </button>
 
             {/* Custom Pagination wrapper */}
@@ -344,10 +344,10 @@ export default function HomePage() {
       <section style={{ padding: '60px 0', backgroundColor: 'white' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
 
-          {/* MOBILE VIEW: 2 Column Grid */}
-          <div className="grid grid-cols-2 gap-y-8 gap-x-4 md:hidden">
+          {/* MOBILE VIEW: Swipeable row */}
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:hidden pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {categoryPills.map((cat) => (
-              <Link key={cat.slug} to={`/shop?category=${cat.slug}`} className="flex flex-col items-center gap-3 text-decoration-none">
+              <Link key={cat.slug} to={`/shop?category=${cat.slug}`} className="flex flex-col items-center gap-3 text-decoration-none min-w-[120px] snap-center shrink-0">
                 <div className="w-[120px] h-[60px] rounded-full overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.1)] shrink-0">
                   <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
@@ -410,11 +410,12 @@ export default function HomePage() {
             <p className="text-sm md:text-[18px] text-[#777]">Fresh styles just in! Elevate your look</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-[48px]">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-[48px] overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {(featuredProducts.length > 0 ? featuredProducts : products).map((product) => (
               <Link
                 key={product.id}
                 to={`/products/${product.slug}`}
+                className="w-[180px] sm:w-auto snap-start shrink-0"
                 style={{ textDecoration: 'none', color: '#333' }}
               >
                 <div style={{

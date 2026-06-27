@@ -54,7 +54,7 @@ export default function WishlistPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {items.map((item) => (
               <div key={item.id} className="bg-white rounded-lg border border-gray-100 overflow-hidden group flex flex-col">
                 <Link to={`/products/${item.slug}`} className="relative aspect-square block bg-gray-50">
@@ -73,7 +73,7 @@ export default function WishlistPage() {
                       e.preventDefault();
                       removeItem(item.id);
                     }}
-                    className="absolute top-3 right-3 w-10 h-10 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50 hover:scale-110 shadow-sm transition-all z-10"
+                    className="absolute top-3 right-3 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-red-500 hover:bg-white hover:scale-110 shadow-sm transition-all z-10"
                     aria-label="Remove from wishlist"
                   >
                     <Trash2 size={18} />

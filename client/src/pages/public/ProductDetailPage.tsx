@@ -259,12 +259,12 @@ export default function ProductDetailPage() {
           <div className="md:w-1/2 lg:w-3/5 flex flex-col-reverse md:flex-row gap-4">
             {/* Thumbnails */}
             {product.images && product.images.length > 1 && (
-              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:w-24 lg:w-28 flex-shrink-0 scrollbar-hide max-h-[600px] pr-1 md:pr-0">
+              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto snap-x snap-mandatory md:w-24 lg:w-28 flex-shrink-0 scrollbar-hide max-h-[600px] pr-1 md:pr-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 {product.images.map((img: any, idx: number) => (
                   <button 
                     key={img.id}
                     onClick={() => setActiveImage(idx)}
-                    className={`relative flex-shrink-0 w-20 md:w-full aspect-square rounded-lg overflow-hidden border-2 transition-colors ${activeImage === idx ? 'border-accent' : 'border-transparent hover:border-gray-300'}`}
+                    className={`relative flex-shrink-0 w-20 md:w-full snap-center aspect-square rounded-lg overflow-hidden border-2 transition-colors ${activeImage === idx ? 'border-accent' : 'border-transparent hover:border-gray-300'}`}
                   >
                     <img src={img.url} alt={`${product.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
@@ -455,9 +455,9 @@ export default function ProductDetailPage() {
         {relatedProducts.length > 0 && (
           <div className="mt-24">
             <h2 className="text-3xl font-serif font-bold text-primary mb-8 text-center">Recommended For You</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 snap-x snap-mandatory pb-4 sm:pb-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {relatedProducts.map((p) => (
-                <div key={p.id} className="group flex flex-col">
+                <div key={p.id} className="group flex flex-col w-[160px] sm:w-auto snap-start shrink-0">
                   <Link to={`/products/${p.slug}`} className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 bg-gray-100 block">
                     {p.images && p.images.length > 0 ? (
                       <img

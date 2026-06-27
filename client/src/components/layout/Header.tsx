@@ -128,7 +128,7 @@ export default function Header() {
       >
         {/* Mobile Menu Button */}
         <button
-          className="lg:hidden p-2 -ml-2 text-primary"
+          className="lg:hidden p-2 -ml-2 text-primary min-w-[44px] min-h-[44px] flex items-center justify-center"
           onClick={toggleMobileMenu}
           aria-label="Toggle Menu"
         >
@@ -158,9 +158,15 @@ export default function Header() {
                 onMouseEnter={() => setHoveredNav(link.name)}
               >
                 {link.hasDropdown ? (
-                  <div className={`flex items-center gap-1.5 pb-1 border-b-2 transition-colors ${
-                    hoveredNav === link.name || isActive(link.path) ? 'border-[#1a1a1a]' : 'border-transparent'
-                  }`}>
+                  <div 
+                    className={`flex items-center gap-1.5 pb-1 border-b-2 transition-colors ${
+                      hoveredNav === link.name || isActive(link.path) ? 'border-[#1a1a1a]' : 'border-transparent'
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setHoveredNav(hoveredNav === link.name ? null : link.name);
+                    }}
+                  >
                     <span className="text-[14px] xl:text-[15px] font-semibold text-[#1a1a1a] whitespace-pre text-center leading-tight">
                       {link.name}
                     </span>
@@ -181,22 +187,22 @@ export default function Header() {
         </nav>
 
         {/* Right Icons */}
-        <div className="flex items-center gap-4 xl:gap-6 flex-shrink-0">
+        <div className="flex items-center gap-2 xl:gap-4 flex-shrink-0">
           <button
             onClick={openSearch}
-            className="text-[#1a1a1a] hover:text-gray-500 transition-colors"
+            className="text-[#1a1a1a] hover:text-gray-500 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Search"
           >
             <Search size={22} strokeWidth={1.5} />
           </button>
           <Link
             to="/wishlist"
-            className="text-[#1a1a1a] hover:text-gray-500 transition-colors relative"
+            className="text-[#1a1a1a] hover:text-gray-500 transition-colors relative min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Wishlist"
           >
             <Heart size={22} strokeWidth={1.5} />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E32227] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute top-1 right-1 bg-[#E32227] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                 {wishlistCount}
               </span>
             )}

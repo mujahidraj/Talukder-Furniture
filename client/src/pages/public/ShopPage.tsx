@@ -202,7 +202,7 @@ export default function ShopPage() {
             <div className="flex xl:hidden w-full items-center justify-between border-b border-gray-100 pb-3 mb-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 text-primary font-medium px-2 py-1"
+                className="flex items-center justify-center gap-2 text-primary font-medium px-4 min-h-[44px]"
               >
                 <Filter size={18} /> Filter
               </button>
@@ -355,7 +355,7 @@ export default function ShopPage() {
         <main className="w-full">
           {/* Product Grid/List */}
           {loading ? (
-            <div className={`grid gap-4 sm:gap-6 md:gap-10 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
+            <div className={`grid gap-4 sm:gap-6 md:gap-10 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
               {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className="animate-pulse flex flex-col">
                   <div className="aspect-[4/3] bg-gray-200 rounded-lg mb-4"></div>
@@ -370,7 +370,7 @@ export default function ShopPage() {
               <p className="text-gray-500">Try adjusting your filters or category selection.</p>
             </div>
           ) : (
-            <motion.div layout className={`grid gap-4 sm:gap-6 md:gap-10 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
+            <motion.div layout className={`grid gap-4 sm:gap-6 md:gap-10 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
               <AnimatePresence mode="popLayout">
                 {products.map(product => (
                   <motion.div
