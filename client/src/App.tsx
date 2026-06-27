@@ -42,15 +42,19 @@ const AdminTeamMembers = lazy(() => import('./pages/admin/team/TeamListPage'));
 const AdminLeads = lazy(() => import('./pages/admin/leads/LeadsPage'));
 const AdminUsers = lazy(() => import('./pages/admin/users/AdminUserListPage'));
 
-// Loading fallback
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="flex flex-col items-center gap-3">
-      <div className="w-10 h-10 border-3 border-border rounded-full border-t-accent animate-spin" />
-      <p className="text-text-secondary text-sm">Loading...</p>
+// Loading fallback — hidden while the HTML splash screen is visible
+const PageLoader = () => {
+  // If the splash screen is still showing, don't render a second loader
+  if (document.getElementById('app-splash')) return null;
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center gap-3">
+        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <p className="text-text-secondary text-sm">Loading...</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();

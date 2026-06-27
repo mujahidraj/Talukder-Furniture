@@ -27,8 +27,9 @@ export default function AdminProductDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <p className="mt-3 text-sm text-gray-500">Loading...</p>
       </div>
     );
   }

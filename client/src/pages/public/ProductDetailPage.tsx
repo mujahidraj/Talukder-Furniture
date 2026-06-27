@@ -188,22 +188,9 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="bg-secondary min-h-screen pt-8 pb-20 container-custom animate-pulse">
-        <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
-        <div className="flex flex-col md:flex-row gap-12">
-          <div className="md:w-1/2">
-            <div className="aspect-square bg-gray-200 rounded-lg mb-4"></div>
-            <div className="flex gap-4">
-              {[1,2,3,4].map(i => <div key={i} className="aspect-square bg-gray-200 rounded-lg w-20"></div>)}
-            </div>
-          </div>
-          <div className="md:w-1/2 space-y-6">
-            <div className="h-10 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-24 bg-gray-200 rounded w-full"></div>
-            <div className="h-12 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[70vh] bg-secondary">
+        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <p className="mt-4 text-sm font-serif italic tracking-[0.15em] text-[#1a1a1a]">Loading&hellip;</p>
       </div>
     );
   }
@@ -434,7 +421,28 @@ export default function ProductDetailPage() {
               <div dangerouslySetInnerHTML={{ __html: product.overview || '<p>No detailed overview provided.</p>' }} />
             )}
             {activeTab === 'features' && (
-              <div dangerouslySetInnerHTML={{ __html: product.keyFeatures || '<p>Key features information is currently unavailable.</p>' }} />
+              <div>
+                {(() => {
+                  const defaultDim = product.sizes?.[0]?.dimensions;
+                  const activeDim = product.sizes?.[activeSizeIdx]?.dimensions || product.sizes?.[activeSizeIdx]?.label;
+                  
+                  if (product.keyFeatures === defaultDim && activeDim) {
+                    return <p>{activeDim}</p>;
+                  }
+                  
+                  return (
+                    <>
+                      <div dangerouslySetInnerHTML={{ __html: product.keyFeatures || '<p>Key features information is currently unavailable.</p>' }} />
+                      {activeDim && (
+                        <div className="mt-6 pt-4 border-t border-gray-100">
+                          <strong className="text-gray-900 block mb-2">Selected Size Dimensions:</strong>
+                          <p>{activeDim}</p>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
             )}
             {activeTab === 'materials' && (
               <div dangerouslySetInnerHTML={{ __html: product.materials || '<p>Material information is currently unavailable.</p>' }} />

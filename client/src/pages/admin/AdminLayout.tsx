@@ -38,6 +38,8 @@ export default function AdminLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Hide splash screen for admin pages
+    (window as any).__hideSplash?.();
     // Check if token exists in localStorage, if not redirect to login
     if (!localStorage.getItem('admin_token')) {
       navigate('/admin/login');

@@ -88,7 +88,7 @@ export default function SearchOverlay() {
         <div className="w-full max-w-5xl">
           {loading ? (
             <div className="flex justify-center py-10">
-              <div className="w-8 h-8 border-2 border-gray-300 border-t-accent rounded-full animate-spin"></div>
+              <img src="/LOGO.gif" alt="Searching..." className="w-24 h-24 object-contain" />
             </div>
           ) : results.length > 0 ? (
             <div>

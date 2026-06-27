@@ -12,6 +12,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Hide splash screen
+    (window as any).__hideSplash?.();
     // Redirect if already authenticated
     if (localStorage.getItem('admin_token') || isAuthenticated) {
       navigate('/admin');

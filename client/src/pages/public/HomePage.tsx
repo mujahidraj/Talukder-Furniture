@@ -174,54 +174,16 @@ export default function HomePage() {
   const finalHeroSlides = dynamicHeroSlides.length > 0 ? dynamicHeroSlides : heroSlides;
   const isLoading = loadingHero || loadingFeatured || loadingLivingRoom;
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col min-h-screen bg-white">
-        <SEO title="Home" description="Loading..." />
-        {/* Skeleton Hero */}
-        <div className="w-full h-[550px] md:h-[calc(100vh-160px)] md:min-h-[550px] bg-gray-200 animate-pulse rounded-b-2xl relative flex flex-col items-center justify-center px-5">
-          <div className="w-3/4 md:w-1/2 h-12 md:h-16 bg-gray-300 rounded mb-4" />
-          <div className="w-1/2 md:w-1/3 h-12 md:h-16 bg-gray-300 rounded mb-6" />
-          <div className="w-5/6 md:w-1/2 h-4 md:h-5 bg-gray-300 rounded mb-8" />
-          <div className="w-40 h-10 md:h-12 bg-gray-300 rounded-full" />
-        </div>
-        
-        {/* Skeleton Categories */}
-        <div className="py-[60px] max-w-[1200px] mx-auto w-full px-5">
-          <div className="grid grid-cols-2 md:hidden gap-y-8 gap-x-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center gap-3">
-                <div className="w-[120px] h-[60px] bg-gray-200 rounded-full animate-pulse" />
-                <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
-              </div>
-            ))}
-          </div>
-          <div className="hidden md:flex flex-col gap-10 items-center">
-            <div className="flex gap-10">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="w-32 h-16 lg:w-40 lg:h-20 bg-gray-200 rounded-full animate-pulse" />
-              ))}
-            </div>
-          </div>
-        </div>
+  // Hide splash screen once data is loaded
+  useEffect(() => {
+    if (!isLoading) {
+      (window as any).__hideSplash?.();
+    }
+  }, [isLoading]);
 
-        {/* Skeleton Products */}
-        <div className="py-[40px] max-w-[1800px] mx-auto w-full px-6 xl:px-12">
-          <div className="h-10 bg-gray-200 rounded w-64 mx-auto mb-2 animate-pulse" />
-          <div className="h-5 bg-gray-200 rounded w-48 mx-auto mb-8 animate-pulse" />
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-[48px]">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex flex-col">
-                <div className="aspect-square bg-gray-200 rounded-lg mb-4 animate-pulse" />
-                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2 animate-pulse" />
-                <div className="h-6 bg-gray-200 rounded w-1/2 animate-pulse" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+  if (isLoading) {
+    // The splash screen from index.html is still visible — no need for a duplicate loader
+    return null;
   }
 
   return (

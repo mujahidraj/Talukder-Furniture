@@ -229,6 +229,57 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
 
       // --- Upsert Product ---
       if (productCode) {
+        // Find existing product to compare
+        const existingProduct = await prisma.product.findUnique({
+          where: { sku: productCode },
+        });
+
+        const newKeyFeatures = sizes.length > 0 ? sizes[0].dimensions : null;
+        
+        let hasChanged = true;
+        
+        if (existingProduct) {
+          // Compare fields
+          const isNameSame = existingProduct.name === productName;
+          const isCategorySame = existingProduct.categoryId === categoryId;
+          const isMaterialsSame = existingProduct.materials === (materials || null);
+          const isOverviewSame = existingProduct.overview === (description || null);
+          const isCareSame = existingProduct.careMaintenance === (careAndMaintenance || null);
+          const isWarrantySame = existingProduct.warrantyInfo === (warrantyInfo || null);
+          const isBasePriceSame = existingProduct.basePrice === basePrice;
+          const isDiscountSame = existingProduct.discountPercentage === discountPercentage;
+          const isKeyFeaturesSame = existingProduct.keyFeatures === newKeyFeatures;
+          // Helper to ensure we have an array for JSON fields
+          const parseJsonArray = (val: any) => {
+            if (typeof val === 'string') {
+              try { return JSON.parse(val); } catch (e) { return null; }
+            }
+            return val;
+          };
+
+          const existingColors = parseJsonArray(existingProduct.colors);
+          const existingColorsStr = JSON.stringify((existingColors as any[])?.map(c => ({ name: c.name, hex: c.hex })) || null);
+          const newColorsStr = JSON.stringify(finalColors?.map(c => ({ name: c.name, hex: c.hex })) || null);
+          const isColorsSame = existingColorsStr === newColorsStr;
+          
+          const existingSizes = parseJsonArray(existingProduct.sizes);
+          const existingSizesStr = JSON.stringify((existingSizes as any[])?.map(s => ({ label: s.label, dimensions: s.dimensions, price: s.price })) || null);
+          const newSizesStr = JSON.stringify(finalSizes?.map(s => ({ label: s.label, dimensions: s.dimensions, price: s.price })) || null);
+          const isSizesSame = existingSizesStr === newSizesStr;
+
+          if (isNameSame && isCategorySame && isMaterialsSame && isOverviewSame && isCareSame && 
+              isWarrantySame && isBasePriceSame && isDiscountSame && isKeyFeaturesSame && 
+              isColorsSame && isSizesSame) {
+            hasChanged = false;
+          }
+        }
+
+        if (existingProduct && !hasChanged) {
+          result.skippedCount += rowsGroup.length;
+          // Skip the rest of the loop for this group
+          continue;
+        }
+
         await prisma.product.upsert({
           where: { sku: productCode },
           update: {
@@ -236,9 +287,9 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
             slug,
             categoryId,
             materials: materials || null,
-            colors: finalColors,
-            sizes: finalSizes,
-            keyFeatures: sizes.length > 0 ? sizes[0].dimensions : null,
+            colors: finalColors ? finalColors : undefined, // Prisma Json handling
+            sizes: finalSizes ? finalSizes : undefined,
+            keyFeatures: newKeyFeatures,
             overview: description || null,
             careMaintenance: careAndMaintenance || null,
             warrantyInfo: warrantyInfo || null,
@@ -251,9 +302,9 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
             sku: productCode,
             categoryId,
             materials: materials || null,
-            colors: finalColors,
-            sizes: finalSizes,
-            keyFeatures: sizes.length > 0 ? sizes[0].dimensions : null,
+            colors: finalColors ? finalColors : undefined,
+            sizes: finalSizes ? finalSizes : undefined,
+            keyFeatures: newKeyFeatures,
             overview: description || null,
             careMaintenance: careAndMaintenance || null,
             warrantyInfo: warrantyInfo || null,
@@ -270,8 +321,8 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
             slug: slug + '-' + Date.now(),
             categoryId,
             materials: materials || null,
-            colors: finalColors,
-            sizes: finalSizes,
+            colors: finalColors ? finalColors : undefined,
+            sizes: finalSizes ? finalSizes : undefined,
             keyFeatures: sizes.length > 0 ? sizes[0].dimensions : null,
             overview: description || null,
             careMaintenance: careAndMaintenance || null,
