@@ -366,13 +366,31 @@ export const generateTemplate = (): Buffer => {
   const templateData = [
     ['Talukder Furniture Ltd.'],
     ['Home Furniture Specifications'],
-    ['SL No', 'Product Code', 'Product Name', 'Picture', 'Materials', 'Category', '', 'Measurement', 'Color', 'Price', '', '', 'Description', 'Care and Maintenance', 'Warranty Info'],
+    ['SL No', 'Product Code', 'Product Name ', 'Picture ', 'Meterials', 'Category', '', 'Measurement', 'Color', 'Price', '', '', 'Description', 'Care and Maintenance', 'Warranty Info'],
     ['', '', '', '', '', 'Main', 'Sub', '', '', 'DP', 'MRP', 'Discount', '', '', ''],
     // Example row
-    [1, 'TFL-BED-001', 'Sample Double Bed', '', 'Melamine Face Chip Board & Imported Foreign Accessories', 'Home Furniture', 'Bedroom Furniture', 'Double-L 2225 x W 1582 x H 875 mm', 'Antique', '', 15600, '22%', 'Product description here.', 'Care instructions here.', 'Warranty details here.'],
+    [1, 'TFL-BED-001', 'Sample Double Bed', '', 'Melamine Face Chip Board & Imported Foreign Accessories', 'Home Furniture ', 'Bedroom Furniture', 'Double-L 2225 x W 1582 x H 875 mm', 'Antique', '', 15600, '22%', 'Product description here.', 'Care instructions here.', 'Warranty details here.'],
   ];
 
   const ws = XLSX.utils.aoa_to_sheet(templateData);
+
+  // Set cell merges to match the template structure
+  ws['!merges'] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 14 } }, // Talukder Furniture Ltd.
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 14 } }, // Home Furniture Specifications
+    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } }, // SL No
+    { s: { r: 2, c: 1 }, e: { r: 3, c: 1 } }, // Product Code
+    { s: { r: 2, c: 2 }, e: { r: 3, c: 2 } }, // Product Name
+    { s: { r: 2, c: 3 }, e: { r: 3, c: 3 } }, // Picture
+    { s: { r: 2, c: 4 }, e: { r: 3, c: 4 } }, // Meterials
+    { s: { r: 2, c: 5 }, e: { r: 2, c: 6 } }, // Category (Main, Sub)
+    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }, // Measurement
+    { s: { r: 2, c: 8 }, e: { r: 3, c: 8 } }, // Color
+    { s: { r: 2, c: 9 }, e: { r: 2, c: 11 } }, // Price (DP, MRP, Discount)
+    { s: { r: 2, c: 12 }, e: { r: 3, c: 12 } }, // Description
+    { s: { r: 2, c: 13 }, e: { r: 3, c: 13 } }, // Care and Maintenance
+    { s: { r: 2, c: 14 }, e: { r: 3, c: 14 } }, // Warranty Info
+  ];
 
   // Set column widths for readability
   ws['!cols'] = [
@@ -380,7 +398,7 @@ export const generateTemplate = (): Buffer => {
     { wch: 18 },  // Product Code
     { wch: 25 },  // Product Name
     { wch: 10 },  // Picture
-    { wch: 35 },  // Materials
+    { wch: 35 },  // Meterials
     { wch: 18 },  // Category Main
     { wch: 22 },  // Category Sub
     { wch: 35 },  // Measurement

@@ -528,6 +528,7 @@ export default function HomePage() {
               modules={[Navigation]}
               spaceBetween={20}
               slidesPerView={1.2}
+              loop={true}
               breakpoints={{ 480: { slidesPerView: 2, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 30 }, 1024: { slidesPerView: 4, spaceBetween: 30 } }}
               onSwiper={(swiper) => { livingRoomSwiperRef.current = swiper; }}
             >

@@ -10,7 +10,9 @@ export const getDashboardStats = async () => {
     totalCategories,
     totalStores,
     activeJobs,
-    featuredProducts
+    featuredProducts,
+    recentProducts,
+    recentImports
   ] = await Promise.all([
     prisma.product.count(),
     prisma.contactLead.count(),
@@ -31,7 +33,16 @@ export const getDashboardStats = async () => {
     prisma.category.count(),
     prisma.store.count(),
     prisma.jobPost.count({ where: { isActive: true } }),
-    prisma.product.count({ where: { isFeatured: true } })
+    prisma.product.count({ where: { isFeatured: true } }),
+    prisma.product.findMany({
+      take: 5,
+      orderBy: { createdAt: 'desc' },
+      include: { category: true }
+    }),
+    prisma.bulkImportLog.findMany({
+      take: 3,
+      orderBy: { createdAt: 'desc' }
+    })
   ]);
 
   const totalViews = viewAggregation._sum.viewCount || 0;
@@ -63,6 +74,21 @@ export const getDashboardStats = async () => {
       name: product.name,
       category: product.category?.name || 'Uncategorized',
       views: product.viewCount
+    })),
+    recentProducts: recentProducts.map(product => ({
+      id: product.id,
+      name: product.name,
+      sku: product.sku,
+      category: product.category?.name || 'Uncategorized',
+      createdAt: product.createdAt
+    })),
+    recentImports: recentImports.map(log => ({
+      id: log.id,
+      fileName: log.fileName,
+      status: log.status,
+      successCount: log.successCount,
+      failCount: log.failCount,
+      createdAt: log.createdAt
     }))
   };
 };
