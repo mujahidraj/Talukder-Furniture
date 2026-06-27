@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    {
+      "source": "/product/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(facebookexternalhit|whatsapp|twitterbot|slackbot|linkedinbot|telegrambot).*"
+        }
+      ],
+      "destination": "https://talukder-api.onrender.com/api/seo/product/:slug"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import useAuthStore from '../../stores/useAuthStore';
 import useUIStore from '../../stores/useUIStore';
+import { Helmet } from 'react-helmet-async';
 
 const adminLinks = [
   { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
@@ -58,7 +59,10 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex font-sans">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 

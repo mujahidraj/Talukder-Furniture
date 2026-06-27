@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Package, RotateCcw, HeadphonesIcon, BadgePercent, Box, Feather, Layers, Send } from 'lucide-react';
+import SEO from '../../components/seo/SEO';
 
 const FacebookIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -24,8 +25,14 @@ const InstagramIcon = ({ size = 18 }) => (
 
 export default function AboutPage() {
   return (
-    <div className="bg-white min-h-screen pb-20">
-      {/* Banner */}
+    <div className="bg-secondary min-h-screen pt-28 pb-20 font-sans">
+      <SEO 
+        title="About Us"
+        description="Learn more about Talukder Furniture's legacy of premium craftsmanship, our mission, and our dedication to providing the best furniture in Bangladesh."
+        url="/about"
+      />
+      
+      {/* Hero Section */}
       <div className="relative py-20 px-4 md:px-8 xl:px-12 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img

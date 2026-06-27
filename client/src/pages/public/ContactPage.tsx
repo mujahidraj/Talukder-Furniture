@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
 import api from '../../lib/api';
+import SEO from '../../components/seo/SEO';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -26,7 +27,12 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="bg-secondary min-h-screen pt-28 pb-20 font-sans">
+      <SEO 
+        title="Contact Us"
+        description="Get in touch with Talukder Furniture. We are here to help you with your premium furniture needs in Bangladesh."
+        url="/contact"
+      />
       {/* Banner */}
       <div className="relative py-20 px-4 md:px-8 xl:px-12 overflow-hidden mb-16">
         <div className="absolute inset-0 z-0">

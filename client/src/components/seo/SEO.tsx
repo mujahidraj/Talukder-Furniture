@@ -16,10 +16,13 @@ export default function SEO({
   description,
   type = 'website',
   name = 'Talukder Furniture',
-  image = 'https://talukder-furniture.com/og-image.jpg', // Placeholder
-  url = 'https://talukder-furniture.com',
+  image = 'https://talukderfurniture.com/furniture_logo.jpg', // Default image
+  url = 'https://talukderfurniture.com',
   schema
 }: SEOProps) {
+
+  // Force url to use talukderfurniture.com if they provided a relative path or old path
+  const canonicalUrl = url.startsWith('http') ? url : `https://talukderfurniture.com${url.startsWith('/') ? '' : '/'}${url}`;
 
   const siteTitle = title ? `${title} | ${name}` : `${name} - Premium Craftsmanship for Your Home`;
   const siteDescription = description || "Discover our meticulously crafted furniture collections. Talukder Furniture brings timeless elegance and uncompromising quality to your living spaces.";
@@ -30,8 +33,8 @@ export default function SEO({
     "@type": "FurnitureStore",
     "name": name,
     "image": image,
-    "@id": url,
-    "url": url,
+    "@id": "https://talukderfurniture.com",
+    "url": "https://talukderfurniture.com",
     "telephone": "+8801966333355",
     "address": {
       "@type": "PostalAddress",
@@ -40,23 +43,29 @@ export default function SEO({
       "addressRegion": "Dhaka",
       "postalCode": "1229",
       "addressCountry": "Bangladesh"
-    }
+    },
+    "sameAs": [
+      "https://www.facebook.com/talukderfurniture",
+      "https://www.instagram.com/talukderfurniture"
+    ]
   };
 
-  const finalSchema = schema || defaultSchema;
+  // If a specific page schema is provided (like Product), inject BOTH the store schema and the product schema.
+  const finalSchema = schema ? [defaultSchema, schema] : defaultSchema;
 
   return (
     <Helmet>
       {/* Standard metadata tags */}
       <title>{siteTitle}</title>
       <meta name='description' content={siteDescription} />
+      <link rel="canonical" href={canonicalUrl} />
 
       {/* Facebook tags */}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={siteDescription} />
       <meta property="og:image" content={image} />
-      <meta property="og:url" content={url} />
+      <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={name} />
 
       {/* Twitter tags */}

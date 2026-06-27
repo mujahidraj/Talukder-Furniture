@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Heart, Share2, ChevronRight, Ruler, ShieldCheck, Truck, X } from 'lucide-react';
 import api from '../../lib/api';
 import useWishlistStore from '../../stores/useWishlistStore';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../../components/seo/SEO';
 
 // Simple Image Magnifier Component
 const ImageMagnifier = ({
@@ -216,10 +216,29 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-white min-h-screen pb-20">
-      <Helmet>
-        <title>{product.metaTitle || `${product.name} - Talukder Furniture Ltd`}</title>
-        <meta name="description" content={product.metaDescription || product.overview || `Buy the premium ${product.name} from Talukder Furniture Ltd.`} />
-      </Helmet>
+      <SEO 
+        title={product.metaTitle || product.name}
+        description={product.metaDescription || product.overview || `Buy the premium ${product.name} from Talukder Furniture Ltd.`}
+        type="product"
+        image={product.images && product.images.length > 0 ? product.images[0].url : undefined}
+        url={`/product/${product.slug}`}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.name,
+          "image": product.images ? product.images.map((img: any) => img.url) : [],
+          "description": product.metaDescription || product.overview || `Buy the premium ${product.name} from Talukder Furniture Ltd.`,
+          "sku": product.productCode,
+          "offers": {
+            "@type": "Offer",
+            "url": `https://talukderfurniture.com/product/${product.slug}`,
+            "priceCurrency": "BDT",
+            "price": product.basePrice,
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": product.stockStatus === 'IN_STOCK' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+          }
+        }}
+      />
 
       {/* Breadcrumb */}
       <div className="bg-secondary py-4 border-b border-gray-100">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import useAuthStore from '../../stores/useAuthStore';
 
 export default function LoginPage() {
@@ -39,6 +40,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Admin Login | Talukder Furniture</title>
+      </Helmet>
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Link to="/" className="flex flex-col items-center">

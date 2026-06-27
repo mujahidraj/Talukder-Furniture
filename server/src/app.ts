@@ -24,6 +24,7 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import sitemapRoutes from './routes/sitemap.routes.js';
 import adminUserRoutes from './routes/adminUser.routes.js';
+import seoRoutes from './routes/seo.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,6 +83,7 @@ app.use('/api/admin/dashboard', dashboardRoutes);
 app.use('/api/admin/upload', uploadRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/', sitemapRoutes);
+app.use('/api/seo', seoRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

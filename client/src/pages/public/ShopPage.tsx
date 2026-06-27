@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { LayoutGrid, List, SlidersHorizontal, ChevronDown, Filter, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../lib/api';
+import SEO from '../../components/seo/SEO';
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -388,12 +389,14 @@ export default function ShopPage() {
                           <img
                             src={product.images[0].url}
                             alt={product.name}
+                            loading="lazy"
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />
                           {product.images[1] && (
                             <img
                               src={product.images[1].url}
                               alt={product.name}
+                              loading="lazy"
                               className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
                             />
                           )}

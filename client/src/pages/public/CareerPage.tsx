@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Briefcase, MapPin, Clock, ArrowRight } from 'lucide-react';
 import api from '../../lib/api';
 import Loader from '../../components/ui/Loader';
+import SEO from '../../components/seo/SEO';
 
 export default function CareerPage() {
   const [jobs, setJobs] = useState<any[]>([]);
@@ -34,7 +35,12 @@ export default function CareerPage() {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="bg-secondary min-h-screen pt-28 pb-20 font-sans">
+      <SEO 
+        title="Careers"
+        description="Join the Talukder Furniture team. Explore our open positions and build a rewarding career with Bangladesh's premium furniture brand."
+        url="/careers"
+      />
       {/* Banner */}
       <div className="relative py-20 px-4 md:px-8 xl:px-12 overflow-hidden mb-16">
         <div className="absolute inset-0 z-0">

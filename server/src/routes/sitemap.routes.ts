@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-const CLIENT_URL = process.env.CLIENT_URL || 'https://talukder-furniture.com';
+const CLIENT_URL = process.env.CLIENT_URL || 'https://talukderfurniture.com';
 
 router.get('/robots.txt', (req, res) => {
   res.type('text/plain');
@@ -58,7 +58,7 @@ router.get('/sitemap.xml', async (req, res) => {
     products.forEach(prod => {
       xml += `
   <url>
-    <loc>${CLIENT_URL}/products/${prod.slug}</loc>
+    <loc>${CLIENT_URL}/product/${prod.slug}</loc>
     <lastmod>${prod.updatedAt.toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
