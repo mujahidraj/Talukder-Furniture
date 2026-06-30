@@ -7,7 +7,7 @@ import useUIStore from '../../stores/useUIStore';
 import api from '../../lib/api';
 
 const companyMenu = {
-  name: 'More',
+  name: 'Company',
   path: '#',
   hasDropdown: true,
   megaMenu: [
