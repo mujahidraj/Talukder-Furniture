@@ -116,21 +116,27 @@ body {
   font-weight: 700;
 }
 
-.hero-pagination .swiper-pagination-bullet {
-  background: transparent !important;
-  border: 1.5px solid white !important;
-  opacity: 1 !important;
-  width: 8px !important;
-  height: 8px !important;
-  margin: 0 4px !important;
-  transition: all 0.3s ease;
+/* ===== HATIL-STYLE HERO PAGINATION ===== */
+.hatil-hero-bullet {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  display: inline-block;
 }
 
-.hero-pagination .swiper-pagination-bullet-active {
+.hatil-hero-bullet:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.hatil-hero-bullet-active {
   background: white !important;
-  border-color: white !important;
-  width: 24px !important;
-  border-radius: 4px !important;
+  width: 12px !important;
+  height: 12px !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
 /* ===== SKELETON LOADING ===== */

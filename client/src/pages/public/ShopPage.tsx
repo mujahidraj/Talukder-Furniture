@@ -190,7 +190,7 @@ export default function ShopPage() {
 
       {/* Toolbar Wrapper - Full width transition container */}
       <div
-        className={`sticky top-[90px] lg:top-[104px] z-30 transition-all duration-500 ease-in-out ${isSticky
+        className={`sticky top-[90px] z-30 transition-all duration-500 ease-in-out ${isSticky
             ? 'w-full bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200 py-3'
             : 'w-full bg-transparent py-0 mb-8'
           }`}
@@ -352,102 +352,109 @@ export default function ShopPage() {
       </div>
 
       {/* Product Grid Container */}
-      <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 mt-8">
+      <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 mt-12">
         <main className="w-full">
           {/* Product Grid/List */}
           {loading ? (
-            <div className={`grid gap-4 sm:gap-6 md:gap-10 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
+            <div className={`grid gap-x-6 sm:gap-x-8 md:gap-x-12 gap-y-12 sm:gap-y-16 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
               {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className="animate-pulse flex flex-col">
-                  <div className="aspect-[4/3] bg-gray-200 rounded-lg mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="aspect-square bg-[#f5f5f5] mb-6"></div>
+                  <div className="h-4 bg-gray-200 w-3/4 mb-3"></div>
+                  <div className="h-4 bg-gray-200 w-1/4"></div>
                 </div>
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-primary mb-2">No products found</h3>
+            <div className="text-center py-32 bg-white">
+              <h3 className="text-2xl font-serif text-[#1a1a1a] mb-3">No products found</h3>
               <p className="text-gray-500">Try adjusting your filters or category selection.</p>
             </div>
           ) : (
-            <motion.div layout className={`grid gap-4 sm:gap-6 md:gap-10 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
+            <motion.div layout className={`grid gap-x-6 sm:gap-x-8 md:gap-x-12 gap-y-12 sm:gap-y-16 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
               <AnimatePresence mode="popLayout">
                 {products.map(product => (
                   <motion.div
                     layout
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    initial={{ opacity: 0, scale: 0.98, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                    exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.2 } }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    key={product.id}
-                    className={`group ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-4 sm:gap-6 bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-lg transition-all duration-300' : 'flex flex-col gap-0 bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md md:hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 h-full pb-4 md:pb-5'}`}
+                    className={`group ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-6 sm:gap-12 bg-white border-b border-gray-100 transition-all duration-300 items-stretch' : 'flex flex-col gap-0 bg-white transition-all duration-300 h-full'}`}
                   >
-                    <Link to={`/products/${product.slug}`} className={`relative overflow-hidden bg-gray-50 block ${viewMode === 'list' ? 'w-full sm:w-1/3 aspect-[4/3] sm:aspect-square rounded-xl' : 'w-full aspect-[4/3] mb-3 md:mb-5'}`}>
+                    <Link to={`/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[400px] shrink-0 min-h-[300px] bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
                       {product.images && product.images.length > 0 ? (
                         <>
                           <img
                             src={product.images[0].url}
                             alt={product.name}
                             loading="lazy"
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                           />
                           {product.images[1] && (
                             <img
                               src={product.images[1].url}
                               alt={product.name}
                               loading="lazy"
-                              className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100"
                             />
                           )}
                         </>
+                      ) : product.image ? (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                        />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 min-h-[300px]">No Image</div>
                       )}
+                      {/* Hover Overlay 'View Details' Button */}
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
+                          View Details
+                        </span>
+                      </div>
                     </Link>
 
-                    <div className={`${viewMode === 'list' ? 'flex flex-col justify-center flex-1' : 'flex flex-col flex-1 justify-start px-4 md:px-5'}`}>
-                      <Link to={`/products/${product.slug}`} className="hover:text-accent transition-colors">
-                        <h3 className={`font-bold text-primary ${viewMode === 'list' ? 'text-lg sm:text-2xl mb-1 sm:mb-2 line-clamp-2 sm:line-clamp-none' : 'text-sm md:text-lg leading-snug md:truncate mb-1 line-clamp-2 md:line-clamp-1'}`}>{product.name}</h3>
-                      </Link>
+                    <div className={`${viewMode === 'list' ? 'flex flex-col justify-center flex-1 p-4 sm:p-0 sm:py-8 sm:pr-8' : 'flex flex-col flex-1 justify-start p-4 md:p-5'}`}>
                       {product.category && (
-                        <span className="text-[11px] sm:text-sm text-gray-500 mb-1.5 sm:mb-2 block">{product.category.name}</span>
+                        <span className="text-[11px] sm:text-[12px] text-gray-500 mb-2 uppercase tracking-wider block">{product.category.name}</span>
                       )}
+                      <Link to={`/products/${product.slug}`} className="hover:text-[#E32227] transition-colors inline-block mb-2">
+                        <h3 className={`font-medium text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl sm:text-3xl font-serif mb-4' : 'text-[15px] md:text-[16px] leading-snug line-clamp-2'}`}>{product.name}</h3>
+                      </Link>
 
                       {viewMode === 'list' && (
-                        <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
+                        <p className="text-sm sm:text-[15px] text-gray-600 mb-6 line-clamp-3 leading-relaxed">
                           {product.overview?.replace(/<[^>]+>/g, '') || 'No description available.'}
                         </p>
                       )}
 
                       <div className="flex items-center justify-between mt-auto">
-                        <div className={`flex items-center gap-1.5 sm:gap-2 ${viewMode === 'list' ? 'flex-row' : 'flex-col items-start gap-0.5'}`}>
+                        <div className={`flex items-center gap-2.5 ${viewMode === 'list' ? 'flex-row' : 'flex-row'}`}>
                           {product.basePrice ? (
                             <>
-                              <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-lg sm:text-xl' : 'text-sm sm:text-base'}`}>
+                              <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl' : 'text-[17px]'}`}>
                                 {product.discountPercentage > 0
                                   ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
                                   : `৳ ${product.basePrice.toLocaleString()}`
                                 }
                               </span>
                               {product.discountPercentage > 0 && (
-                                <div className="flex items-center gap-1.5 sm:gap-2">
-                                  <span className="text-[10px] sm:text-xs text-gray-400 line-through">৳ {product.basePrice.toLocaleString()}</span>
-                                  <span className="text-[9px] sm:text-[10px] bg-red-100 text-red-600 font-bold px-1 sm:px-1.5 py-0.5 rounded">-{product.discountPercentage}%</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">৳ {product.basePrice.toLocaleString()}</span>
+                                  <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
                                 </div>
                               )}
                             </>
                           ) : (
-                            <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-lg sm:text-xl' : 'text-sm sm:text-base'}`}>
+                            <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl' : 'text-[17px]'}`}>
                               {product.priceDisplay || `$${product.price}`}
                             </span>
                           )}
                         </div>
-                        {viewMode === 'list' && (
-                          <Link to={`/products/${product.slug}`} className="btn btn-outline btn-sm rounded-lg hidden sm:flex">
-                            View Details
-                          </Link>
-                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -458,9 +465,9 @@ export default function ShopPage() {
 
           {/* Pagination */}
           {!loading && totalPages > 1 && (
-            <div className="flex justify-center mt-12">
+            <div className="flex justify-center mt-20 border-t border-gray-100 pt-12">
               {/* Mobile: Prev / Page X of Y / Next */}
-              <nav className="flex sm:hidden items-center gap-4">
+              <nav className="flex sm:hidden items-center gap-6">
                 <button
                   disabled={pageParam === 1}
                   onClick={() => {
@@ -468,12 +475,12 @@ export default function ShopPage() {
                     newParams.set('page', (pageParam - 1).toString());
                     setSearchParams(newParams);
                   }}
-                  className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 font-medium hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
+                  className="text-[13px] uppercase tracking-wider font-semibold text-[#1a1a1a] hover:text-[#E32227] disabled:opacity-30 disabled:hover:text-[#1a1a1a] transition-colors pb-1 border-b border-transparent hover:border-[#E32227]"
                 >
                   Prev
                 </button>
-                <span className="text-sm font-medium text-gray-700">
-                  {pageParam} / {totalPages}
+                <span className="text-sm font-medium text-gray-400">
+                  {pageParam} <span className="mx-1">/</span> {totalPages}
                 </span>
                 <button
                   disabled={pageParam === totalPages}
@@ -482,14 +489,14 @@ export default function ShopPage() {
                     newParams.set('page', (pageParam + 1).toString());
                     setSearchParams(newParams);
                   }}
-                  className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 font-medium hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
+                  className="text-[13px] uppercase tracking-wider font-semibold text-[#1a1a1a] hover:text-[#E32227] disabled:opacity-30 disabled:hover:text-[#1a1a1a] transition-colors pb-1 border-b border-transparent hover:border-[#E32227]"
                 >
                   Next
                 </button>
               </nav>
 
               {/* Desktop: Full pagination with truncated page numbers */}
-              <nav className="hidden sm:flex items-center gap-2">
+              <nav className="hidden sm:flex items-center gap-3">
                 <button
                   disabled={pageParam === 1}
                   onClick={() => {
@@ -497,7 +504,7 @@ export default function ShopPage() {
                     newParams.set('page', (pageParam - 1).toString());
                     setSearchParams(newParams);
                   }}
-                  className="w-10 h-10 rounded border border-gray-200 flex items-center justify-center text-gray-500 hover:text-accent hover:border-accent disabled:opacity-50 disabled:hover:border-gray-200 disabled:hover:text-gray-500 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-[#1a1a1a] disabled:opacity-30 transition-colors"
                 >
                   &laquo;
                 </button>
@@ -516,7 +523,7 @@ export default function ShopPage() {
                   }
                   return pages.map((pageNum, idx) =>
                     typeof pageNum === 'string' ? (
-                      <span key={`ellipsis-${idx}`} className="w-10 h-10 flex items-center justify-center text-gray-400">…</span>
+                      <span key={`ellipsis-${idx}`} className="w-10 h-10 flex items-center justify-center text-gray-300">…</span>
                     ) : (
                       <button
                         key={pageNum}
@@ -525,9 +532,9 @@ export default function ShopPage() {
                           newParams.set('page', pageNum.toString());
                           setSearchParams(newParams);
                         }}
-                        className={`w-10 h-10 rounded font-medium flex items-center justify-center transition-colors ${pageParam === pageNum
-                            ? 'bg-accent text-white'
-                            : 'border border-gray-200 text-gray-500 hover:text-accent hover:border-accent'
+                        className={`w-10 h-10 text-[14px] font-medium flex items-center justify-center transition-all duration-300 ${pageParam === pageNum
+                            ? 'bg-[#1a1a1a] text-white rounded-full'
+                            : 'text-gray-500 hover:text-[#1a1a1a] hover:bg-gray-100 rounded-full'
                           }`}
                       >
                         {pageNum}
@@ -542,7 +549,7 @@ export default function ShopPage() {
                     newParams.set('page', (pageParam + 1).toString());
                     setSearchParams(newParams);
                   }}
-                  className="w-10 h-10 rounded border border-gray-200 flex items-center justify-center text-gray-500 hover:text-accent hover:border-accent disabled:opacity-50 disabled:hover:border-gray-200 disabled:hover:text-gray-500 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-[#1a1a1a] disabled:opacity-30 transition-colors"
                 >
                   &raquo;
                 </button>

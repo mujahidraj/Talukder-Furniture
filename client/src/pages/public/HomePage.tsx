@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { ChevronRight, ChevronLeft, Truck, RotateCcw, Headphones, Award, ArrowRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Truck, RotateCcw, Headphones, Award, ArrowRight, Phone } from 'lucide-react';
 import type { Swiper as SwiperType } from 'swiper';
 import SEO from '../../components/seo/SEO';
 import api from '../../lib/api';
@@ -61,33 +61,38 @@ const IMG = {
 const heroSlides = [
   {
     id: 1,
-    title: 'Talukder Bedroom\nSet',
+    title: 'Made for creating\ntasty memories',
+    subtitle: 'Bundle of satisfaction',
     image: IMG.heroBed,
-    link: '/products/bedroom-sets',
+    link: '/shop?category=dining-room',
   },
   {
     id: 2,
-    title: 'Premium Office\nFurniture',
+    title: 'Crafted for\nyour comfort',
+    subtitle: 'Premium furniture collection',
     image: IMG.sideLeft,
-    link: '/products/office-furniture',
+    link: '/shop?category=office',
   },
   {
     id: 3,
-    title: 'Modern Dining\nCollection',
-    image: IMG.sideRightTop,
-    link: '/products/dining',
+    title: 'Design that\ninspires living',
+    subtitle: 'Modern elegance for every space',
+    image: IMG.heroLiving,
+    link: '/shop?category=living-room',
   },
   {
     id: 4,
-    title: 'Elegant Living\nSpaces',
+    title: 'Sleep in\npure luxury',
+    subtitle: 'Bedroom sets that define comfort',
     image: IMG.sideRightBottom,
-    link: '/products/living-room',
+    link: '/shop?category=bedroom',
   },
   {
     id: 5,
-    title: 'Luxury Office\nSetup',
+    title: 'Where work\nmeets style',
+    subtitle: 'Elevate your office space',
     image: IMG.p5,
-    link: '/products/office-furniture',
+    link: '/shop?category=office',
   },
 ];
 
@@ -146,13 +151,13 @@ const trustBadges = [
 /* ====== COMPONENT ====== */
 
 export default function HomePage() {
-  const livingRoomSwiperRef = useRef<SwiperType | null>(null);
+  const newestSwiperRef = useRef<SwiperType | null>(null);
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
-  const [livingRoomProducts, setLivingRoomProducts] = useState<any[]>([]);
+  const [newestProducts, setNewestProducts] = useState<any[]>([]);
   const [dynamicHeroSlides, setDynamicHeroSlides] = useState<any[]>([]);
   const [loadingHero, setLoadingHero] = useState(true);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
-  const [loadingLivingRoom, setLoadingLivingRoom] = useState(true);
+  const [loadingNewest, setLoadingNewest] = useState(true);
 
   useEffect(() => {
     // Fetch general featured products
@@ -160,10 +165,10 @@ export default function HomePage() {
       setFeaturedProducts(res.data.products || []);
     }).catch(console.error).finally(() => setLoadingFeatured(false));
 
-    // Fetch living room category products
-    api.get('/products?category=living-room&limit=10').then(res => {
-      setLivingRoomProducts(res.data.products || []);
-    }).catch(console.error).finally(() => setLoadingLivingRoom(false));
+    // Fetch newest products
+    api.get('/products?sortBy=createdAt&order=desc&limit=8').then(res => {
+      setNewestProducts(res.data.products || []);
+    }).catch(console.error).finally(() => setLoadingNewest(false));
 
     // Fetch active hero slides
     api.get('/hero-slides?active=true').then(res => {
@@ -172,7 +177,7 @@ export default function HomePage() {
   }, []);
 
   const finalHeroSlides = dynamicHeroSlides.length > 0 ? dynamicHeroSlides : heroSlides;
-  const isLoading = loadingHero || loadingFeatured || loadingLivingRoom;
+  const isLoading = loadingHero || loadingFeatured || loadingNewest;
 
   // Hide splash screen once data is loaded
   useEffect(() => {
@@ -194,218 +199,222 @@ export default function HomePage() {
       />
 
       {/* ═══════════════════════════════════════════
-          1. HERO SECTION (Continuous Carousel)
+          1. HERO SECTION — Full Viewport, HATIL Style
          ═══════════════════════════════════════════ */}
-      <section style={{ width: '100%', overflow: 'hidden', paddingBottom: '60px', backgroundColor: 'transparent' }}>
-        <div style={{ width: '100%', position: 'relative' }}>
-          {!loadingHero && (
+      <section className="relative w-full h-screen overflow-hidden">
+        {!loadingHero && (
           <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            navigation={{
-              prevEl: '.hero-prev',
-              nextEl: '.hero-next',
+            modules={[Pagination, Autoplay]}
+            pagination={{ 
+              clickable: true, 
+              el: '.hatil-hero-pagination',
+              bulletClass: 'hatil-hero-bullet',
+              bulletActiveClass: 'hatil-hero-bullet-active',
             }}
-            pagination={{ clickable: true, el: '.hero-pagination' }}
             autoplay={{ delay: 5000, disableOnInteraction: false }}
             speed={1200}
             loop={true}
-            centeredSlides={true}
-            breakpoints={{
-              320: { slidesPerView: 1.1, spaceBetween: 12 },
-              768: { slidesPerView: 1.2, spaceBetween: 20 },
-              1024: { slidesPerView: 1.4, spaceBetween: 24 }
-            }}
-            style={{ paddingBottom: '0px' }}
+            slidesPerView={1}
+            spaceBetween={0}
+            className="w-full h-full"
           >
-            {finalHeroSlides.map((slide, index) => (
-              <SwiperSlide key={`${slide.id}-${index}`} style={{ height: 'auto', display: 'flex' }}>
+            {finalHeroSlides.map((slide: any, index: number) => (
+              <SwiperSlide key={`${slide.id}-${index}`}>
                 {({ isActive }) => (
-                  <div className="relative w-full h-[550px] md:h-[calc(100vh-160px)] md:min-h-[550px] rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+                  <div className="relative w-full h-screen">
+                    {/* Full-bleed background image */}
                     <img
-                      src={slide.imageUrl ? (slide.imageUrl.startsWith('http') ? slide.imageUrl : `${import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') : 'http://localhost:5000'}${slide.imageUrl}`) : slide.image}
+                      src={slide.imageUrl || slide.image}
                       alt={slide.title}
-                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                    {/* Gradient overlay only on the active slide to make text readable */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      background: isActive ? 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)' : 'transparent',
-                      transition: 'background 1.2s ease'
-                    }} />
+                    
+                    {/* Dark gradient overlay for text readability */}
+                    <div 
+                      className="absolute inset-0"
+                      style={{
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.02) 30%, rgba(0,0,0,0.15) 70%, rgba(0,0,0,0.3) 100%)',
+                      }}
+                    />
 
-                    {/* Framer Motion Text content */}
-                    <div style={{
-                      position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-                      zIndex: 10, padding: '0 20px', marginTop: '20px',
-                      pointerEvents: isActive ? 'auto' : 'none'
-                    }}>
+                    {/* Text content — centered */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-6">
                       <motion.h1
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                        className="text-white text-3xl md:text-5xl lg:text-[3.5rem] font-[400] mb-3 md:mb-4 whitespace-pre-line leading-tight md:leading-[1.1] font-serif"
-                        style={{
-                          textShadow: '0 2px 10px rgba(0,0,0,0.3)'
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+                        className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] whitespace-pre-line mb-6"
+                        style={{ 
+                          fontFamily: "'Inter', 'Segoe UI', sans-serif",
+                          textShadow: '0 2px 20px rgba(0,0,0,0.3)',
+                          letterSpacing: '-0.02em',
                         }}
                       >
                         {slide.title}
                       </motion.h1>
 
+                      {/* Horizontal divider line */}
+                      <motion.div
+                        initial={{ opacity: 0, scaleX: 0 }}
+                        animate={isActive ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 }}
+                        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
+                        className="w-[280px] sm:w-[350px] md:w-[450px] h-[1px] bg-white/60 mb-5"
+                      />
+
+                      {/* Subtitle */}
                       <motion.p
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-                        className="text-white text-xs md:text-sm max-w-[300px] md:max-w-[500px] mb-6 md:mb-8 font-light"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+                        className="text-white/80 text-lg sm:text-xl md:text-2xl font-light tracking-wide max-w-[650px] md:max-w-[800px]"
                         style={{
-                          textShadow: '0 1px 4px rgba(0,0,0,0.5)'
+                          fontFamily: "'Inter', 'Segoe UI', sans-serif",
+                          textShadow: '0 1px 8px rgba(0,0,0,0.3)',
                         }}
                       >
-                        {slide.subtitle || 'Get superior support and better posture with ergonomic chairs for long work hours'}
+                        {slide.subtitle || 'Bundle of satisfaction'}
                       </motion.p>
 
-                      <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-                      >
-                        <Link
-                          to={slide.ctaLink || slide.link || '/shop'}
-                          className="inline-flex items-center gap-2 bg-white/60 hover:bg-white/80 text-[#1a1a1a] px-6 py-2.5 md:px-8 md:py-3.5 text-[13px] md:text-[15px] font-semibold rounded-full transition-all no-underline shadow-[0_4px_15px_rgba(0,0,0,0.1)] backdrop-blur-sm"
+                      {/* CTA Button */}
+                      {(slide.ctaLink || slide.link) && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.65 }}
+                          className="mt-8 sm:mt-10"
                         >
-                          {slide.ctaText || 'Explore Collection'} <ArrowRight size={16} strokeWidth={2.5} />
-                        </Link>
-                      </motion.div>
+                          <Link 
+                            to={slide.ctaLink || slide.link} 
+                            className="inline-flex items-center justify-center bg-white text-[#1a1a1a] px-8 md:px-10 py-3.5 md:py-4 text-sm font-semibold tracking-[0.15em] uppercase hover:bg-black hover:text-white transition-all duration-500 shadow-lg"
+                          >
+                            {slide.ctaText || 'Explore Collection'}
+                          </Link>
+                        </motion.div>
+                      )}
                     </div>
                   </div>
                 )}
               </SwiperSlide>
             ))}
-
-            {/* Navigation Arrows positioned on the side slides */}
-            <button className="hero-prev absolute left-[2%] md:left-[4%] top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 md:bg-white/20 hover:bg-white/60 backdrop-blur-sm transition-all flex items-center justify-center border-none cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-[#1a1a1a]">
-              <ChevronLeft className="w-6 h-6 md:w-7 md:h-7" strokeWidth={1.5} />
-            </button>
-            <button className="hero-next absolute right-[2%] md:right-[4%] top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 md:bg-white/20 hover:bg-white/60 backdrop-blur-sm transition-all flex items-center justify-center border-none cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-[#1a1a1a]">
-              <ChevronRight className="w-6 h-6 md:w-7 md:h-7" strokeWidth={1.5} />
-            </button>
-
-            {/* Custom Pagination wrapper */}
-            <div className="hero-pagination" style={{
-              position: 'absolute', bottom: '35px', left: 0, right: 0, zIndex: 20,
-              display: 'flex', justifyContent: 'center', gap: '6px', alignItems: 'center'
-            }}></div>
           </Swiper>
-          )}
+        )}
+
+        {/* Dot Pagination — bottom center */}
+        <div className="hatil-hero-pagination absolute bottom-8 left-0 right-0 z-20 flex justify-center items-center gap-2" />
+
+        {/* Floating Phone Number — bottom left */}
+        <div className="absolute bottom-6 left-6 md:left-10 z-20 flex items-center gap-2.5">
+          <Phone size={16} className="text-white/80" strokeWidth={1.5} />
+          <span 
+            className="text-white/80 text-xs md:text-sm font-light tracking-wider"
+            style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}
+          >
+            +880 1966-333355
+          </span>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-          2. CATEGORY PILLS (Responsive Flex Layout)
+          2. POPULAR FURNITURE (HATIL Style)
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '60px 0', backgroundColor: 'white' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+      <section style={{ padding: '100px 0 80px', backgroundColor: 'white' }}>
+        <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
+          {/* Heading */}
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="text-2xl md:text-3xl font-light text-[#1a1a1a]" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Popular Furniture
+            </h2>
+            <ArrowRight size={22} className="text-[#1a1a1a]" strokeWidth={1.5} />
+          </div>
 
-          {/* MOBILE VIEW: Swipeable row */}
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:hidden pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {/* 7-column grid layout for desktop, responsive grid for mobile */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-5 lg:gap-6 pb-4">
             {categoryPills.map((cat) => (
-              <Link key={cat.slug} to={`/shop?category=${cat.slug}`} className="flex flex-col items-center gap-3 text-decoration-none min-w-[120px] snap-center shrink-0">
-                <div className="w-[120px] h-[60px] rounded-full overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.1)] shrink-0">
-                  <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <Link 
+                key={cat.slug} 
+                to={`/shop?category=${cat.slug}`} 
+                className="flex flex-col items-center gap-3 group w-full"
+                style={{ textDecoration: 'none' }}
+              >
+                <div className="w-full aspect-square rounded-xl overflow-hidden bg-[#f5f5f5] transition-shadow duration-300 group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+                  <img 
+                    src={cat.image} 
+                    alt={cat.name} 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 </div>
-                <span className="text-[15px] text-[#1a1a1a] font-serif text-center">{cat.name}</span>
+                <span className="text-[13px] md:text-[14px] text-[#444] font-normal text-center whitespace-nowrap">
+                  {cat.name}
+                </span>
               </Link>
             ))}
           </div>
-
-          {/* DESKTOP VIEW: 2-3-2 Layout */}
-          <div className="hidden md:flex flex-col gap-10">
-            {/* Row 1 */}
-            <div className="flex justify-center gap-10 lg:gap-20 flex-wrap">
-              {categoryPills.slice(0, 2).map((cat) => (
-                <Link key={cat.slug} to={`/shop?category=${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '16px', textDecoration: 'none' }}>
-                  <div className="w-32 h-16 lg:w-40 lg:h-20 rounded-full overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.1)] shrink-0">
-                    <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <span className="text-lg lg:text-[22px] text-[#1a1a1a] font-serif whitespace-nowrap">{cat.name}</span>
-                </Link>
-              ))}
-            </div>
-
-            {/* Row 2 */}
-            <div className="flex justify-center gap-10 lg:gap-16 flex-wrap">
-              {categoryPills.slice(2, 5).map((cat) => (
-                <Link key={cat.slug} to={`/shop?category=${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '16px', textDecoration: 'none' }}>
-                  <div className="w-32 h-16 lg:w-40 lg:h-20 rounded-full overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.1)] shrink-0">
-                    <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <span className="text-lg lg:text-[22px] text-[#1a1a1a] font-serif whitespace-nowrap">{cat.name}</span>
-                </Link>
-              ))}
-            </div>
-
-            {/* Row 3 */}
-            <div className="flex justify-center gap-10 lg:gap-20 flex-wrap">
-              {categoryPills.slice(5, 7).map((cat) => (
-                <Link key={cat.slug} to={`/shop?category=${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '16px', textDecoration: 'none' }}>
-                  <div className="w-32 h-16 lg:w-40 lg:h-20 rounded-full overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.1)] shrink-0">
-                    <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <span className="text-lg lg:text-[22px] text-[#1a1a1a] font-serif whitespace-nowrap">{cat.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
           3. OUR PICKS FOR YOU
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '40px 0 50px', backgroundColor: 'white' }}>
+      <section style={{ padding: '80px 0 120px', backgroundColor: 'white' }}>
         <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <h2 className="text-3xl md:text-[2.5rem] font-serif font-bold italic text-[#1a1a1a] mb-2">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl md:text-5xl font-serif text-[#1a1a1a] mb-4">
               Our Picks For You
             </h2>
-            <p className="text-sm md:text-[18px] text-[#777]">Fresh styles just in! Elevate your look</p>
+            <p className="text-[15px] md:text-[17px] font-light text-gray-500 tracking-wide uppercase">
+              Fresh styles just in! Elevate your look
+            </p>
           </div>
 
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-[48px] overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-8 sm:pb-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {(featuredProducts.length > 0 ? featuredProducts : products).map((product) => (
               <Link
                 key={product.id}
                 to={`/products/${product.slug}`}
-                className="w-[180px] sm:w-auto snap-start shrink-0"
-                style={{ textDecoration: 'none', color: '#333' }}
+                className="group relative block w-[260px] sm:w-auto snap-start shrink-0"
               >
-                <div style={{
-                  aspectRatio: '1', overflow: 'hidden',
-                  backgroundColor: '#ffffffff', borderRadius: '8px',
-                  marginBottom: '16px', border: '1px solid #f0f0f0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  padding: '9px'
-                }}>
+                {/* Image Container */}
+                <div className="relative w-full aspect-square bg-[#f5f5f5] mb-5 overflow-hidden">
                   <img
                     src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p1}
                     alt={product.name}
-                    style={{
-                      maxWidth: '100%', maxHeight: '100%', borderRadius: '2%', objectFit: 'contain',
-                      transition: 'transform 0.3s'
-                    }}
-                    onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                    onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                   />
+                  {product.images && product.images.length > 1 && (
+                    <img
+                      src={product.images[1].url}
+                      alt={product.name}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                    />
+                  )}
+                  {/* Hover Overlay 'View Details' Button */}
+                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
+                      View Details
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-base md:text-[18px] font-semibold text-[#444] leading-snug mb-1.5">
-                  {product.name}
-                </h3>
-                <p className="text-lg md:text-[20px] font-bold text-[#1a1a1a]">
-                  {product.basePrice && product.discountPercentage > 0 
-                    ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
-                    : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
-                </p>
+
+                {/* Text Content */}
+                <div className="flex flex-col flex-1 justify-start px-2">
+                  <h3 className="font-medium text-[#1a1a1a] text-[15px] md:text-[16px] leading-snug line-clamp-2 mb-2 group-hover:text-[#E32227] transition-colors duration-300">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-semibold text-[#1a1a1a] text-[16px]">
+                      {product.basePrice && product.discountPercentage > 0 
+                        ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
+                        : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
+                    </span>
+                    {product.basePrice && product.discountPercentage > 0 && (
+                      <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
+                        ৳ {product.basePrice.toLocaleString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
@@ -413,138 +422,153 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          4. SPLIT BANNER — Start With These Curated Spaces
+          4. EDITORIAL SPLIT BANNER — Elevate Living
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '80px 0', backgroundColor: '#f9f9f9' }}>
-        <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-[80px] xl:gap-[120px] items-center">
-
-            {/* Left — Large Rounded Image */}
-            <div className="lg:col-span-8" style={{ height: '680px', borderRadius: '16px', overflow: 'hidden', position: 'relative' }}>
-              <img
-                src={IMG.curatedBig}
-                alt="Curated Space"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
-
-            {/* Right — Content and Slider */}
-            <div className="lg:col-span-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-              <h2 style={{
-                fontSize: '3rem', fontFamily: "'Playfair Display', serif",
-                fontWeight: 400, color: '#1a1a1a', marginBottom: '16px', lineHeight: 1.1
-              }}>
-                Start With These<br />Curated Spaces
+      <section className="py-20 lg:py-32 bg-white">
+        <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-12">
+          
+          {/* Top Split Section */}
+          <div className="flex flex-col lg:flex-row items-stretch min-h-[500px] lg:min-h-[700px]">
+            {/* Left Content Area — Deep Charcoal */}
+            <div className="w-full lg:w-[45%] bg-[#141414] p-12 lg:p-20 xl:p-28 flex flex-col justify-center relative">
+              <span className="text-[#a0a0a0] uppercase tracking-[0.3em] text-[12px] font-bold mb-6 block">
+                Exclusive Collection
+              </span>
+              <h2 className="text-4xl sm:text-5xl lg:text-[4rem] font-serif text-white leading-[1.1] mb-8">
+                Elevate Your<br />Everyday Living
               </h2>
-              <p style={{ fontSize: '15px', color: '#666', marginBottom: '48px', fontWeight: 300 }}>
-                Comfort and style meet to blissful perfection
+              <p className="text-[16px] lg:text-[18px] text-gray-400 font-light mb-12 max-w-[400px] leading-relaxed">
+                Immerse yourself in spaces designed with passion and crafted for absolute perfection. Experience true luxury.
               </p>
-
-              {/* Slider Area */}
-              <div style={{ width: '100%', maxWidth: '550px', position: 'relative' }} className="curated-slider-wrapper">
-                <style>{`
-                  .curated-slider-wrapper .swiper-pagination-bullet {
-                    background: transparent;
-                    border: 1px solid #1a1a1a;
-                    opacity: 1;
-                    width: 8px;
-                    height: 8px;
-                    margin: 0 6px !important;
-                  }
-                  .curated-slider-wrapper .swiper-pagination-bullet-active {
-                    background: transparent;
-                    border: 2px solid #1a1a1a;
-                    position: relative;
-                  }
-                  .curated-slider-wrapper .swiper-pagination-bullet-active::after {
-                    content: '';
-                    position: absolute;
-                    top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    width: 3px; height: 3px;
-                    background: #1a1a1a;
-                    border-radius: 50%;
-                  }
-                `}</style>
-                <Swiper
-                  modules={[Pagination, Autoplay]}
-                  pagination={{ clickable: true, el: '.curated-pagination' }}
-                  autoplay={{ delay: 3000 }}
-                  loop={true}
-                  spaceBetween={20}
-                  slidesPerView={1}
-                >
-                  {[
-                    { id: 20, name: 'Low Back Chair', price: '৳ 0.00', image: IMG.curatedChair },
-                    { id: 21, name: 'Executive Chair', price: '৳ 0.00', image: IMG.p7 },
-                    { id: 22, name: 'Visitor Chair', price: '৳ 0.00', image: IMG.p8 }
-                  ].map((product) => (
-                    <SwiperSlide key={product.id}>
-                      <div style={{ width: '100%' }}>
-                        <div style={{
-                          backgroundColor: 'white', borderRadius: '16px',
-                          aspectRatio: '16/10', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          padding: '24px', marginBottom: '24px'
-                        }}>
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                          />
-                        </div>
-                        <h4 style={{ fontSize: '15px', fontWeight: 500, color: '#333', marginBottom: '4px' }}>{product.name}</h4>
-                        <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a1a1a' }}>{product.price}</p>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-                <div className="curated-pagination" style={{ display: 'flex', marginTop: '32px' }}></div>
-              </div>
-
+              <Link to="/shop" className="group inline-flex items-center gap-4 self-start text-white text-[14px] tracking-[0.2em] uppercase font-semibold">
+                <span className="border-b border-transparent group-hover:border-white transition-colors duration-300 pb-0.5">
+                  Explore Spaces
+                </span>
+                <span className="w-8 h-[1px] bg-white group-hover:w-12 transition-all duration-300"></span>
+              </Link>
             </div>
+
+            {/* Right Perfectly Packed Grid Image Gallery */}
+            <div className="w-full lg:w-[55%] bg-white p-2 h-[500px] lg:h-auto">
+              <div className="grid grid-cols-3 grid-rows-4 gap-2 w-full h-full">
+                {[
+                  { src: IMG.heroBed, span: 'col-span-1 row-span-2' },
+                  { src: IMG.p3, span: 'col-span-1 row-span-2' },
+                  { src: IMG.sideLeft, span: 'col-span-1 row-span-3' },
+                  { src: IMG.heroLiving, span: 'col-span-2 row-span-2' },
+                  { src: IMG.p4, span: 'col-span-1 row-span-1' },
+                ].map((img, i) => (
+                  <div key={i} className={`relative group overflow-hidden bg-gray-100 ${img.span}`}>
+                    <img 
+                      src={img.src} 
+                      alt="Gallery Snapshot" 
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    />
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Products Strip */}
+          <div className="w-full mt-16 lg:mt-24 relative curated-slider-wrapper">
+            <div className="flex items-center justify-between mb-10 border-b border-gray-200 pb-4">
+              <h3 className="text-2xl lg:text-3xl font-serif text-[#1a1a1a]">Featured Pieces</h3>
+              <div className="flex items-center gap-4">
+                <button className="uniqueness-prev w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-colors">
+                  <ChevronLeft size={20} />
+                </button>
+                <button className="uniqueness-next w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-colors">
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </div>
+            
+            <Swiper
+              modules={[Navigation, Autoplay]}
+              navigation={{
+                nextEl: '.uniqueness-next',
+                prevEl: '.uniqueness-prev',
+              }}
+              autoplay={{ delay: 3500, disableOnInteraction: false }}
+              loop={true}
+              spaceBetween={30}
+              breakpoints={{
+                320: { slidesPerView: 1.2, spaceBetween: 16 },
+                768: { slidesPerView: 2.5, spaceBetween: 24 },
+                1024: { slidesPerView: 4, spaceBetween: 30 },
+                1280: { slidesPerView: 5, spaceBetween: 30 },
+              }}
+            >
+              {[
+                { id: 30, name: 'Andaman-184', price: '৳ 32,100', image: IMG.p5 },
+                { id: 31, name: 'Anderson-279', price: '৳ 38,150', image: IMG.p6 },
+                { id: 32, name: 'Lucan-309', price: '৳ 18,849', image: IMG.p7 },
+                { id: 33, name: 'Kenneth-313', price: '৳ 30,650', image: IMG.p8 },
+                { id: 34, name: 'Low Back Chair', price: '৳ 12,500', image: IMG.curatedChair },
+              ].map((product) => (
+                <SwiperSlide key={product.id}>
+                  <Link to="/shop" className="block group">
+                    <div className="w-full aspect-square bg-[#f5f5f5] mb-4 overflow-hidden relative">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                      />
+                    </div>
+                    <h4 className="font-medium text-[#1a1a1a] text-[15px] mb-1 group-hover:text-[#E32227] transition-colors">{product.name}</h4>
+                    <p className="font-semibold text-gray-500 text-[14px]">{product.price}</p>
+                  </Link>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-      {/* ═══════════════════════════════════════════
-          5. OUR EXCLUSIVE LIVING ROOM SET
+          5. NEWEST ARRIVALS
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '80px 0', backgroundColor: 'white' }}>
-        <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 md:mb-10">
+      <section className="py-20 lg:py-28 bg-white">
+        <div className="w-full max-w-[1700px] mx-auto px-6 xl:px-12 relative">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10">
             <div>
-              <h2 className="text-3xl md:text-[2.5rem] font-serif text-[#1a1a1a] mb-2">
-                Our Exclusive Living Room Set
+              <h2 className="text-3xl md:text-[2.75rem] font-serif text-[#1a1a1a] mb-2">
+                Newest Arrivals
               </h2>
-              <p className="text-sm md:text-[18px] text-[#777]">Fresh styles just in! Elevate your look.</p>
+              <p className="text-sm md:text-[17px] text-[#555]">Fresh styles just in! Elevate your look.</p>
             </div>
-            <Link to="/shop?category=living-room" className="text-sm md:text-[15px] text-[#1a1a1a] font-medium border-b border-[#1a1a1a] pb-1 hover:opacity-70 transition-opacity">
+            <Link to="/shop" className="text-sm md:text-[15px] text-[#1a1a1a] font-semibold border-b-[1.5px] border-[#1a1a1a] pb-0.5 hover:text-[#E32227] hover:border-[#E32227] transition-colors">
               View All Products
             </Link>
           </div>
 
-          <div className="relative md:px-[80px]">
+          <div className="relative group/slider px-0 md:px-4">
             <Swiper
-              modules={[Navigation]}
-              spaceBetween={20}
+              modules={[Navigation, Autoplay]}
+              spaceBetween={24}
               slidesPerView={1.2}
               loop={true}
-              breakpoints={{ 480: { slidesPerView: 2, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 30 }, 1024: { slidesPerView: 4, spaceBetween: 30 } }}
-              onSwiper={(swiper) => { livingRoomSwiperRef.current = swiper; }}
+              autoplay={{ delay: 3500, disableOnInteraction: false }}
+              breakpoints={{ 480: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }}
+              onSwiper={(swiper) => { newestSwiperRef.current = swiper; }}
             >
-              {(livingRoomProducts.length > 0 ? livingRoomProducts : livingRoomMockProducts).map((product) => (
+              {(newestProducts.length > 0 ? newestProducts : livingRoomMockProducts).map((product) => (
                 <SwiperSlide key={product.id}>
-                  <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none', color: '#333', display: 'block' }}>
-                    <div style={{
-                      aspectRatio: '16/10', overflow: 'hidden',
-                      marginBottom: '16px', borderRadius: '8px'
-                    }}>
-                      <img src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p5} alt={product.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  <Link to={`/products/${product.slug}`} className="block group">
+                    <div className="w-full aspect-[4/3] bg-[#f8f8f8] mb-4 rounded-md overflow-hidden relative">
+                      <img 
+                        src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p5} 
+                        alt={product.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
                       />
                     </div>
-                    <h3 className="text-base md:text-[18px] font-semibold text-[#444] mb-1.5">{product.name}</h3>
-                    <p className="text-lg md:text-[20px] font-bold text-[#1a1a1a]">
+                    <h3 className="text-[16px] md:text-[18px] font-semibold text-[#1a1a1a] mb-1">{product.name}</h3>
+                    <p className="text-[17px] md:text-[19px] font-bold text-[#1a1a1a]">
                       {product.basePrice && product.discountPercentage > 0 
                         ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
                         : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
@@ -556,55 +580,57 @@ export default function HomePage() {
 
             {/* Nav arrows outside the Swiper */}
             <button
-              onClick={() => livingRoomSwiperRef.current?.slidePrev()}
-              className="hidden md:flex absolute left-0 top-[40%] -translate-y-1/2 z-10 w-14 h-14 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]"
+              onClick={() => newestSwiperRef.current?.slidePrev()}
+              className="hidden md:flex absolute -left-8 top-[40%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-lg opacity-0 group-hover/slider:opacity-100"
             >
-              <ChevronLeft size={24} strokeWidth={1.5} />
+              <ChevronLeft size={20} strokeWidth={1.5} />
             </button>
             <button
-              onClick={() => livingRoomSwiperRef.current?.slideNext()}
-              className="hidden md:flex absolute right-0 top-[40%] -translate-y-1/2 z-10 w-14 h-14 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]"
+              onClick={() => newestSwiperRef.current?.slideNext()}
+              className="hidden md:flex absolute -right-8 top-[40%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-lg opacity-0 group-hover/slider:opacity-100"
             >
-              <ChevronRight size={24} strokeWidth={1.5} />
+              <ChevronRight size={20} strokeWidth={1.5} />
             </button>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
-          6. QUICK CATEGORY TAGS
+          6. SHOP BY CATEGORY (Perfect Grid)
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '40px 0', borderTop: '1px solid #f0f0f0', borderBottom: '1px solid #f0f0f0', overflow: 'hidden' }}>
-        <style>{`
-          @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-          }
-          .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: marquee 30s linear infinite;
-          }
-          .marquee-track:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
-        <div style={{ width: '100%', margin: '0 auto' }}>
-          <div className="marquee-track">
-            {[...quickTags, ...quickTags, ...quickTags].map((tag, idx) => (
-              <Link
-                key={idx}
-                to={`/shop?q=${tag.name.toLowerCase().replace(/ /g, '-')}`}
-                style={{ display: 'flex', alignItems: 'center', gap: '20px', textDecoration: 'none', color: '#1a1a1a', margin: '0 60px' }}
+      <section className="py-20 lg:py-28 bg-[#fafafa] border-y border-gray-100">
+        <div className="w-full max-w-[1700px] mx-auto px-6 xl:px-12">
+          
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-[2.75rem] font-serif text-[#1a1a1a] mb-4">
+              Shop by Category
+            </h2>
+            <p className="text-gray-500 text-[16px] md:text-[18px]">
+              Explore our curated collections for every space in your home
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
+            {quickTags.map((tag, idx) => (
+              <Link 
+                key={idx} 
+                to={`/shop?q=${tag.name.toLowerCase().replace(/ /g, '-')}`} 
+                className="group flex flex-col items-center w-[130px] sm:w-[150px] lg:w-[180px]"
               >
-                <div style={{
-                  width: '64px', height: '64px', borderRadius: '50%',
-                  overflow: 'hidden', backgroundColor: '#f8f8f8', flexShrink: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                  <img src={tag.image} alt={tag.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div className="w-full aspect-square rounded-full bg-white mb-5 p-2 shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-gray-100 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] group-hover:border-gray-200 transition-all duration-500">
+                  <div className="w-full h-full rounded-full overflow-hidden relative">
+                    <img 
+                      src={tag.image} 
+                      alt={tag.name} 
+                      loading="lazy"
+                      className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110" 
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                  </div>
                 </div>
-                <span style={{ fontSize: '26px', fontWeight: 400, color: '#1a1a1a', whiteSpace: 'nowrap' }}>{tag.name}</span>
+                <h4 className="text-[#1a1a1a] font-medium text-[15px] lg:text-[16px] text-center group-hover:text-[#E32227] transition-colors">
+                  {tag.name}
+                </h4>
               </Link>
             ))}
           </div>
@@ -612,55 +638,64 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          7. SIGNATURE COLLECTIONS
+          7. SIGNATURE COLLECTIONS (Visual Redesign)
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '80px 0', backgroundColor: 'white' }}>
-        <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
-          <div style={{
-            backgroundColor: '#1a1a1a', borderRadius: '24px',
-            display: 'flex', flexDirection: 'column'
-          }} className="py-[60px] px-[40px] lg:py-[100px] lg:px-[120px]">
-            <div style={{ marginBottom: '60px' }}>
-              <h2 style={{ fontSize: '3rem', fontFamily: "'Playfair Display', serif", fontWeight: 400, color: '#fdfbf7', marginBottom: '16px' }}>
-                Discover Our Signature Interior Collections
+      <section className="py-24 lg:py-32 bg-white">
+        <div className="w-full max-w-[1700px] mx-auto px-6 xl:px-12">
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 gap-8">
+            <div className="max-w-3xl">
+              <h2 className="text-4xl md:text-5xl lg:text-[4rem] font-serif text-[#1a1a1a] mb-6 tracking-tight leading-tight">
+                Signature Collections
               </h2>
-              <p style={{ fontSize: '15px', color: '#a0a0a0', maxWidth: '650px', lineHeight: 1.6 }}>
+              <p className="text-gray-500 text-lg md:text-xl">
                 Explore our carefully crafted interior design collections, each tailored to bring elegance and functionality to your spaces.
               </p>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {signatureCollections.map((collection, idx) => (
-                <div key={idx} style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '36px 0', borderBottom: idx === signatureCollections.length - 1 ? 'none' : '1px solid #333'
-                }}>
-                  <span style={{ fontSize: '28px', fontFamily: "'Playfair Display', serif", fontWeight: 400, color: '#e0e0e0' }}>{collection}</span>
-                  <Link
-                    to="/shop"
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '8px',
-                      fontSize: '12px', fontWeight: 500, color: '#a0a0a0',
-                      border: '1px solid #555', padding: '10px 24px',
-                      borderRadius: '40px', textDecoration: 'none',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseOver={(e) => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = '#fff'; }}
-                    onMouseOut={(e) => { e.currentTarget.style.color = '#a0a0a0'; e.currentTarget.style.borderColor = '#555'; }}
-                  >
-                    View More <ArrowRight size={14} style={{ transform: 'rotate(-45deg)' }} />
-                  </Link>
-                </div>
-              ))}
-            </div>
+            <Link to="/shop" className="hidden md:flex items-center gap-2 border-b border-[#1a1a1a] pb-1 text-[#1a1a1a] font-medium hover:text-[#E32227] hover:border-[#E32227] transition-all whitespace-nowrap">
+              Explore All Collections <ArrowRight size={16} />
+            </Link>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+            {[
+              { name: 'Talukder Prestige Collection', img: IMG.curatedBig, span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Cozy Sofa Collection', img: IMG.heroLiving, span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Dining Elegance Collection', img: IMG.br3, span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Comfortable Bedroom Collection', img: IMG.heroBed, span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+            ].map((col, idx) => (
+              <Link key={idx} to={`/shop?category=${col.name.split(' ')[0].toLowerCase()}`} className={`group relative block overflow-hidden rounded-xl ${col.span}`}>
+                <img 
+                  src={col.img} 
+                  alt={col.name}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105" 
+                />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500" />
+                
+                {/* Text Content */}
+                <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12">
+                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-serif text-white mb-3 lg:mb-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    {col.name}
+                  </h3>
+                  <div className="flex items-center gap-2 text-white/90 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-75 transform translate-y-4 group-hover:translate-y-0">
+                    <span className="text-sm font-medium tracking-wider uppercase">View Collection</span>
+                    <ArrowRight size={16} />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════
           8. TRUST BADGES
          ═══════════════════════════════════════════ */}
-      <section style={{ padding: '100px 0', backgroundColor: 'white' }}>
+      <section style={{ padding: '180px 0', backgroundColor: 'white' }}>
         <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[40px] xl:gap-[80px]">
             {trustBadges.map((badge, idx) => {
