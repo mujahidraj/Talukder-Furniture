@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import fs from 'fs';
 import path from 'path';
+import config from '../config/index.js';
 
 export const heroSlideService = {
   getAll: async () => {
@@ -74,7 +75,8 @@ export const heroSlideService = {
     // Get the slide to delete its image if necessary
     const slide = await prisma.heroSlide.findUnique({ where: { id } });
     if (slide && slide.imageUrl.startsWith('/uploads/')) {
-      const filePath = path.join(process.cwd(), slide.imageUrl);
+      const filename = path.basename(slide.imageUrl);
+      const filePath = path.join(path.resolve(config.upload.localPath), 'images', filename);
       if (fs.existsSync(filePath)) {
         try {
           fs.unlinkSync(filePath);

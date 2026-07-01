@@ -105,11 +105,16 @@ export const processImage = async (file: any, options: any = {}) => {
 export const deleteImage = async (imageUrl, thumbUrl) => {
   try {
     if (imageUrl) {
-      const imagePath = path.resolve('.' + imageUrl);
+      // Prevent path traversal by extracting only the base filename
+      const filename = path.basename(imageUrl);
+      const uploadDir = path.resolve(config.upload.localPath, 'images');
+      const imagePath = path.join(uploadDir, filename);
       await fs.unlink(imagePath).catch(() => {});
     }
     if (thumbUrl) {
-      const thumbPath = path.resolve('.' + thumbUrl);
+      const filename = path.basename(thumbUrl);
+      const thumbDir = path.resolve(config.upload.localPath, 'thumbnails');
+      const thumbPath = path.join(thumbDir, filename);
       await fs.unlink(thumbPath).catch(() => {});
     }
   } catch (err) {

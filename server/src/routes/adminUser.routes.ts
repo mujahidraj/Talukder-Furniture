@@ -8,12 +8,29 @@ const router = Router();
 router.use(authMiddleware);
 
 // All admins can view
-router.get('/', requireRole('SUPER_ADMIN', 'admin', 'superadmin'), adminUserController.getAllAdmins);
-router.get('/:id', requireRole('SUPER_ADMIN', 'admin', 'superadmin'), adminUserController.getAdminById);
+router.get('/', requireRole('SUPER_ADMIN', 'ADMIN'), adminUserController.getAllAdmins);
+router.get('/:id', requireRole('SUPER_ADMIN', 'ADMIN'), adminUserController.getAdminById);
+
+import Joi from 'joi';
+import { validateRequest } from '../middleware/validateRequest.js';
+
+const createAdminSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).optional(),
+  role: Joi.string().valid('ADMIN', 'SUPER_ADMIN').required(),
+});
+
+const updateAdminSchema = Joi.object({
+  name: Joi.string().optional(),
+  email: Joi.string().email().optional(),
+  password: Joi.string().min(6).optional(),
+  role: Joi.string().valid('ADMIN', 'SUPER_ADMIN').optional(),
+});
 
 // Only Super Admins can modify
-router.post('/', requireRole('SUPER_ADMIN', 'superadmin'), adminUserController.createAdmin);
-router.put('/:id', requireRole('SUPER_ADMIN', 'superadmin'), adminUserController.updateAdmin);
-router.delete('/:id', requireRole('SUPER_ADMIN', 'superadmin'), adminUserController.deleteAdmin);
+router.post('/', requireRole('SUPER_ADMIN'), validateRequest(createAdminSchema), adminUserController.createAdmin);
+router.put('/:id', requireRole('SUPER_ADMIN'), validateRequest(updateAdminSchema), adminUserController.updateAdmin);
+router.delete('/:id', requireRole('SUPER_ADMIN'), adminUserController.deleteAdmin);
 
 export default router;

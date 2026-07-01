@@ -1,12 +1,13 @@
 import jwt from 'jsonwebtoken';
 import config from '../config/index.js';
 import { AppError } from './errorHandler.js';
+import prisma from '../config/db.js';
 
 /**
  * JWT authentication middleware.
  * Verifies the Bearer token and attaches admin info to req.admin.
  */
-export const authMiddleware = (req, res, next) => {
+export const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -16,11 +17,28 @@ export const authMiddleware = (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, config.jwt.secret as string) as any;
+    
+    let currentRole = decoded.role;
+    
+    // Check if the admin is the seeded fallback superadmin
+    const isFallbackSuperAdmin = decoded.email === config.admin.seedEmail;
+    
+    if (!isFallbackSuperAdmin) {
+      // Verify the admin still exists in the database
+      const admin = await prisma.admin.findUnique({
+        where: { id: decoded.id }
+      });
+      
+      if (!admin) {
+        throw new AppError('The user belonging to this token no longer exists.', 401);
+      }
+      currentRole = admin.role;
+    }
 
     (req as any).admin = {
       id: decoded.id,
       email: decoded.email,
-      role: decoded.role,
+      role: currentRole,
     };
 
     next();

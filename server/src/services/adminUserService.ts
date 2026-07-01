@@ -50,7 +50,7 @@ export const createAdmin = async (data: { name: string; email: string; password?
     data: {
       name: data.name,
       email: data.email,
-      role: data.role,
+      role: data.role ? data.role.toUpperCase() : 'ADMIN',
       passwordHash,
     },
     select: {
@@ -100,6 +100,10 @@ export const updateAdmin = async (
     if (existing) {
       throw new AppError('Email already in use', 400);
     }
+  }
+
+  if (updateData.role) {
+    updateData.role = updateData.role.toUpperCase();
   }
 
   if (data.password) {

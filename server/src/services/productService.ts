@@ -5,8 +5,9 @@ import { deleteImage } from '../middleware/upload.js';
 
 export const getProducts = async (query: any = {}) => {
   const { page = 1, limit = 20, category, sort = 'default', q, admin, status, isFeatured, price } = query;
-  const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
-  const take = parseInt(limit, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
+  const skip = (parseInt(page, 10) - 1) * take;
 
   const where: any = {};
 
@@ -206,14 +207,31 @@ export const createProduct = async (data) => {
 };
 
 export const updateProduct = async (id, data) => {
-  const updateData = { ...data };
-  if (data.name && !data.slug) {
+  const updateData: any = {};
+  
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.slug !== undefined) {
+    updateData.slug = data.slug;
+  } else if (data.name !== undefined) {
     updateData.slug = slugify(data.name, { lower: true, strict: true });
   }
-
-  // Handle explicitly undefined vs null for prices if needed, 
-  // but updateData already has them mapped from {...data}
   
+  if (data.sku !== undefined) updateData.sku = data.sku;
+  if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
+  if (data.materials !== undefined) updateData.materials = data.materials;
+  if (data.priceDisplay !== undefined) updateData.priceDisplay = data.priceDisplay;
+  if (data.basePrice !== undefined) updateData.basePrice = data.basePrice;
+  if (data.discountPercentage !== undefined) updateData.discountPercentage = data.discountPercentage;
+  if (data.overview !== undefined) updateData.overview = data.overview;
+  if (data.keyFeatures !== undefined) updateData.keyFeatures = data.keyFeatures;
+  if (data.careMaintenance !== undefined) updateData.careMaintenance = data.careMaintenance;
+  if (data.warrantyInfo !== undefined) updateData.warrantyInfo = data.warrantyInfo;
+  if (data.returnExchangePolicy !== undefined) updateData.returnExchangePolicy = data.returnExchangePolicy;
+  if (data.isFeatured !== undefined) updateData.isFeatured = data.isFeatured;
+  if (data.isActive !== undefined) updateData.isActive = data.isActive;
+  if (data.metaTitle !== undefined) updateData.metaTitle = data.metaTitle;
+  if (data.metaDescription !== undefined) updateData.metaDescription = data.metaDescription;
+
   if (data.images) {
     const oldImages = await prisma.productImage.findMany({ where: { productId: parseInt(id, 10) } });
     

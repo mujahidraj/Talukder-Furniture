@@ -4,6 +4,7 @@ import { Heart, Share2, ChevronRight, Ruler, ShieldCheck, Truck, X } from 'lucid
 import api from '../../lib/api';
 import useWishlistStore from '../../stores/useWishlistStore';
 import SEO from '../../components/seo/SEO';
+import sanitizeHtml from '../../lib/sanitize';
 
 // Simple Image Magnifier Component
 const ImageMagnifier = ({
@@ -372,7 +373,7 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            <div className="prose prose-sm text-gray-600 mb-8" dangerouslySetInnerHTML={{ __html: product.overview || '' }} />
+            <div className="prose prose-sm text-gray-600 mb-8" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.overview || '') }} />
 
             {/* Actions */}
             <div className="flex flex-col gap-4 mt-auto">
@@ -436,7 +437,7 @@ export default function ProductDetailPage() {
           </div>
           <div className="p-5 md:p-12 min-h-[300px] prose max-w-none text-gray-600 text-sm md:text-base">
             {activeTab === 'overview' && (
-              <div dangerouslySetInnerHTML={{ __html: product.overview || '<p>No detailed overview provided.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.overview || '<p>No detailed overview provided.</p>') }} />
             )}
             {activeTab === 'features' && (
               <div>
@@ -450,7 +451,7 @@ export default function ProductDetailPage() {
 
                   return (
                     <>
-                      <div dangerouslySetInnerHTML={{ __html: product.keyFeatures || '<p>Key features information is currently unavailable.</p>' }} />
+                      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.keyFeatures || '<p>Key features information is currently unavailable.</p>') }} />
                       {activeDim && (
                         <div className="mt-6 pt-4 border-t border-gray-100">
                           <strong className="text-gray-900 block mb-2">Selected Size Dimensions:</strong>
@@ -463,16 +464,16 @@ export default function ProductDetailPage() {
               </div>
             )}
             {activeTab === 'materials' && (
-              <div dangerouslySetInnerHTML={{ __html: product.materials || '<p>Material information is currently unavailable.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.materials || '<p>Material information is currently unavailable.</p>') }} />
             )}
             {activeTab === 'care' && (
-              <div dangerouslySetInnerHTML={{ __html: product.careMaintenance || '<p>Wipe clean with a damp cloth. Avoid harsh chemicals.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.careMaintenance || '<p>Wipe clean with a damp cloth. Avoid harsh chemicals.</p>') }} />
             )}
             {activeTab === 'warranty' && (
-              <div dangerouslySetInnerHTML={{ __html: product.warrantyInfo || '<p>This product comes with a standard 10-year manufacturing warranty covering defects in materials and workmanship for solid wood frames, and a 1-year warranty for upholstery.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.warrantyInfo || '<p>This product comes with a standard 10-year manufacturing warranty covering defects in materials and workmanship for solid wood frames, and a 1-year warranty for upholstery.</p>') }} />
             )}
             {activeTab === 'policy' && (
-              <div dangerouslySetInnerHTML={{ __html: product.returnExchangePolicy || '<p><strong>Returns:</strong> We accept returns within 30 days of delivery. Custom-made or modified pieces are non-returnable unless there is a manufacturing defect.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.returnExchangePolicy || '<p><strong>Returns:</strong> We accept returns within 30 days of delivery. Custom-made or modified pieces are non-returnable unless there is a manufacturing defect.</p>') }} />
             )}
           </div>
         </div>

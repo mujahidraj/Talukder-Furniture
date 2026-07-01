@@ -18,8 +18,9 @@ export const createLead = async (data) => {
 
 export const getLeads = async (query: any = {}) => {
   const { page = 1, limit = 20, status, source } = query;
-  const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
-  const take = parseInt(limit, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
+  const skip = (parseInt(page, 10) - 1) * take;
 
   const where: any = {};
   if (status) where.status = status;

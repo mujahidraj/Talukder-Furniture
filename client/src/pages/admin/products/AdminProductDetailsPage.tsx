@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Edit, Eye, Tag, Grid, Star, FileText, CheckCircle2, XCircle, Clock, Info } from 'lucide-react';
 import api from '../../../lib/api';
+import sanitizeHtml from '../../../lib/sanitize';
 
 export default function AdminProductDetailsPage() {
   const { id } = useParams();
@@ -297,7 +298,7 @@ export default function AdminProductDetailsPage() {
                 {section.content ? (
                   <div 
                     className="prose prose-sm max-w-none text-gray-600"
-                    dangerouslySetInnerHTML={{ __html: section.content }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }}
                   />
                 ) : (
                   <span className="text-gray-400 italic text-sm">Not provided</span>

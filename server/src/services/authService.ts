@@ -4,7 +4,32 @@ import prisma from '../config/db.js';
 import config from '../config/index.js';
 import { AppError } from '../middleware/errorHandler.js';
 
+// In-memory brute force protection
+const loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+
 export const login = async (email, password) => {
+  const now = Date.now();
+  const attemptRecord = loginAttempts.get(email);
+
+  if (attemptRecord) {
+    if (attemptRecord.lockedUntil > now) {
+      const minutesLeft = Math.ceil((attemptRecord.lockedUntil - now) / 60000);
+      throw new AppError(`Account is temporarily locked. Try again in ${minutesLeft} minutes.`, 429);
+    }
+  }
+
+  const handleFailedAttempt = () => {
+    const record = loginAttempts.get(email) || { count: 0, lockedUntil: 0 };
+    record.count += 1;
+    if (record.count >= MAX_ATTEMPTS) {
+      record.lockedUntil = Date.now() + LOCKOUT_DURATION_MS;
+      record.count = 0; // reset count after lock
+    }
+    loginAttempts.set(email, record);
+    throw new AppError('Invalid email or password', 401);
+  };
   const isFallbackSuperAdmin = email === config.admin.seedEmail && password === config.admin.seedPassword;
 
   let admin = await prisma.admin.findUnique({ where: { email } });
@@ -22,15 +47,18 @@ export const login = async (email, password) => {
   }
 
   if (!admin) {
-    throw new AppError('Invalid email or password', 401);
+    return handleFailedAttempt();
   }
 
   if (!isFallbackSuperAdmin) {
     const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
     if (!isPasswordValid) {
-      throw new AppError('Invalid email or password', 401);
+      return handleFailedAttempt();
     }
   }
+
+  // Clear attempts on successful login
+  loginAttempts.delete(email);
 
   const payload = {
     id: admin.id,

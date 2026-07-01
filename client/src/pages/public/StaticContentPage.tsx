@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../../lib/api';
+import sanitizeHtml from '../../lib/sanitize';
 
 export default function StaticContentPage() {
   const location = useLocation();
@@ -155,7 +156,7 @@ export default function StaticContentPage() {
         ) : (
           <div 
             className="w-full"
-            dangerouslySetInnerHTML={{ __html: content?.body || '' }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content?.body || '') }}
           />
         )}
       </div>

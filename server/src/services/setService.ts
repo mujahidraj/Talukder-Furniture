@@ -4,8 +4,9 @@ import { AppError } from '../middleware/errorHandler.js';
 
 export const getSets = async (query: any = {}) => {
   const { page = 1, limit = 20, category, admin } = query;
-  const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
-  const take = parseInt(limit, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
+  const skip = (parseInt(page, 10) - 1) * take;
 
   const where: any = {};
 
@@ -117,16 +118,27 @@ export const createSet = async (data: any) => {
 };
 
 export const updateSet = async (id: string | number, data: any) => {
-  const updateData: any = { ...data };
-  if (data.name && !data.slug) {
+  const updateData: any = {};
+  
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.slug !== undefined) {
+    updateData.slug = data.slug;
+  } else if (data.name !== undefined) {
     updateData.slug = slugify(data.name, { lower: true, strict: true });
   }
+  
+  if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
+  if (data.description !== undefined) updateData.description = data.description;
+  if (data.basePrice !== undefined) updateData.basePrice = data.basePrice;
+  if (data.discountPercentage !== undefined) updateData.discountPercentage = data.discountPercentage;
+  if (data.isActive !== undefined) updateData.isActive = data.isActive;
+  if (data.imageUrl !== undefined) updateData.imageUrl = data.imageUrl;
+  if (data.imageUrls !== undefined) updateData.imageUrls = data.imageUrls;
 
   if (data.productIds) {
     updateData.products = {
       set: data.productIds.map((pid: number) => ({ id: pid }))
     };
-    delete updateData.productIds;
   }
 
   return prisma.set.update({

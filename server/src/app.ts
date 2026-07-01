@@ -35,7 +35,16 @@ const app = express();
 // Security
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+      connectSrc: ["'self'", config.clientUrl],
+    },
+  },
 }));
 
 // CORS
@@ -66,7 +75,12 @@ if (config.nodeEnv === 'development') {
 }
 
 // Static file serving for uploads
-app.use('/uploads', express.static(path.resolve(config.upload.localPath)));
+app.use('/uploads', express.static(path.resolve(config.upload.localPath), {
+  setHeaders: (res) => {
+    res.set('X-Content-Type-Options', 'nosniff');
+    res.set('Content-Disposition', 'inline');
+  }
+}));
 
 // API Routes
 app.use('/api/auth', authRoutes);
