@@ -24,13 +24,13 @@ const IMG = {
   sideRightTop: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=400&q=80',
   sideRightBottom: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6ea?auto=format&fit=crop&w=400&q=80',
   
-  catOffice: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=200&q=80', // Maps to p3 (Director Table)
-  catLiving: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=200&q=80', // Maps to p5 (Sofa)
-  catDining: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=200&q=80',
-  catBed: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=200&q=80', // Maps to br1 (Bedroom)
-  catKids: 'https://images.unsplash.com/photo-1505692952047-1a78307da8f2?auto=format&fit=crop&w=200&q=80',
-  catIndustrial: 'https://images.unsplash.com/photo-1581428982868-e410dd047a90?auto=format&fit=crop&w=200&q=80',
-  catHospital: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?auto=format&fit=crop&w=200&q=80', // Hospital bed
+  catOffice: '/Images/magnific_using-img1-as-the-exact-f_vupdjS1a47.png', // Maps to p3 (Director Table)
+  catLiving: '/Images/freepik_edit_Using-img1-as-the-exact-furniture-reference-a-sofa (1).png', // Maps to p5 (Sofa)
+  catDining: '/Images/freepik_edit_Using-img1-as-the-exact-furniture-reference-a-dini (1).png',
+  catBed: '/Images/freepik_edit_Using-img1-as-the-exact-furniture-reference-keep-t.png', // Maps to br1 (Bedroom)
+  catKids: '/Images/kids_room.png',
+  catIndustrial: '/Images/industrial_furniture.png',
+  catHospital: '/Images/hospital_furniture.png', // Hospital bed
   
   p1: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=400&q=80',
   p2: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=400&q=80',
@@ -452,11 +452,11 @@ export default function HomePage() {
             <div className="w-full lg:w-[55%] bg-white p-2 h-[500px] lg:h-auto">
               <div className="grid grid-cols-3 grid-rows-4 gap-2 w-full h-full">
                 {[
-                  { src: IMG.heroBed, span: 'col-span-1 row-span-2' },
-                  { src: IMG.p3, span: 'col-span-1 row-span-2' },
-                  { src: IMG.sideLeft, span: 'col-span-1 row-span-3' },
-                  { src: IMG.heroLiving, span: 'col-span-2 row-span-2' },
-                  { src: IMG.p4, span: 'col-span-1 row-span-1' },
+                  { src: '/Images/Elevate-section/03.jpg', span: 'col-span-1 row-span-2' },
+                  { src: '/Images/Elevate-section/37.png', span: 'col-span-1 row-span-2' },
+                  { src: '/Images/Elevate-section/TFL-BKS-102-WD-1.jpg', span: 'col-span-1 row-span-3' },
+                  { src: '/Images/Elevate-section/TFL-CFT-102-WD-1.jpg', span: 'col-span-2 row-span-2' },
+                  { src: '/Images/Elevate-section/TFL-SOF-104-WD-1.jpg', span: 'col-span-1 row-span-1' },
                 ].map((img, i) => (
                   <div key={i} className={`relative group overflow-hidden bg-gray-100 ${img.span}`}>
                     <img 
@@ -503,11 +503,16 @@ export default function HomePage() {
               }}
             >
               {[
-                { id: 30, name: 'Andaman-184', price: '৳ 32,100', image: IMG.p5 },
-                { id: 31, name: 'Anderson-279', price: '৳ 38,150', image: IMG.p6 },
-                { id: 32, name: 'Lucan-309', price: '৳ 18,849', image: IMG.p7 },
-                { id: 33, name: 'Kenneth-313', price: '৳ 30,650', image: IMG.p8 },
-                { id: 34, name: 'Low Back Chair', price: '৳ 12,500', image: IMG.curatedChair },
+                { id: 30, name: 'Andaman-184', price: '৳ 32,100', image: '/Images/Featured-product/TFL-CMT-102-LB-1.webp' },
+                { id: 31, name: 'Anderson-279', price: '৳ 38,150', image: '/Images/Featured-product/TFL-DNT-110-WD-1.webp' },
+                { id: 32, name: 'Lucan-309', price: '৳ 18,849', image: '/Images/Featured-product/TFL-DVN-102-FR.webp' },
+                { id: 33, name: 'Kenneth-313', price: '৳ 30,650', image: '/Images/Featured-product/TFL-IRS-102-WD-1.webp' },
+                { id: 34, name: 'Low Back Chair', price: '৳ 12,500', image: '/Images/Featured-product/TFL-SRK-108-WD-1.webp' },
+                { id: 35, name: 'Andaman-184', price: '৳ 32,100', image: '/Images/Featured-product/TFL-CMT-102-LB-1.webp' },
+                { id: 36, name: 'Anderson-279', price: '৳ 38,150', image: '/Images/Featured-product/TFL-DNT-110-WD-1.webp' },
+                { id: 37, name: 'Lucan-309', price: '৳ 18,849', image: '/Images/Featured-product/TFL-DVN-102-FR.webp' },
+                { id: 38, name: 'Kenneth-313', price: '৳ 30,650', image: '/Images/Featured-product/TFL-IRS-102-WD-1.webp' },
+                { id: 39, name: 'Low Back Chair', price: '৳ 12,500', image: '/Images/Featured-product/TFL-SRK-108-WD-1.webp' },
               ].map((product) => (
                 <SwiperSlide key={product.id}>
                   <Link to="/shop" className="block group">
@@ -611,17 +616,17 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
-            {quickTags.map((tag, idx) => (
+            {categoryPills.map((cat, idx) => (
               <Link 
                 key={idx} 
-                to={`/shop?q=${tag.name.toLowerCase().replace(/ /g, '-')}`} 
+                to={`/shop?category=${cat.slug}`} 
                 className="group flex flex-col items-center w-[130px] sm:w-[150px] lg:w-[180px]"
               >
                 <div className="w-full aspect-square rounded-full bg-white mb-5 p-2 shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-gray-100 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] group-hover:border-gray-200 transition-all duration-500">
                   <div className="w-full h-full rounded-full overflow-hidden relative">
                     <img 
-                      src={tag.image} 
-                      alt={tag.name} 
+                      src={cat.image} 
+                      alt={cat.name} 
                       loading="lazy"
                       className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110" 
                     />
@@ -629,7 +634,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <h4 className="text-[#1a1a1a] font-medium text-[15px] lg:text-[16px] text-center group-hover:text-[#E32227] transition-colors">
-                  {tag.name}
+                  {cat.name}
                 </h4>
               </Link>
             ))}
@@ -659,10 +664,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
             {[
-              { name: 'Talukder Prestige Collection', img: IMG.curatedBig, span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
-              { name: 'Cozy Sofa Collection', img: IMG.heroLiving, span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
-              { name: 'Dining Elegance Collection', img: IMG.br3, span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
-              { name: 'Comfortable Bedroom Collection', img: IMG.heroBed, span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Talukder Prestige Collection', img: '/Images/Signature-section/03.jpg', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Cozy Sofa Collection', img: '/Images/Signature-section/06.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Dining Elegance Collection', img: '/Images/Signature-section/15.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Comfortable Bedroom Collection', img: '/Images/Signature-section/BST-113.webp', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
             ].map((col, idx) => (
               <Link key={idx} to={`/shop?category=${col.name.split(' ')[0].toLowerCase()}`} className={`group relative block overflow-hidden rounded-xl ${col.span}`}>
                 <img 
