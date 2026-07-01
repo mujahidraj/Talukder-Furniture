@@ -21,6 +21,8 @@ export default function ShopPage() {
   const stockParam = searchParams.get('stock') || 'all';
   const pageParam = parseInt(searchParams.get('page') || '1', 10);
   const qParam = searchParams.get('q') || searchParams.get('search');
+  const typeParam = searchParams.get('type');
+  const isSets = typeParam === 'sets';
 
   const MOCK_CATEGORIES = [
     { id: 1, name: 'Office Furniture', slug: 'office-furniture' },
@@ -109,16 +111,18 @@ export default function ShopPage() {
 
     if (priceParam && priceParam !== 'all') params.append('price', priceParam);
 
-    api.get(`/products?${params.toString()}`)
+    const endpoint = isSets ? `/sets?${params.toString()}` : `/products?${params.toString()}`;
+
+    api.get(endpoint)
       .then(res => {
-        setProducts(res.data.products || []);
+        setProducts(isSets ? (res.data.sets || []) : (res.data.products || []));
         setTotalPages(res.data.totalPages || 1);
       })
       .catch(console.error)
       .finally(() => {
         setLoading(false);
       });
-  }, [categoryParam, sortParam, priceParam, stockParam, pageParam, qParam]);
+  }, [categoryParam, sortParam, priceParam, stockParam, pageParam, qParam, isSets]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     searchParams.set('sort', e.target.value);
@@ -179,11 +183,11 @@ export default function ShopPage() {
       >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative z-10 w-full max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12">
-          <h1 className="text-5xl md:text-6xl font-serif text-white mb-4 drop-shadow-md">Shop</h1>
+          <h1 className="text-5xl md:text-6xl font-serif text-white mb-4 drop-shadow-md">{isSets ? 'Collections' : 'Shop'}</h1>
           <div className="text-sm text-gray-100 drop-shadow-md">
             <Link to="/" className="hover:text-white transition-colors">Homepage</Link>
             <span className="mx-2">&gt;</span>
-            <span className="text-white">Shop</span>
+            <span className="text-white">{isSets ? 'Collections' : 'Shop'}</span>
           </div>
         </div>
       </div>
@@ -367,7 +371,7 @@ export default function ShopPage() {
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-32 bg-white">
-              <h3 className="text-2xl font-serif text-[#1a1a1a] mb-3">No products found</h3>
+              <h3 className="text-2xl font-serif text-[#1a1a1a] mb-3">No {isSets ? 'collections' : 'products'} found</h3>
               <p className="text-gray-500">Try adjusting your filters or category selection.</p>
             </div>
           ) : (
@@ -382,7 +386,7 @@ export default function ShopPage() {
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className={`group ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-6 sm:gap-12 bg-white border-b border-gray-100 transition-all duration-300 items-stretch' : 'flex flex-col gap-0 bg-white transition-all duration-300 h-full'}`}
                   >
-                    <Link to={`/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[400px] shrink-0 min-h-[300px] bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
+                    <Link to={isSets ? `/collections/${product.slug}` : `/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[400px] shrink-0 min-h-[300px] bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
                       {product.images && product.images.length > 0 ? (
                         <>
                           <img
@@ -400,9 +404,26 @@ export default function ShopPage() {
                             />
                           )}
                         </>
-                      ) : product.image ? (
+                      ) : product.imageUrls && product.imageUrls.length > 0 ? (
+                        <>
+                          <img
+                            src={product.imageUrls[0]}
+                            alt={product.name}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                          />
+                          {product.imageUrls[1] && (
+                            <img
+                              src={product.imageUrls[1]}
+                              alt={product.name}
+                              loading="lazy"
+                              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                            />
+                          )}
+                        </>
+                      ) : product.imageUrl ? (
                         <img
-                          src={product.image}
+                          src={product.imageUrl}
                           alt={product.name}
                           loading="lazy"
                           className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
@@ -422,13 +443,13 @@ export default function ShopPage() {
                       {product.category && (
                         <span className="text-[11px] sm:text-[12px] text-gray-500 mb-2 uppercase tracking-wider block">{product.category.name}</span>
                       )}
-                      <Link to={`/products/${product.slug}`} className="hover:text-[#E32227] transition-colors inline-block mb-2">
+                      <Link to={isSets ? `/collections/${product.slug}` : `/products/${product.slug}`} className="hover:text-[#E32227] transition-colors inline-block mb-2">
                         <h3 className={`font-medium text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl sm:text-3xl font-serif mb-4' : 'text-[15px] md:text-[16px] leading-snug line-clamp-2'}`}>{product.name}</h3>
                       </Link>
 
                       {viewMode === 'list' && (
                         <p className="text-sm sm:text-[15px] text-gray-600 mb-6 line-clamp-3 leading-relaxed">
-                          {product.overview?.replace(/<[^>]+>/g, '') || 'No description available.'}
+                          {product.description?.replace(/<[^>]+>/g, '') || product.overview?.replace(/<[^>]+>/g, '') || 'No description available.'}
                         </p>
                       )}
 

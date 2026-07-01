@@ -272,13 +272,14 @@ export default function ProductFormPage() {
                 name="categoryId" value={formData.categoryId} onChange={handleChange} required
                 className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
               >
-                <option value="">Select a Sub-Category...</option>
+                <option value="">Select a Category...</option>
                 {categories.map(cat => (
-                  <optgroup key={cat.id} label={cat.name}>
+                  <React.Fragment key={cat.id}>
+                    <option value={cat.id} className="font-semibold text-gray-900">{cat.name} (Main Category)</option>
                     {cat.children?.map((sub: any) => (
-                      <option key={sub.id} value={sub.id}>{sub.name}</option>
+                      <option key={sub.id} value={sub.id}>&nbsp;&nbsp;&nbsp;— {sub.name}</option>
                     ))}
-                  </optgroup>
+                  </React.Fragment>
                 ))}
               </select>
             </div>

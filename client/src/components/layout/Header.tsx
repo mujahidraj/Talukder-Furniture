@@ -94,10 +94,55 @@ export default function Header() {
           hasDropdown: false
         };
 
-        setNavLinks([shopMenu, ...dynamicLinks, companyMenu]);
+        api.get('/sets?limit=50').then(setRes => {
+          const sets = setRes.data.sets || [];
+          
+          let collectionsMenu = null;
+          if (sets.length > 0) {
+            const categoriesWithSets = new Map();
+
+            sets.forEach((s: any) => {
+              if (s.category && s.category.name) {
+                if (!categoriesWithSets.has(s.category.slug)) {
+                  categoriesWithSets.set(s.category.slug, {
+                    label: s.category.name,
+                    path: `/shop?category=${s.category.slug}&type=sets`
+                  });
+                }
+              }
+            });
+
+            const links = Array.from(categoriesWithSets.values());
+
+            collectionsMenu = {
+              name: 'Collections',
+              path: '/shop?type=sets',
+              hasDropdown: links.length > 0,
+              megaMenu: links.length > 0 ? [
+                {
+                  title: 'Shop Sets by Category',
+                  links: links
+                }
+              ] : undefined
+            };
+          }
+
+          if (collectionsMenu) {
+            setNavLinks([shopMenu, collectionsMenu, ...dynamicLinks, companyMenu]);
+          } else {
+            setNavLinks([shopMenu, ...dynamicLinks, companyMenu]);
+          }
+          setLoadingNav(false);
+        }).catch(err => {
+          console.error(err);
+          setNavLinks([shopMenu, ...dynamicLinks, companyMenu]);
+          setLoadingNav(false);
+        });
       })
-      .catch(console.error)
-      .finally(() => setLoadingNav(false));
+      .catch(err => {
+        console.error(err);
+        setLoadingNav(false);
+      });
   }, []);
 
   const isActive = (path: string) => {

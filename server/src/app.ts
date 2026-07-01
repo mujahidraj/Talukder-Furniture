@@ -25,6 +25,7 @@ import uploadRoutes from './routes/upload.routes.js';
 import sitemapRoutes from './routes/sitemap.routes.js';
 import adminUserRoutes from './routes/adminUser.routes.js';
 import seoRoutes from './routes/seo.routes.js';
+import setRoutes from './routes/set.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -70,6 +71,7 @@ app.use('/uploads', express.static(path.resolve(config.upload.localPath)));
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/sets', setRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/stores', storeRoutes);
 app.use('/api/jobs', jobRoutes);

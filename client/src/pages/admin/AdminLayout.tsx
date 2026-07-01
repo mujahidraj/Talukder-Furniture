@@ -25,6 +25,7 @@ const adminLinks = [
   { name: 'Products', path: '/admin/products', icon: Package },
   { name: 'Bulk Import', path: '/admin/products/bulk-import', icon: Upload },
   { name: 'Categories', path: '/admin/categories', icon: Grid },
+  { name: 'Sets (Collections)', path: '/admin/sets', icon: Package },
   { name: 'Stores', path: '/admin/stores', icon: Store },
   { name: 'Job Posts', path: '/admin/jobs', icon: Briefcase },
   { name: 'Leads / Inbox', path: '/admin/leads', icon: MessageSquare },

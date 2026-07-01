@@ -29,6 +29,7 @@ model Category {
   order     Int        @default(0)
   isActive  Boolean    @default(true)
   products  Product[]
+  sets      Set[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -59,6 +60,7 @@ model Product {
   variants             ProductVariant[]
   viewCount            Int              @default(0)
   enquiryCount         Int              @default(0)
+  sets                 Set[]
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
 }
@@ -189,4 +191,23 @@ model SiteSetting {
   id    Int    @id @default(autoincrement())
   key   String @unique
   value String @db.Text
+}
+
+model Set {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  slug               String    @unique
+  categoryId         Int?
+  category           Category? @relation(fields: [categoryId], references: [id])
+  description        String?   @db.Text
+  basePrice          Float?    // Overall custom price (optional)
+  discountPercentage Float?    // Overall discount for the set
+  isActive           Boolean   @default(true)
+  imageUrl           String?
+  imageUrls          String[]  @default([])
+  products           Product[]
+  viewCount          Int       @default(0)
+  enquiryCount       Int       @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }

@@ -11,6 +11,7 @@ import HomePage from './pages/public/HomePage';
 // Lazily loaded public pages
 const ShopPage = lazy(() => import('./pages/public/ShopPage'));
 const ProductDetailPage = lazy(() => import('./pages/public/ProductDetailPage'));
+const SetDetailsPage = lazy(() => import('./pages/public/SetDetailsPage'));
 const AboutPage = lazy(() => import('./pages/public/AboutPage'));
 const ContactPage = lazy(() => import('./pages/public/ContactPage'));
 const FaqPage = lazy(() => import('./pages/public/FaqPage'));
@@ -41,6 +42,8 @@ const AdminTrustBadges = lazy(() => import('./pages/admin/trustBadges/TrustBadge
 const AdminTeamMembers = lazy(() => import('./pages/admin/team/TeamListPage'));
 const AdminLeads = lazy(() => import('./pages/admin/leads/LeadsPage'));
 const AdminUsers = lazy(() => import('./pages/admin/users/AdminUserListPage'));
+const AdminSets = lazy(() => import('./pages/admin/sets/SetListPage'));
+const AdminSetForm = lazy(() => import('./pages/admin/sets/SetFormPage'));
 
 // Loading fallback — hidden while the HTML splash screen is visible
 const PageLoader = () => {
@@ -77,6 +80,7 @@ function App() {
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/shop/:categorySlug" element={<ShopPage />} />
           <Route path="/products/:slug" element={<ProductDetailPage />} />
+          <Route path="/collections/:slug" element={<SetDetailsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/faqs" element={<FaqPage />} />
@@ -101,6 +105,9 @@ function App() {
           <Route path="products/:id/edit" element={<AdminProductForm />} />
           <Route path="products/bulk-import" element={<AdminBulkImport />} />
           <Route path="products/:id" element={<AdminProductDetails />} />
+          <Route path="sets" element={<AdminSets />} />
+          <Route path="sets/new" element={<AdminSetForm />} />
+          <Route path="sets/:id/edit" element={<AdminSetForm />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="stores" element={<AdminStores />} />
           <Route path="stores/new" element={<AdminStoreForm />} />
