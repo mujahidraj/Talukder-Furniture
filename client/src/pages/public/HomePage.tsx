@@ -23,7 +23,7 @@ const IMG = {
   sideLeft: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?auto=format&fit=crop&w=600&q=80',
   sideRightTop: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=400&q=80',
   sideRightBottom: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6ea?auto=format&fit=crop&w=400&q=80',
-  
+
   catOffice: '/Images/magnific_using-img1-as-the-exact-f_vupdjS1a47.png', // Maps to p3 (Director Table)
   catLiving: '/Images/freepik_edit_Using-img1-as-the-exact-furniture-reference-a-sofa (1).png', // Maps to p5 (Sofa)
   catDining: '/Images/freepik_edit_Using-img1-as-the-exact-furniture-reference-a-dini (1).png',
@@ -31,7 +31,7 @@ const IMG = {
   catKids: '/Images/kids_room.png',
   catIndustrial: '/Images/industrial_furniture.png',
   catHospital: '/Images/hospital_furniture.png', // Hospital bed
-  
+
   p1: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=400&q=80',
   p2: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=400&q=80',
   p3: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=400&q=80',
@@ -40,15 +40,15 @@ const IMG = {
   p6: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=400&q=80',
   p7: 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=400&q=80',
   p8: 'https://images.unsplash.com/photo-1506898667547-42e22a46e125?auto=format&fit=crop&w=400&q=80',
-  
+
   curatedBig: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=80',
   curatedChair: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=400&q=80',
-  
+
   br1: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=400&q=80',
   br2: 'https://images.unsplash.com/photo-1522771730844-47fb5bd199dd?auto=format&fit=crop&w=400&q=80',
   br3: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=400&q=80',
   br4: 'https://images.unsplash.com/photo-1556020685-e631933dfd8c?auto=format&fit=crop&w=400&q=80',
-  
+
   tagShoe: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=100&q=80',
   tagTV: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=100&q=80',
   tagBook: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=100&q=80',
@@ -205,8 +205,8 @@ export default function HomePage() {
         {!loadingHero && (
           <Swiper
             modules={[Pagination, Autoplay]}
-            pagination={{ 
-              clickable: true, 
+            pagination={{
+              clickable: true,
               el: '.hatil-hero-pagination',
               bulletClass: 'hatil-hero-bullet',
               bulletActiveClass: 'hatil-hero-bullet-active',
@@ -228,26 +228,26 @@ export default function HomePage() {
                       alt={slide.title}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
-                    
+
                     {/* Dark gradient overlay for text readability */}
-                    <div 
+                    <div
                       className="absolute inset-0"
                       style={{
                         background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.02) 30%, rgba(0,0,0,0.15) 70%, rgba(0,0,0,0.3) 100%)',
                       }}
                     />
 
-                    {/* Text content — centered */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-6">
+                    {/* Text content — closer to bottom */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 md:pb-24 text-center z-10 px-0">
                       <motion.h1
                         initial={{ opacity: 0, y: 50 }}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                        className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] whitespace-pre-line mb-6"
-                        style={{ 
+                        className="text-white text-3xl sm:text-3xl md:text-5xl lg:text-4xl font-bold leading-[1.3] whitespace-pre-line mb-6 tracking-wide max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-4"
+                        style={{
                           fontFamily: "'Inter', 'Segoe UI', sans-serif",
                           textShadow: '0 2px 20px rgba(0,0,0,0.3)',
-                          letterSpacing: '-0.02em',
+                          letterSpacing: '0.03em',
                         }}
                       >
                         {slide.title}
@@ -266,7 +266,7 @@ export default function HomePage() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                        className="text-white/80 text-lg sm:text-xl md:text-2xl font-light tracking-wide max-w-[650px] md:max-w-[800px]"
+                        className="text-white/80 text-lg sm:text-xl md:text-2xl font-light tracking-wide max-w-md md:max-w-lg lg:max-w-xl px-4"
                         style={{
                           fontFamily: "'Inter', 'Segoe UI', sans-serif",
                           textShadow: '0 1px 8px rgba(0,0,0,0.3)',
@@ -283,9 +283,9 @@ export default function HomePage() {
                           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.65 }}
                           className="mt-8 sm:mt-10"
                         >
-                          <Link 
-                            to={slide.ctaLink || slide.link} 
-                            className="inline-flex items-center justify-center bg-white text-[#1a1a1a] px-8 md:px-10 py-3.5 md:py-4 text-sm font-semibold tracking-[0.15em] uppercase hover:bg-black hover:text-white transition-all duration-500 shadow-lg"
+                          <Link
+                            to={slide.ctaLink || slide.link}
+                            className="inline-flex items-center justify-center bg-white text-[#1a1a1a] px-4 md:px-8 py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold tracking-[0.15em] uppercase hover:bg-black hover:text-white transition-all duration-500 shadow-lg"
                           >
                             {slide.ctaText || 'Explore Collection'}
                           </Link>
@@ -305,7 +305,7 @@ export default function HomePage() {
         {/* Floating Phone Number — bottom left */}
         <div className="absolute bottom-6 left-6 md:left-10 z-20 flex items-center gap-2.5">
           <Phone size={16} className="text-white/80" strokeWidth={1.5} />
-          <span 
+          <span
             className="text-white/80 text-xs md:text-sm font-light tracking-wider"
             style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}
           >
@@ -330,16 +330,16 @@ export default function HomePage() {
           {/* 7-column grid layout for desktop, responsive grid for mobile */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-5 lg:gap-6 pb-4">
             {categoryPills.map((cat) => (
-              <Link 
-                key={cat.slug} 
-                to={`/shop?category=${cat.slug}`} 
+              <Link
+                key={cat.slug}
+                to={`/shop?category=${cat.slug}`}
                 className="flex flex-col items-center gap-3 group w-full"
                 style={{ textDecoration: 'none' }}
               >
                 <div className="w-full aspect-square rounded-xl overflow-hidden bg-[#f5f5f5] transition-shadow duration-300 group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
-                  <img 
-                    src={cat.image} 
-                    alt={cat.name} 
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
@@ -404,7 +404,7 @@ export default function HomePage() {
                   </h3>
                   <div className="flex items-center gap-2.5">
                     <span className="font-semibold text-[#1a1a1a] text-[16px]">
-                      {product.basePrice && product.discountPercentage > 0 
+                      {product.basePrice && product.discountPercentage > 0
                         ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
                         : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
                     </span>
@@ -426,7 +426,7 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <section className="py-20 lg:py-32 bg-white">
         <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-12">
-          
+
           {/* Top Split Section */}
           <div className="flex flex-col lg:flex-row items-stretch min-h-[500px] lg:min-h-[700px]">
             {/* Left Content Area — Deep Charcoal */}
@@ -459,11 +459,11 @@ export default function HomePage() {
                   { src: '/Images/Elevate-section/TFL-SOF-104-WD-1.jpg', span: 'col-span-1 row-span-1' },
                 ].map((img, i) => (
                   <div key={i} className={`relative group overflow-hidden bg-gray-100 ${img.span}`}>
-                    <img 
-                      src={img.src} 
-                      alt="Gallery Snapshot" 
+                    <img
+                      src={img.src}
+                      alt="Gallery Snapshot"
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   </div>
@@ -485,7 +485,7 @@ export default function HomePage() {
                 </button>
               </div>
             </div>
-            
+
             <Swiper
               modules={[Navigation, Autoplay]}
               navigation={{
@@ -565,8 +565,8 @@ export default function HomePage() {
                 <SwiperSlide key={product.id}>
                   <Link to={`/products/${product.slug}`} className="block group">
                     <div className="w-full aspect-[4/3] bg-[#f8f8f8] mb-4 rounded-md overflow-hidden relative">
-                      <img 
-                        src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p5} 
+                      <img
+                        src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p5}
                         alt={product.name}
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
@@ -574,7 +574,7 @@ export default function HomePage() {
                     </div>
                     <h3 className="text-[16px] md:text-[18px] font-semibold text-[#1a1a1a] mb-1">{product.name}</h3>
                     <p className="text-[17px] md:text-[19px] font-bold text-[#1a1a1a]">
-                      {product.basePrice && product.discountPercentage > 0 
+                      {product.basePrice && product.discountPercentage > 0
                         ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
                         : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
                     </p>
@@ -605,7 +605,7 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <section className="py-20 lg:py-28 bg-[#fafafa] border-y border-gray-100">
         <div className="w-full max-w-[1700px] mx-auto px-6 xl:px-12">
-          
+
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-[2.75rem] font-serif text-[#1a1a1a] mb-4">
               Shop by Category
@@ -617,18 +617,18 @@ export default function HomePage() {
 
           <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
             {categoryPills.map((cat, idx) => (
-              <Link 
-                key={idx} 
-                to={`/shop?category=${cat.slug}`} 
+              <Link
+                key={idx}
+                to={`/shop?category=${cat.slug}`}
                 className="group flex flex-col items-center w-[130px] sm:w-[150px] lg:w-[180px]"
               >
                 <div className="w-full aspect-square rounded-full bg-white mb-5 p-2 shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-gray-100 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] group-hover:border-gray-200 transition-all duration-500">
                   <div className="w-full h-full rounded-full overflow-hidden relative">
-                    <img 
-                      src={cat.image} 
-                      alt={cat.name} 
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
                       loading="lazy"
-                      className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110" 
+                      className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
                   </div>
@@ -647,7 +647,7 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <section className="py-24 lg:py-32 bg-white">
         <div className="w-full max-w-[1700px] mx-auto px-6 xl:px-12">
-          
+
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 gap-8">
             <div className="max-w-3xl">
               <h2 className="text-4xl md:text-5xl lg:text-[4rem] font-serif text-[#1a1a1a] mb-6 tracking-tight leading-tight">
@@ -670,16 +670,16 @@ export default function HomePage() {
               { name: 'Comfortable Bedroom Collection', img: '/Images/Signature-section/BST-113.webp', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
             ].map((col, idx) => (
               <Link key={idx} to={`/shop?category=${col.name.split(' ')[0].toLowerCase()}`} className={`group relative block overflow-hidden rounded-xl ${col.span}`}>
-                <img 
-                  src={col.img} 
+                <img
+                  src={col.img}
                   alt={col.name}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105" 
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500" />
-                
+
                 {/* Text Content */}
                 <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12">
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-serif text-white mb-3 lg:mb-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">

@@ -20,20 +20,16 @@ export const authMiddleware = async (req, res, next) => {
     
     let currentRole = decoded.role;
     
-    // Check if the admin is the seeded fallback superadmin
-    const isFallbackSuperAdmin = decoded.email === config.admin.seedEmail;
+    // Verify the admin still exists in the database
+    const admin = await prisma.admin.findUnique({
+      where: { id: decoded.id }
+    });
     
-    if (!isFallbackSuperAdmin) {
-      // Verify the admin still exists in the database
-      const admin = await prisma.admin.findUnique({
-        where: { id: decoded.id }
-      });
-      
-      if (!admin) {
-        throw new AppError('The user belonging to this token no longer exists.', 401);
-      }
-      currentRole = admin.role;
+    if (!admin) {
+      throw new AppError('The user belonging to this token no longer exists.', 401);
     }
+    
+    currentRole = admin.role;
 
     (req as any).admin = {
       id: decoded.id,

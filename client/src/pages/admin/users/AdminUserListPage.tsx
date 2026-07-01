@@ -52,13 +52,18 @@ export default function AdminUserListPage() {
     setSaving(true);
     setError('');
     try {
+      const payload = {
+        ...formData,
+        role: formData.role === 'superadmin' ? 'SUPER_ADMIN' : 'ADMIN'
+      };
+
       if (editingId) {
-        await api.put(`/admin/users/${editingId}`, formData);
+        await api.put(`/admin/users/${editingId}`, payload);
       } else {
         if (!formData.password) {
           throw new Error('Password is required for new users');
         }
-        await api.post('/admin/users', formData);
+        await api.post('/admin/users', payload);
       }
       setShowModal(false);
       fetchAdmins();
