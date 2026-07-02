@@ -35,7 +35,7 @@ export default function CareerPage() {
   }, []);
 
   return (
-    <div className="bg-secondary min-h-screen pt-28 pb-20 font-sans">
+    <div className="bg-secondary min-h-screen pb-20 font-sans">
       <SEO 
         title="Careers"
         description="Join the Talukder Furniture team. Explore our open positions and build a rewarding career with Bangladesh's premium furniture brand."

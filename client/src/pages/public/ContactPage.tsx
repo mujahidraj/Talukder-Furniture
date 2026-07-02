@@ -27,7 +27,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-secondary min-h-screen pt-28 pb-20 font-sans">
+    <div className="bg-secondary min-h-screen pb-20 font-sans">
       <SEO 
         title="Contact Us"
         description="Get in touch with Talukder Furniture. We are here to help you with your premium furniture needs in Bangladesh."
@@ -76,9 +76,9 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-lg mb-1">Head Office</h3>
                     <p className="text-gray-300 leading-relaxed">
-                      123 Furniture Avenue,<br />
-                      Design District,<br />
-                      New York, NY 10001
+                      Talukder Group of Industries,<br />
+                      House #21, Road #21, Nikunja 2,<br />
+                      Dhaka-1229, Bangladesh
                     </p>
                   </div>
                 </div>
@@ -87,8 +87,7 @@ export default function ContactPage() {
                   <Phone className="text-white flex-shrink-0 mt-1" size={24} />
                   <div>
                     <h3 className="font-semibold text-lg mb-1">Phone</h3>
-                    <p className="text-gray-300">+1 (555) 123-4567</p>
-                    <p className="text-gray-300">+1 (555) 987-6543</p>
+                    <p className="text-gray-300">+880 1966-333355</p>
                   </div>
                 </div>
                 
@@ -96,8 +95,7 @@ export default function ContactPage() {
                   <Mail className="text-white flex-shrink-0 mt-1" size={24} />
                   <div>
                     <h3 className="font-semibold text-lg mb-1">Email</h3>
-                    <p className="text-gray-300">info@talukder-furniture.com</p>
-                    <p className="text-gray-300">support@talukder-furniture.com</p>
+                    <p className="text-gray-300">info@talukder-group.com.bd</p>
                   </div>
                 </div>
                 
@@ -105,8 +103,8 @@ export default function ContactPage() {
                   <Clock className="text-white flex-shrink-0 mt-1" size={24} />
                   <div>
                     <h3 className="font-semibold text-lg mb-1">Business Hours</h3>
-                    <p className="text-gray-300">Mon - Fri: 9:00 AM - 8:00 PM</p>
-                    <p className="text-gray-300">Sat - Sun: 10:00 AM - 6:00 PM</p>
+                    <p className="text-gray-300">Sat - Thu: 9:00 AM - 8:00 PM</p>
+                    <p className="text-gray-300">Friday: Closed</p>
                   </div>
                 </div>
               </div>
@@ -169,7 +167,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
-                    placeholder="+1 (555) 000-0000"
+                    placeholder="+880 1966-333355"
                   />
                 </div>
                 <div className="space-y-2">
@@ -220,7 +218,7 @@ export default function ContactPage() {
           <div className="w-full h-[600px] bg-gray-200 rounded-2xl overflow-hidden relative">
             {/* Placeholder for iframe map */}
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1683935246746!5m2!1sen!2s" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3649.8941651771624!2d90.41833348075076!3d23.822362211640996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7578b61f171%3A0x31cb0235ff0d0636!2sTalukdar%20Group!5e0!3m2!1sen!2sbd!4v1782967688711!5m2!1sen!2sbd" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 

@@ -14,10 +14,7 @@ export default function JobDetailsPage() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const { data } = await api.get(`/jobs/${id}`);
-        setJob(data);
-      } catch (err) {
-        // Handle mock jobs if we hit the fallback
+        // Handle mock jobs immediately to avoid 500 Internal Server Errors from the backend
         if (id?.startsWith('mock')) {
            const mockJobs = [
              { id: 'mock1', title: 'Senior Interior Designer', department: 'Design', location: 'Dhaka, BD', type: 'Full-time', description: 'We are looking for a Senior Interior Designer...', requirements: '5+ years experience\nStrong portfolio', applyInstructions: 'Send your resume to careers@talukder-furniture.com' },
@@ -31,6 +28,10 @@ export default function JobDetailsPage() {
              return;
            }
         }
+
+        const { data } = await api.get(`/jobs/${id}`);
+        setJob(data);
+      } catch (err) {
         setError('Job not found.');
       } finally {
         setLoading(false);
