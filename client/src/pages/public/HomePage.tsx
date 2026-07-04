@@ -122,6 +122,10 @@ const livingRoomMockProducts = [
   { id: 11, name: 'Living Room Sofa', price: '৳ 0.00', slug: 'living-sofa-2', image: IMG.p6 },
   { id: 12, name: 'Waiting Sofa', price: '৳ 0.00', slug: 'waiting-sofa-1', image: IMG.p7 },
   { id: 13, name: 'Waiting Sofa', price: '৳ 0.00', slug: 'waiting-sofa-2', image: IMG.p8 },
+  { id: 14, name: 'Living Room Sofa', price: '৳ 0.00', slug: 'living-sofa-3', image: IMG.p5 },
+  { id: 15, name: 'Living Room Sofa', price: '৳ 0.00', slug: 'living-sofa-4', image: IMG.p6 },
+  { id: 16, name: 'Waiting Sofa', price: '৳ 0.00', slug: 'waiting-sofa-3', image: IMG.p7 },
+  { id: 17, name: 'Waiting Sofa', price: '৳ 0.00', slug: 'waiting-sofa-4', image: IMG.p8 },
 ];
 
 const quickTags = [
@@ -559,7 +563,10 @@ export default function HomePage() {
               loop={true}
               autoplay={{ delay: 3500, disableOnInteraction: false }}
               breakpoints={{ 480: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }}
-              onSwiper={(swiper) => { newestSwiperRef.current = swiper; }}
+              navigation={{
+                nextEl: '.newest-next',
+                prevEl: '.newest-prev',
+              }}
             >
               {(newestProducts.length > 0 ? newestProducts : livingRoomMockProducts).map((product) => (
                 <SwiperSlide key={product.id}>
@@ -585,14 +592,12 @@ export default function HomePage() {
 
             {/* Nav arrows outside the Swiper */}
             <button
-              onClick={() => newestSwiperRef.current?.slidePrev()}
-              className="hidden md:flex absolute -left-8 top-[40%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-lg opacity-0 group-hover/slider:opacity-100"
+              className="newest-prev hidden md:flex absolute -left-8 top-[40%] -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-lg opacity-0 group-hover/slider:opacity-100 [&.swiper-button-disabled]:opacity-50 [&.swiper-button-disabled]:cursor-not-allowed [&.swiper-button-lock]:hidden"
             >
               <ChevronLeft size={20} strokeWidth={1.5} />
             </button>
             <button
-              onClick={() => newestSwiperRef.current?.slideNext()}
-              className="hidden md:flex absolute -right-8 top-[40%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-lg opacity-0 group-hover/slider:opacity-100"
+              className="newest-next hidden md:flex absolute -right-8 top-[40%] -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white border border-[#e0e0e0] items-center justify-center cursor-pointer transition-all text-[#1a1a1a] hover:border-[#1a1a1a] hover:shadow-lg opacity-0 group-hover/slider:opacity-100 [&.swiper-button-disabled]:opacity-50 [&.swiper-button-disabled]:cursor-not-allowed [&.swiper-button-lock]:hidden"
             >
               <ChevronRight size={20} strokeWidth={1.5} />
             </button>
