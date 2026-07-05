@@ -142,7 +142,7 @@ export default function HeroSlideFormPage() {
                 <li>High resolution (e.g. 1920x800)</li>
                 <li>Landscape orientation</li>
                 <li>Keep main subjects centered</li>
-                <li>Max file size: 5MB</li>
+                <li>Max file size: 25MB</li>
               </ul>
             </div>
           </div>

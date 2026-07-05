@@ -196,7 +196,7 @@ export default function BulkImportPage() {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Drag & drop your file here</h3>
                   <p className="text-sm text-gray-500 max-w-sm mx-auto">
-                    Supports <span className="font-semibold text-gray-700">.xlsx</span>, <span className="font-semibold text-gray-700">.xls</span> or <span className="font-semibold text-gray-700">.csv</span> up to 10MB
+                    Supports <span className="font-semibold text-gray-700">.xlsx</span>, <span className="font-semibold text-gray-700">.xls</span> or <span className="font-semibold text-gray-700">.csv</span> up to 25MB
                   </p>
                   <div className="mt-6 px-6 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl shadow-sm group-hover:border-gray-300 group-hover:shadow transition-all pointer-events-none">
                     Browse Files
@@ -350,7 +350,7 @@ export default function BulkImportPage() {
             <ul className="space-y-4">
               {[
                 { text: <>File must be in <strong className="text-gray-900 font-semibold">.xlsx</strong> format.</> },
-                { text: <>Maximum file size is <strong className="text-gray-900 font-semibold">10MB</strong>.</> },
+                { text: <>Maximum file size is <strong className="text-gray-900 font-semibold">25MB</strong>.</> },
                 { text: <><strong className="text-gray-900 font-semibold">Product Code</strong> is used as a unique key — re-importing the same file will update existing products.</> },
                 { text: <>Categories will be <strong className="text-gray-900 font-semibold">auto-created</strong> if they don't exist.</> },
                 { text: <>The first <strong className="text-gray-900 font-semibold">4 rows</strong> (title & headers) are skipped.</> },
