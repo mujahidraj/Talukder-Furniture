@@ -384,9 +384,9 @@ export default function ShopPage() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.2 } }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className={`group ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-6 sm:gap-12 bg-white border-b border-gray-100 transition-all duration-300 items-stretch' : 'flex flex-col gap-0 bg-white transition-all duration-300 h-full'}`}
+                    className={`group ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-6 sm:gap-12 bg-white border-b border-gray-100 transition-all duration-300 items-center' : 'flex flex-col gap-0 bg-white transition-all duration-300 h-full'}`}
                   >
-                    <Link to={isSets ? `/collections/${product.slug}` : `/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[400px] shrink-0 bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
+                    <Link to={isSets ? `/collections/${product.slug}` : `/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[500px] shrink-0 bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
                       {product.images && product.images.length > 0 ? (
                         <>
                           <img
@@ -400,7 +400,7 @@ export default function ShopPage() {
                               src={product.images[1].url}
                               alt={product.name}
                               loading="lazy"
-                              className={`absolute inset-0 w-full h-full ${viewMode === 'list' ? 'object-contain' : 'object-cover'} mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100`}
+                              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100"
                             />
                           )}
                         </>
@@ -417,7 +417,7 @@ export default function ShopPage() {
                               src={product.imageUrls[1]}
                               alt={product.name}
                               loading="lazy"
-                              className={`absolute inset-0 w-full h-full ${viewMode === 'list' ? 'object-contain' : 'object-cover'} mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100`}
+                              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100"
                             />
                           )}
                         </>
