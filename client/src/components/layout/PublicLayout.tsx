@@ -5,6 +5,7 @@ import Footer from './Footer';
 import SearchOverlay from './SearchOverlay';
 import SEO from '../seo/SEO';
 import useUIStore from '../../stores/useUIStore';
+import WhatsAppButton from '../ui/WhatsAppButton';
 
 export default function PublicLayout() {
   const { pathname } = useLocation();
@@ -35,6 +36,7 @@ export default function PublicLayout() {
       </main>
       <Footer />
       <SearchOverlay />
+      <WhatsAppButton />
     </div>
   );
 }

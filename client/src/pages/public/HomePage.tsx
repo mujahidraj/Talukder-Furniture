@@ -147,7 +147,7 @@ const signatureCollections = [
 
 const trustBadges = [
   { icon: Truck, title: 'Free & fast delivery', desc: 'No extra cost, just the price you see' },
-  { icon: RotateCcw, title: '14-Day Returns', desc: 'Risk-free shopping with easy returns' },
+  { icon: RotateCcw, title: '7-Day Returns', desc: 'Risk-free shopping with easy returns' },
   { icon: Headphones, title: '24/7 Support', desc: '24/7 support, always here just for you' },
   { icon: Award, title: 'Member Discounts', desc: 'Special prices for our loyal customers' },
 ];
@@ -476,65 +476,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Bottom Products Strip */}
-          <div className="w-full mt-16 lg:mt-24 relative curated-slider-wrapper">
-            <div className="flex items-center justify-between mb-10 border-b border-gray-200 pb-4">
-              <h3 className="text-2xl lg:text-3xl font-serif text-[#1a1a1a]">Featured Pieces</h3>
-              <div className="flex items-center gap-4">
-                <button className="uniqueness-prev w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-colors">
-                  <ChevronLeft size={20} />
-                </button>
-                <button className="uniqueness-next w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-colors">
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            </div>
-
-            <Swiper
-              modules={[Navigation, Autoplay]}
-              navigation={{
-                nextEl: '.uniqueness-next',
-                prevEl: '.uniqueness-prev',
-              }}
-              autoplay={{ delay: 3500, disableOnInteraction: false }}
-              loop={true}
-              spaceBetween={30}
-              breakpoints={{
-                320: { slidesPerView: 1.2, spaceBetween: 16 },
-                768: { slidesPerView: 2.5, spaceBetween: 24 },
-                1024: { slidesPerView: 4, spaceBetween: 30 },
-                1280: { slidesPerView: 5, spaceBetween: 30 },
-              }}
-            >
-              {[
-                { id: 30, name: 'Andaman-184', price: '৳ 32,100', image: '/Images/Featured-product/TFL-CMT-102-LB-1.webp' },
-                { id: 31, name: 'Anderson-279', price: '৳ 38,150', image: '/Images/Featured-product/TFL-DNT-110-WD-1.webp' },
-                { id: 32, name: 'Lucan-309', price: '৳ 18,849', image: '/Images/Featured-product/TFL-DVN-102-FR.webp' },
-                { id: 33, name: 'Kenneth-313', price: '৳ 30,650', image: '/Images/Featured-product/TFL-IRS-102-WD-1.webp' },
-                { id: 34, name: 'Low Back Chair', price: '৳ 12,500', image: '/Images/Featured-product/TFL-SRK-108-WD-1.webp' },
-                { id: 35, name: 'Andaman-184', price: '৳ 32,100', image: '/Images/Featured-product/TFL-CMT-102-LB-1.webp' },
-                { id: 36, name: 'Anderson-279', price: '৳ 38,150', image: '/Images/Featured-product/TFL-DNT-110-WD-1.webp' },
-                { id: 37, name: 'Lucan-309', price: '৳ 18,849', image: '/Images/Featured-product/TFL-DVN-102-FR.webp' },
-                { id: 38, name: 'Kenneth-313', price: '৳ 30,650', image: '/Images/Featured-product/TFL-IRS-102-WD-1.webp' },
-                { id: 39, name: 'Low Back Chair', price: '৳ 12,500', image: '/Images/Featured-product/TFL-SRK-108-WD-1.webp' },
-              ].map((product) => (
-                <SwiperSlide key={product.id}>
-                  <Link to="/shop" className="block group">
-                    <div className="w-full aspect-square bg-[#f5f5f5] mb-4 overflow-hidden relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
-                      />
-                    </div>
-                    <h4 className="font-medium text-[#1a1a1a] text-[15px] mb-1 group-hover:text-[#E32227] transition-colors">{product.name}</h4>
-                    <p className="font-semibold text-gray-500 text-[14px]">{product.price}</p>
-                  </Link>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
         </div>
       </section>
 
@@ -669,12 +610,12 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
             {[
-              { name: 'Talukder Prestige Collection', img: '/Images/Signature-section/03.jpg', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
-              { name: 'Cozy Sofa Collection', img: '/Images/Signature-section/06.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
-              { name: 'Dining Elegance Collection', img: '/Images/Signature-section/15.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
-              { name: 'Comfortable Bedroom Collection', img: '/Images/Signature-section/BST-113.webp', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Talukder Prestige Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/03.jpg', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Cozy Sofa Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/06.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Dining Elegance Collection', link: '/shop?category=dining-room', img: '/Images/Signature-section/15.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Comfortable Bedroom Collection', link: '/shop?category=bedroom&type=sets', img: '/Images/Signature-section/BST-113.webp', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
             ].map((col, idx) => (
-              <Link key={idx} to={`/shop?category=${col.name.split(' ')[0].toLowerCase()}`} className={`group relative block overflow-hidden rounded-xl ${col.span}`}>
+              <Link key={idx} to={col.link} className={`group relative block overflow-hidden rounded-xl ${col.span}`}>
                 <img
                   src={col.img}
                   alt={col.name}
