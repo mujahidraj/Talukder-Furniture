@@ -393,7 +393,7 @@ export default function ShopPage() {
                             src={product.images[0].url}
                             alt={product.name}
                             loading="lazy"
-                            className={`${viewMode === 'list' ? 'w-full h-auto block' : 'absolute inset-0 w-full h-full object-cover'} mix-blend-multiply duration-700 ${isSets && product.images[1] ? 'transition-opacity group-hover:opacity-0' : 'transition-transform group-hover:scale-105'}`}
+                            className={`${viewMode === 'list' ? 'w-full h-auto block' : 'absolute inset-0 w-full h-full object-cover'} mix-blend-multiply duration-700 ${product.images[1] ? 'transition-opacity group-hover:opacity-0' : 'transition-transform group-hover:scale-105'}`}
                           />
                           {product.images[1] && (
                             <img
@@ -410,7 +410,7 @@ export default function ShopPage() {
                             src={product.imageUrls[0]}
                             alt={product.name}
                             loading="lazy"
-                            className={`${viewMode === 'list' ? 'w-full h-auto block' : 'absolute inset-0 w-full h-full object-cover'} mix-blend-multiply duration-700 ${isSets && product.imageUrls[1] ? 'transition-opacity group-hover:opacity-0' : 'transition-transform group-hover:scale-105'}`}
+                            className={`${viewMode === 'list' ? 'w-full h-auto block' : 'absolute inset-0 w-full h-full object-cover'} mix-blend-multiply duration-700 ${product.imageUrls[1] ? 'transition-opacity group-hover:opacity-0' : 'transition-transform group-hover:scale-105'}`}
                           />
                           {product.imageUrls[1] && (
                             <img
@@ -432,10 +432,10 @@ export default function ShopPage() {
                         <div className="w-full h-full flex items-center justify-center text-gray-400 min-h-[300px]">No Image</div>
                       )}
                       {/* Hover Overlay 'View Details' Button — hidden for sets that have a next image */}
-                      {!(isSets && (
+                      {!(
                         (product.images && product.images.length > 1) ||
                         (product.imageUrls && product.imageUrls.length > 1)
-                      )) && (
+                      ) && (
                         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                           <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
                             View Details

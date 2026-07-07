@@ -655,7 +655,14 @@ export default function ProductDetailPage() {
                   {p.category && (
                     <span className="text-[11px] text-gray-400 mb-1 tracking-wide">{p.category.name}</span>
                   )}
-                  <span className="font-bold text-primary text-sm md:text-base">{p.priceDisplay || `$${p.price}`}</span>
+                  <span className="font-bold text-primary text-sm md:text-base">
+                    {p.basePrice
+                      ? `৳ ${(p.discountPercentage > 0
+                          ? Math.round(p.basePrice * (1 - p.discountPercentage / 100))
+                          : p.basePrice
+                        ).toLocaleString()}`
+                      : p.priceDisplay || 'Contact for Price'}
+                  </span>
                 </div>
               ))}
             </div>
