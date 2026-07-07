@@ -126,6 +126,7 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
       const description = firstRow[12]?.toString().trim();
       const careAndMaintenance = firstRow[13]?.toString().trim();
       const warrantyInfo = firstRow[14]?.toString().trim();
+      const returnExchangePolicy = firstRow[15]?.toString().trim();
 
       // --- Category Resolution ---
       let categoryId: number;
@@ -246,6 +247,7 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
           const isOverviewSame = existingProduct.overview === (description || null);
           const isCareSame = existingProduct.careMaintenance === (careAndMaintenance || null);
           const isWarrantySame = existingProduct.warrantyInfo === (warrantyInfo || null);
+          const isReturnPolicySame = existingProduct.returnExchangePolicy === (returnExchangePolicy || null);
           const isBasePriceSame = existingProduct.basePrice === basePrice;
           const isDiscountSame = existingProduct.discountPercentage === discountPercentage;
           const isKeyFeaturesSame = existingProduct.keyFeatures === newKeyFeatures;
@@ -268,7 +270,7 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
           const isSizesSame = existingSizesStr === newSizesStr;
 
           if (isNameSame && isCategorySame && isMaterialsSame && isOverviewSame && isCareSame && 
-              isWarrantySame && isBasePriceSame && isDiscountSame && isKeyFeaturesSame && 
+              isWarrantySame && isReturnPolicySame && isBasePriceSame && isDiscountSame && isKeyFeaturesSame && 
               isColorsSame && isSizesSame) {
             hasChanged = false;
           }
@@ -293,8 +295,11 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
             overview: description || null,
             careMaintenance: careAndMaintenance || null,
             warrantyInfo: warrantyInfo || null,
+            returnExchangePolicy: returnExchangePolicy || null,
             basePrice,
             discountPercentage,
+            metaTitle: `${productName} | Talukder Furniture`,
+            metaDescription: description ? description.replace(/<[^>]+>/g, '').substring(0, 160) : null,
           },
           create: {
             name: productName,
@@ -308,8 +313,11 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
             overview: description || null,
             careMaintenance: careAndMaintenance || null,
             warrantyInfo: warrantyInfo || null,
+            returnExchangePolicy: returnExchangePolicy || null,
             basePrice,
             discountPercentage,
+            metaTitle: `${productName} | Talukder Furniture`,
+            metaDescription: description ? description.replace(/<[^>]+>/g, '').substring(0, 160) : null,
             isActive: true,
             isFeatured: false,
           },
@@ -327,8 +335,11 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
             overview: description || null,
             careMaintenance: careAndMaintenance || null,
             warrantyInfo: warrantyInfo || null,
+            returnExchangePolicy: returnExchangePolicy || null,
             basePrice,
             discountPercentage,
+            metaTitle: `${productName} | Talukder Furniture`,
+            metaDescription: description ? description.replace(/<[^>]+>/g, '').substring(0, 160) : null,
             isActive: true,
             isFeatured: false,
           },
@@ -366,18 +377,18 @@ export const generateTemplate = (): Buffer => {
   const templateData = [
     ['Talukder Furniture Ltd.'],
     ['Home Furniture Specifications'],
-    ['SL No', 'Product Code', 'Product Name ', 'Picture ', 'Meterials', 'Category', '', 'Measurement', 'Color', 'Price', '', '', 'Description', 'Care and Maintenance', 'Warranty Info'],
-    ['', '', '', '', '', 'Main', 'Sub', '', '', 'DP', 'MRP', 'Discount', '', '', ''],
+    ['SL No', 'Product Code', 'Product Name ', 'Picture ', 'Meterials', 'Category', '', 'Measurement', 'Color', 'Price', '', '', 'Description', 'Care and Maintenance', 'Warranty Info', 'Return & Exchange Policy'],
+    ['', '', '', '', '', 'Main', 'Sub', '', '', 'DP', 'MRP', 'Discount', '', '', '', ''],
     // Example row
-    [1, 'TFL-BED-001', 'Sample Double Bed', '', 'Melamine Face Chip Board & Imported Foreign Accessories', 'Home Furniture ', 'Bedroom Furniture', 'Double-L 2225 x W 1582 x H 875 mm', 'Antique', '', 15600, '22%', 'Product description here.', 'Care instructions here.', 'Warranty details here.'],
+    [1, 'TFL-BED-001', 'Sample Double Bed', '', 'Melamine Face Chip Board & Imported Foreign Accessories', 'Home Furniture ', 'Bedroom Furniture', 'Double-L 2225 x W 1582 x H 875 mm', 'Antique', '', 15600, '22%', 'Product description here.', 'Care instructions here.', 'Warranty details here.', 'Return policy details here.'],
   ];
 
   const ws = XLSX.utils.aoa_to_sheet(templateData);
 
   // Set cell merges to match the template structure
   ws['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 14 } }, // Talukder Furniture Ltd.
-    { s: { r: 1, c: 0 }, e: { r: 1, c: 14 } }, // Home Furniture Specifications
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 15 } }, // Talukder Furniture Ltd.
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 15 } }, // Home Furniture Specifications
     { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } }, // SL No
     { s: { r: 2, c: 1 }, e: { r: 3, c: 1 } }, // Product Code
     { s: { r: 2, c: 2 }, e: { r: 3, c: 2 } }, // Product Name
@@ -390,6 +401,7 @@ export const generateTemplate = (): Buffer => {
     { s: { r: 2, c: 12 }, e: { r: 3, c: 12 } }, // Description
     { s: { r: 2, c: 13 }, e: { r: 3, c: 13 } }, // Care and Maintenance
     { s: { r: 2, c: 14 }, e: { r: 3, c: 14 } }, // Warranty Info
+    { s: { r: 2, c: 15 }, e: { r: 3, c: 15 } }, // Return & Exchange Policy
   ];
 
   // Set column widths for readability
@@ -409,6 +421,7 @@ export const generateTemplate = (): Buffer => {
     { wch: 40 },  // Description
     { wch: 40 },  // Care and Maintenance
     { wch: 40 },  // Warranty Info
+    { wch: 40 },  // Return & Exchange Policy
   ];
 
   XLSX.utils.book_append_sheet(wb, ws, 'Products');

@@ -207,16 +207,35 @@ export const createProduct = async (data) => {
 };
 
 export const updateProduct = async (id, data) => {
+  const productId = parseInt(id, 10);
   const updateData: any = {};
   
   if (data.name !== undefined) updateData.name = data.name;
   if (data.slug !== undefined) {
     updateData.slug = data.slug;
   } else if (data.name !== undefined) {
-    updateData.slug = slugify(data.name, { lower: true, strict: true });
+    // Generate slug from name, but ensure it doesn't collide with another product's slug
+    let candidateSlug = slugify(data.name, { lower: true, strict: true });
+    
+    // Check if this slug already belongs to a DIFFERENT product
+    const existingWithSlug = await prisma.product.findUnique({ where: { slug: candidateSlug } });
+    if (existingWithSlug && existingWithSlug.id !== productId) {
+      // Append a numeric suffix to make it unique
+      let suffix = 2;
+      while (true) {
+        const trySlug = `${candidateSlug}-${suffix}`;
+        const conflict = await prisma.product.findUnique({ where: { slug: trySlug } });
+        if (!conflict || conflict.id === productId) {
+          candidateSlug = trySlug;
+          break;
+        }
+        suffix++;
+      }
+    }
+    updateData.slug = candidateSlug;
   }
   
-  if (data.sku !== undefined) updateData.sku = data.sku;
+  if (data.sku !== undefined) updateData.sku = data.sku || null;
   if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
   if (data.materials !== undefined) updateData.materials = data.materials;
   if (data.priceDisplay !== undefined) updateData.priceDisplay = data.priceDisplay;
@@ -233,9 +252,9 @@ export const updateProduct = async (id, data) => {
   if (data.metaDescription !== undefined) updateData.metaDescription = data.metaDescription;
 
   if (data.images) {
-    const oldImages = await prisma.productImage.findMany({ where: { productId: parseInt(id, 10) } });
+    const oldImages = await prisma.productImage.findMany({ where: { productId } });
     
-    await prisma.productImage.deleteMany({ where: { productId: parseInt(id, 10) } });
+    await prisma.productImage.deleteMany({ where: { productId } });
     updateData.images = {
       create: data.images.map((url: string, index: number) => ({ url, order: index }))
     };
@@ -253,7 +272,7 @@ export const updateProduct = async (id, data) => {
   }
 
   return prisma.product.update({
-    where: { id: parseInt(id, 10) },
+    where: { id: productId },
     data: updateData,
   });
 };
