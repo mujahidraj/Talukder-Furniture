@@ -4,6 +4,7 @@ import { Heart, Share2, ChevronRight, Ruler, ShieldCheck, Truck, X, Copy, Check,
 import api from '../../lib/api';
 import useWishlistStore from '../../stores/useWishlistStore';
 import SEO from '../../components/seo/SEO';
+import FormattedText from '../../components/ui/FormattedText';
 import sanitizeHtml from '../../lib/sanitize';
 
 // ─── Image Magnifier ────────────────────────────────────────────────────────
@@ -582,7 +583,7 @@ export default function ProductDetailPage() {
           <div className="max-w-4xl">
             <div className="prose prose-gray max-w-none text-gray-600 leading-relaxed [&_p]:mb-4 [&_h2]:text-primary [&_h3]:text-primary [&_strong]:text-primary [&_li]:mb-1">
               {activeTab === 'overview' && (
-                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.overview || '<p>No detailed overview provided.</p>') }} />
+                <FormattedText content={product.overview} defaultText="<p>No detailed overview provided.</p>" />
               )}
               {activeTab === 'features' && (
                 <div>
@@ -596,7 +597,7 @@ export default function ProductDetailPage() {
 
                     return (
                       <>
-                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.keyFeatures || '<p>Key features information is currently unavailable.</p>') }} />
+                        <FormattedText content={product.keyFeatures} defaultText="<p>Key features information is currently unavailable.</p>" />
                         {activeDim && (
                           <div className="mt-8 pt-6 border-t border-gray-100">
                             <div className="flex items-center gap-2 mb-3">
@@ -612,16 +613,16 @@ export default function ProductDetailPage() {
                 </div>
               )}
               {activeTab === 'materials' && (
-                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.materials || '<p>Material information is currently unavailable.</p>') }} />
+                <FormattedText content={product.materials} defaultText="<p>Material information is currently unavailable.</p>" />
               )}
               {activeTab === 'care' && (
-                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.careMaintenance || '<p>Wipe clean with a damp cloth. Avoid harsh chemicals.</p>') }} />
+                <FormattedText content={product.careMaintenance} defaultText="<p>Wipe clean with a damp cloth. Avoid harsh chemicals.</p>" />
               )}
               {activeTab === 'warranty' && (
-                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.warrantyInfo || '<p>This product comes with a standard 10-year manufacturing warranty covering defects in materials and workmanship for solid wood frames, and a 1-year warranty for upholstery.</p>') }} />
+                <FormattedText content={product.warrantyInfo} defaultText="<p>This product comes with a standard 10-year manufacturing warranty covering defects in materials and workmanship for solid wood frames, and a 1-year warranty for upholstery.</p>" />
               )}
               {activeTab === 'policy' && (
-                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.returnExchangePolicy || '<p><strong>Returns:</strong> We accept returns within 30 days of delivery. Custom-made or modified pieces are non-returnable unless there is a manufacturing defect.</p>') }} />
+                <FormattedText content={product.returnExchangePolicy} defaultText="<p><strong>Returns:</strong> We accept returns within 30 days of delivery. Custom-made or modified pieces are non-returnable unless there is a manufacturing defect.</p>" />
               )}
             </div>
           </div>

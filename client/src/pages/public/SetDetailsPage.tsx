@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Heart, Share2, ShieldCheck, Truck, Ruler, X, Phone, ShoppingBag, Info, ExternalLink, MessageSquare, ArrowLeft } from 'lucide-react';
 import api from '../../lib/api';
 import useWishlistStore from '../../stores/useWishlistStore';
+import FormattedText from '../../components/ui/FormattedText';
 import SEO from '../../components/seo/SEO';
 import sanitizeHtml from '../../lib/sanitize';
 
@@ -610,9 +611,9 @@ export default function SetDetailsPage() {
         {setItem.description && (
           <div className="max-w-3xl mx-auto text-center mb-24">
             <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-6">About the Collection</h3>
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed font-serif">
-              "{setItem.description}"
-            </p>
+            <div className="text-lg md:text-xl text-gray-700 leading-relaxed font-serif text-left">
+              <FormattedText content={setItem.description} defaultText="" />
+            </div>
           </div>
         )}
 

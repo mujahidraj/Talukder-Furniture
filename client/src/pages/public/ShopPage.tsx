@@ -467,7 +467,7 @@ export default function ShopPage() {
                       {product.category && (
                         <span className="text-[11px] sm:text-[12px] text-gray-500 mb-2 uppercase tracking-wider block">{product.category.name}</span>
                       )}
-                      <Link to={isSets ? `/collections/${product.slug}` : `/products/${product.slug}`} className="hover:text-[#E32227] transition-colors inline-block mb-2">
+                      <Link to={product._isSet ? `/collections/${product.slug}` : `/products/${product.slug}`} className="hover:text-[#E32227] transition-colors inline-block mb-2">
                         <h3 className={`font-medium text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl sm:text-3xl font-serif mb-4' : 'text-[15px] md:text-[16px] leading-snug line-clamp-2'}`}>{product.name}</h3>
                       </Link>
 
