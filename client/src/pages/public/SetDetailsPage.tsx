@@ -564,7 +564,7 @@ export default function SetDetailsPage() {
       {/* Set Image Gallery */}
       <div className="max-w-[1700px] mx-auto px-4 md:px-8 xl:px-12 py-4 flex flex-col items-center">
         <div className="w-full max-w-5xl">
-          <div className="relative aspect-[4/5] md:aspect-video bg-white rounded-2xl overflow-hidden border border-gray-100 mb-6 shadow-sm">
+          <div className="relative aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 mb-6 shadow-sm">
             <ImageMagnifier src={heroImages[heroIdx]} />
           </div>
           

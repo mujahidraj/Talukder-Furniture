@@ -226,9 +226,7 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <div className="bg-secondary min-h-screen flex flex-col items-center justify-center px-4 text-center">
-        <div className="w-20 h-20 rounded-full bg-white shadow-sm flex items-center justify-center mb-6">
-          <X size={32} className="text-gray-400" />
-        </div>
+        <img src="/ICON SET/LOGO.gif" alt="Not Found" className="w-80 h-80 object-contain mb-2" />
         <h1 className="text-4xl font-serif font-bold text-primary mb-3">Product Not Found</h1>
         <p className="text-gray-500 mb-8 max-w-md">The product you are looking for does not exist or has been removed.</p>
         <Link to="/shop" className="btn btn-primary px-8 py-3">Return to Shop</Link>
@@ -305,7 +303,7 @@ export default function ProductDetailPage() {
           <div className="lg:w-[58%] xl:w-[60%]">
             <div className="lg:sticky lg:top-24">
               {/* Main Image */}
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#f5f3f0] group">
+              <div className="relative aspect-square rounded-2xl overflow-hidden bg-[#f5f3f0] group">
                 {product.images && product.images.length > 0 ? (
                   <div className="w-full h-full" style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }}>
                     <ImageMagnifier src={product.images[activeImage].url} />

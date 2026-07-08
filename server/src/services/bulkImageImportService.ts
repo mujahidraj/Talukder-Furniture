@@ -87,14 +87,14 @@ export const processImageImport = async (folderPath: string, adminId: number): P
             continue;
           }
 
-          // Check for duplicate by comparing original filename
-          // We assume that if the product already has an image whose URL contains the original filename (or we can just check if an image with this exact name was already uploaded? The processImage renames it. So we need to track the original filename. Wait, ProductImage doesn't store originalName. We can check if `altText` could store it? Or we can just check if there's any image with the same base name. Actually, we can check if the product has the same number of images?
-          // Since processImage generates a random name, we can't easily match the original filename unless we store it.
-          // Let's store the originalFilename in `altText` to prevent duplicates.
-          const isDuplicate = product.images.some(img => img.altText === originalFilename);
+          // Check for duplicate by comparing folderName and original filename
+          const folderName = path.basename(path.dirname(filePath));
+          const uniqueAltText = `${folderName}/${originalFilename}`;
+          
+          const isDuplicate = product.images.some(img => img.altText === uniqueAltText);
           if (isDuplicate) {
             report.skippedCount++;
-            report.results.push({ file: originalFilename, status: 'skipped', message: `Image already exists for SKU: ${identifier}` });
+            report.results.push({ file: originalFilename, status: 'skipped', message: `Image already exists for SKU: ${identifier} from folder: ${folderName}` });
             continue;
           }
 
@@ -116,7 +116,7 @@ export const processImageImport = async (folderPath: string, adminId: number): P
               productId: product.id,
               url: processed.url,
               thumbUrl: processed.thumbUrl,
-              altText: originalFilename, // Store original filename here for deduplication
+              altText: uniqueAltText, // Store folder and filename here for deduplication
               isPrimary: maxOrder === -1, // First image is primary
               order: maxOrder + 1
             }

@@ -9,9 +9,9 @@ export default function NotFoundPage() {
   return (
     <div className="bg-secondary min-h-[80vh] flex items-center justify-center py-20 px-4">
       <div className="text-center max-w-lg mx-auto">
-        <div className="relative inline-block mb-8">
-          <h1 className="text-9xl font-serif font-bold text-gray-200">404</h1>
-          <Compass size={64} className="text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        <div className="relative inline-block mb-8 flex flex-col items-center">
+          <img src="/ICON SET/LOGO.gif" alt="Not Found" className="w-72 h-72 object-contain mb-[-3rem] relative z-10" />
+          <h1 className="text-9xl font-serif font-bold text-gray-200 tracking-widest">404</h1>
         </div>
         
         <h2 className="text-3xl font-serif font-bold text-primary mb-4">Page Not Found</h2>
