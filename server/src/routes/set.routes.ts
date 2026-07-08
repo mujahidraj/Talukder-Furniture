@@ -9,6 +9,7 @@ const router = Router();
 const setSchema = Joi.object({
   name: Joi.string().required(),
   slug: Joi.string().optional(),
+  sku: Joi.string().allow(null, '').optional(),
   categoryId: Joi.number().integer().allow(null).optional(),
   description: Joi.string().allow(null, '').optional(),
   basePrice: Joi.number().min(0).allow(null).optional(),

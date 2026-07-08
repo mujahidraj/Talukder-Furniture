@@ -163,8 +163,10 @@ export default function SetListPage() {
                           <div className="font-medium text-primary max-w-[200px] sm:max-w-[300px] truncate" title={set.name}>
                             {set.name}
                           </div>
-                          <div className="text-xs text-gray-500">
-                            {set.category?.name || 'Uncategorized'}
+                          <div className="text-xs text-gray-500 flex items-center gap-2">
+                            <span>{set.sku ? `SKU: ${set.sku}` : 'No SKU'}</span>
+                            <span>•</span>
+                            <span>{set.category?.name || 'Uncategorized'}</span>
                           </div>
                         </div>
                       </div>

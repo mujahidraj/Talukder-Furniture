@@ -538,7 +538,13 @@ export default function SetDetailsPage() {
 
       {/* Collection Header (Moved from inside image) */}
       <div className="max-w-[1700px] mx-auto px-4 md:px-8 xl:px-12 pt-4 pb-6 text-center flex flex-col items-center">
-        <h1 className="text-4xl md:text-6xl font-serif text-primary mb-4">{setItem.name}</h1>
+        <h1 className="text-4xl md:text-6xl font-serif text-primary mb-3">{setItem.name}</h1>
+        
+        {setItem.sku && (
+          <div className="text-gray-500 mb-4 tracking-wider text-sm uppercase">
+            SKU: <span className="font-medium text-gray-900">{setItem.sku}</span>
+          </div>
+        )}
         
         <div className="flex items-center gap-4 text-gray-500 text-sm md:text-base">
           <Link to="/" className="hover:text-primary transition-colors">Home</Link>

@@ -103,6 +103,7 @@ export const createSet = async (data: any) => {
     data: {
       name: data.name,
       slug,
+      sku: data.sku,
       categoryId: data.categoryId,
       description: data.description,
       basePrice: data.basePrice,
@@ -128,6 +129,7 @@ export const updateSet = async (id: string | number, data: any) => {
   }
   
   if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
+  if (data.sku !== undefined) updateData.sku = data.sku;
   if (data.description !== undefined) updateData.description = data.description;
   if (data.basePrice !== undefined) updateData.basePrice = data.basePrice;
   if (data.discountPercentage !== undefined) updateData.discountPercentage = data.discountPercentage;

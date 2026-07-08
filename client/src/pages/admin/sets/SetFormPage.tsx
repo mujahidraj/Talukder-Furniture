@@ -16,6 +16,7 @@ export default function SetFormPage() {
   
   const [formData, setFormData] = useState({
     name: '',
+    sku: '',
     categoryId: '',
     description: '',
     basePrice: '',
@@ -46,6 +47,7 @@ export default function SetFormPage() {
           const setItem = res.data;
           setFormData({
             name: setItem.name || '',
+            sku: setItem.sku || '',
             categoryId: setItem.categoryId?.toString() || '',
             description: setItem.description || '',
             basePrice: setItem.basePrice?.toString() || '',
@@ -148,12 +150,15 @@ export default function SetFormPage() {
     setErrorMessage(null);
 
     const payload = {
-      ...formData,
+      name: formData.name,
+      sku: formData.sku || null,
       categoryId: formData.categoryId ? parseInt(formData.categoryId, 10) : null,
+      description: formData.description || null,
       basePrice: formData.basePrice ? parseFloat(formData.basePrice) : null,
       discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null,
-      imageUrl,
-      imageUrls,
+      isActive: formData.isActive,
+      imageUrl: imageUrl || null,
+      imageUrls: imageUrls,
       productIds: selectedProductIds,
     };
 
@@ -216,16 +221,13 @@ export default function SetFormPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Set Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                placeholder="e.g. Royal Bedroom Set"
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Collection / Set Name *</label>
+              <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none" placeholder="e.g. Minimalist Dining Set" />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Set SKU / Code</label>
+              <input type="text" name="sku" value={formData.sku} onChange={handleChange} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono" placeholder="e.g. SET-109" />
             </div>
 
             <div>

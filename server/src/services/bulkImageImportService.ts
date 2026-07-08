@@ -35,21 +35,20 @@ async function scanDirectory(dir: string, fileList: string[] = []) {
 }
 
 function extractIdentifier(filename: string): { type: 'product' | 'set', identifier: string, originalFilename: string } {
-  // filename like: TFL-BED-109 LB.png, TFL-CBD-201 LB (2).png, set 109.png
+  // filename like: TFL-BED-109 LB.png, TFL-CBD-201 LB (2).png, set-109.png
   const basename = path.basename(filename, path.extname(filename)).trim();
   
   const lowerBase = basename.toLowerCase();
-  if (lowerBase.startsWith('set ') || lowerBase.startsWith('set_')) {
-    // It's a set image. Extract the rest as identifier. e.g. "109", "110_copy"
-    const identifier = basename.substring(4).trim();
-    // Remove things like _copy or (2) if needed, but for sets maybe just take the first part
-    const cleanIdentifier = identifier.split('_')[0].split('(')[0].trim();
+  if (lowerBase.startsWith('set ') || lowerBase.startsWith('set_') || lowerBase.startsWith('set-')) {
+    // It's a set image. The identifier is the SKU.
+    // e.g. "set-109", "set-109 (2)" -> "set-109"
+    const cleanIdentifier = basename.replace(/\s*\(\d+\)$/, '').split('_copy')[0].trim();
     return { type: 'set', identifier: cleanIdentifier, originalFilename: path.basename(filename) };
   } else {
     // It's a product image. e.g. TFL-BED-109 LB or TFL-CBD-201 LB (2)
     // We want to extract the SKU: TFL-BED-109 LB
     // Remove any trailing (2), (3), etc.
-    const cleanIdentifier = basename.replace(/\(\d+\)$/, '').trim();
+    const cleanIdentifier = basename.replace(/\s*\(\d+\)$/, '').trim();
     return { type: 'product', identifier: cleanIdentifier, originalFilename: path.basename(filename) };
   }
 }
@@ -127,12 +126,24 @@ export const processImageImport = async (folderPath: string, adminId: number): P
           report.results.push({ file: originalFilename, status: 'matched', message: `Matched to product SKU: ${identifier}` });
 
         } else if (type === 'set') {
-          // Match set by checking if name or slug contains the identifier (e.g. "109")
+          // identifier could be "set 109", "set-109", "set_109"
+          const setNumMatch = identifier.match(/^set[\s_-]*(.*)$/i);
+          const setNum = setNumMatch ? setNumMatch[1] : identifier;
+          
+          const possibleSkus = [
+            `set-${setNum}`, `Set-${setNum}`, `SET-${setNum}`,
+            `set ${setNum}`, `Set ${setNum}`, `SET ${setNum}`,
+            `set_${setNum}`, `Set_${setNum}`, `SET_${setNum}`,
+            setNum
+          ];
+
+          // Match set by checking if sku matches any format, or name/slug contains the set number
           const sets = await prisma.set.findMany({
             where: {
               OR: [
-                { name: { contains: identifier } },
-                { slug: { contains: identifier } }
+                { sku: { in: possibleSkus } },
+                { name: { contains: setNum, mode: 'insensitive' } },
+                { slug: { contains: setNum, mode: 'insensitive' } }
               ]
             }
           });

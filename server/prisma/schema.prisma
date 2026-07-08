@@ -197,6 +197,7 @@ model Set {
   id                 Int       @id @default(autoincrement())
   name               String
   slug               String    @unique
+  sku                String?   @unique
   categoryId         Int?
   category           Category? @relation(fields: [categoryId], references: [id])
   description        String?   @db.Text
