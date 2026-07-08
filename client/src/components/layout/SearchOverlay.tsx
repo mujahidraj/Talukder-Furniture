@@ -88,7 +88,7 @@ export default function SearchOverlay() {
         <div className="w-full max-w-5xl">
           {loading ? (
             <div className="flex justify-center py-10">
-              <img src="/LOGO.gif" alt="Searching..." className="w-24 h-24 object-contain" />
+              <img src="/ICON SET/LOGO.gif" alt="Searching..." className="w-24 h-24 object-contain" />
             </div>
           ) : results.length > 0 ? (
             <div>
@@ -167,3 +167,5 @@ export default function SearchOverlay() {
     </div>
   );
 }
+
+

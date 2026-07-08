@@ -169,7 +169,7 @@ export default function CategoryListPage() {
                       </td>
                       <td className="p-4 text-sm text-gray-500">{sub.slug}</td>
                       <td className="p-4 text-sm font-medium text-gray-700">
-                        <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{sub._count?.products || 0}</span>
+                        <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(sub._count?.products || 0) + (sub._count?.sets || 0)}</span>
                       </td>
                       <td className="p-4">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

@@ -195,7 +195,7 @@ export default function Header() {
         <Link to="/" className="flex items-center flex-shrink-0" onClick={() => setHoveredNav(null)}>
           <div className="overflow-hidden rounded-md transition-all duration-300">
             <img
-              src="/Talukder-Furniture-LTD.png"
+              src="/ICON%20SET/Talukder-Furniture-LTD.png"
               alt="Talukder Furniture"
               className="h-[90px] md:h-[130px] object-contain transition-all duration-300"
             />

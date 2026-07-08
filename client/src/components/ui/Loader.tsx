@@ -8,7 +8,7 @@ export default function Loader({ text = "Loading..." }: LoaderProps) {
   return (
     <div className="flex flex-col items-center justify-center w-full py-24">
       <div className="relative flex items-center justify-center w-56 h-56 mb-6">
-        <img src="/LOGO.gif" alt="Loading..." className="w-full h-full object-contain" />
+        <img src="/ICON SET/LOGO.gif" alt="Loading..." className="w-full h-full object-contain" />
       </div>
       
       {/* Sleek Text with Bouncing Dots */}
@@ -25,3 +25,5 @@ export default function Loader({ text = "Loading..." }: LoaderProps) {
     </div>
   );
 }
+
+

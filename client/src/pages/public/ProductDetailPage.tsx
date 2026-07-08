@@ -215,7 +215,7 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] bg-secondary">
-        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <img src="/ICON SET/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
         <p className="mt-4 text-sm font-serif italic tracking-[0.15em] text-[#1a1a1a]">Loading&hellip;</p>
       </div>
     );
@@ -809,3 +809,5 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+
+

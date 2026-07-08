@@ -111,17 +111,36 @@ export default function ShopPage() {
 
     if (priceParam && priceParam !== 'all') params.append('price', priceParam);
 
-    const endpoint = isSets ? `/sets?${params.toString()}` : `/products?${params.toString()}`;
-
-    api.get(endpoint)
-      .then(res => {
-        setProducts(isSets ? (res.data.sets || []) : (res.data.products || []));
-        setTotalPages(res.data.totalPages || 1);
-      })
-      .catch(console.error)
-      .finally(() => {
-        setLoading(false);
-      });
+    if (!isSets) {
+      // Fetch both products and sets, then merge them
+      Promise.all([
+        api.get(`/products?${params.toString()}`),
+        api.get(`/sets?${params.toString()}`)
+      ])
+        .then(([prodRes, setRes]) => {
+          const prods = prodRes.data.products || [];
+          const sets = (setRes.data.sets || []).map((s: any) => ({ ...s, _isSet: true }));
+          // Mix them: Sets first, then Products
+          setProducts([...sets, ...prods]);
+          setTotalPages(Math.max(prodRes.data.totalPages || 1, setRes.data.totalPages || 1));
+        })
+        .catch(console.error)
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      // Fetch only sets
+      api.get(`/sets?${params.toString()}`)
+        .then(res => {
+          const sets = (res.data.sets || []).map((s: any) => ({ ...s, _isSet: true }));
+          setProducts(sets);
+          setTotalPages(res.data.totalPages || 1);
+        })
+        .catch(console.error)
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }, [categoryParam, sortParam, priceParam, stockParam, pageParam, qParam, isSets]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -386,7 +405,7 @@ export default function ShopPage() {
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className={`group ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-6 sm:gap-12 bg-white border-b border-gray-100 transition-all duration-300 items-center' : 'flex flex-col gap-0 bg-white transition-all duration-300 h-full'}`}
                   >
-                    <Link to={isSets ? `/collections/${product.slug}` : `/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[500px] shrink-0 bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
+                    <Link to={product._isSet ? `/collections/${product.slug}` : `/products/${product.slug}`} className={`relative overflow-hidden block ${viewMode === 'list' ? 'w-full sm:w-[500px] shrink-0 bg-[#f5f5f5]' : 'w-full aspect-square bg-[#f5f5f5]'}`}>
                       {product.images && product.images.length > 0 ? (
                         <>
                           <img
@@ -457,27 +476,31 @@ export default function ShopPage() {
                           {product.description?.replace(/<[^>]+>/g, '') || product.overview?.replace(/<[^>]+>/g, '') || 'No description available.'}
                         </p>
                       )}
-
                       <div className="flex items-center justify-between mt-auto">
                         <div className={`flex items-center gap-2.5 ${viewMode === 'list' ? 'flex-row' : 'flex-row'}`}>
-                          {product.basePrice ? (
-                            <>
+                          {product.basePrice !== null && product.basePrice !== undefined ? (
+                            <div className="flex items-center gap-3">
                               <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl' : 'text-[17px]'}`}>
-                                {product.discountPercentage > 0
-                                  ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
-                                  : `৳ ${product.basePrice.toLocaleString()}`
-                                }
+                                ৳ {product.discountPercentage ? 
+                                  (product.basePrice - (product.basePrice * (product.discountPercentage / 100))).toLocaleString() : 
+                                  product.basePrice.toLocaleString()}
                               </span>
                               {product.discountPercentage > 0 && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">৳ {product.basePrice.toLocaleString()}</span>
+                                  <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
+                                    ৳ {product.basePrice.toLocaleString()}
+                                  </span>
                                   <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
                                 </div>
                               )}
-                            </>
-                          ) : (
+                            </div>
+                          ) : product.priceDisplay ? (
                             <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl' : 'text-[17px]'}`}>
-                              {product.priceDisplay || `$${product.price}`}
+                              {product.priceDisplay}
+                            </span>
+                          ) : (
+                            <span className={`font-semibold text-gray-400 ${viewMode === 'list' ? 'text-2xl' : 'text-[17px]'}`}>
+                              Price on Request
                             </span>
                           )}
                         </div>

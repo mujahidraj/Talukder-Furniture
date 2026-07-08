@@ -96,7 +96,10 @@ export default function ProductListPage() {
             </button>
           )}
           <Link to="/admin/products/bulk-import" className="btn btn-outline text-sm hidden sm:inline-flex">
-            Bulk Import
+            Bulk Import (Excel)
+          </Link>
+          <Link to="/admin/products/bulk-image-import" className="btn btn-outline text-sm hidden sm:inline-flex">
+            Bulk Import (Images)
           </Link>
           <Link to="/admin/products/new" className="btn bg-black text-white hover:bg-gray-900 text-sm flex items-center gap-2 transition-colors">
             <Plus size={16} /> Add Product

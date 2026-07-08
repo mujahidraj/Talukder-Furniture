@@ -47,7 +47,7 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Link to="/" className="flex flex-col items-center">
-            <img src="/furniture_logo.jpg" alt="Talukder Furniture" className="h-[60px] w-auto object-contain mb-2" />
+            <img src="/ICON SET/furniture_logo.jpg" alt="Talukder Furniture" className="h-[60px] w-auto object-contain mb-2" />
             <span className="text-xl font-serif font-bold text-primary tracking-tight">
               Talukder <span className="text-accent">Admin</span>
             </span>
@@ -147,3 +147,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -118,7 +118,7 @@ export default function AdminUserListPage() {
               {loading ? (
                 <tr>
                   <td colSpan={isSuperAdmin ? 4 : 3} className="px-6 py-10 text-center">
-                    <div className="flex justify-center"><img src="/LOGO.gif" alt="Loading..." className="w-20 h-20 object-contain" /></div>
+                    <div className="flex justify-center"><img src="/ICON SET/LOGO.gif" alt="Loading..." className="w-20 h-20 object-contain" /></div>
                   </td>
                 </tr>
               ) : admins.length === 0 ? (
@@ -299,3 +299,5 @@ export default function AdminUserListPage() {
     </div>
   );
 }
+
+

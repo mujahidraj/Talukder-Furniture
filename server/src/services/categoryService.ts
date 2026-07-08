@@ -7,13 +7,13 @@ export const getTree = async () => {
     orderBy: { order: 'asc' },
     include: {
       _count: {
-        select: { products: true }
+        select: { products: true, sets: true }
       },
       children: {
         orderBy: { order: 'asc' },
         include: {
           _count: {
-            select: { products: true }
+            select: { products: true, sets: true }
           }
         }
       },
@@ -21,11 +21,11 @@ export const getTree = async () => {
   });
 
   const rootCategories = categories.filter(c => c.parentId === null).map(cat => {
-    // Calculate total products including sub-categories
-    const childProductCount = cat.children?.reduce((sum, child) => sum + (child._count?.products || 0), 0) || 0;
+    // Calculate total products including sub-categories (products + sets)
+    const childProductCount = cat.children?.reduce((sum, child) => sum + (child._count?.products || 0) + (child._count?.sets || 0), 0) || 0;
     return {
       ...cat,
-      totalProducts: (cat._count?.products || 0) + childProductCount
+      totalProducts: (cat._count?.products || 0) + (cat._count?.sets || 0) + childProductCount
     };
   });
   

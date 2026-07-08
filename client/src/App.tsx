@@ -29,6 +29,7 @@ const AdminProducts = lazy(() => import('./pages/admin/products/ProductListPage'
 const AdminProductForm = lazy(() => import('./pages/admin/products/ProductFormPage'));
 const AdminProductDetails = lazy(() => import('./pages/admin/products/AdminProductDetailsPage'));
 const AdminBulkImport = lazy(() => import('./pages/admin/products/BulkImportPage'));
+const AdminBulkImageImport = lazy(() => import('./pages/admin/products/BulkImageImportPage'));
 const AdminCategories = lazy(() => import('./pages/admin/categories/CategoryListPage'));
 const AdminStores = lazy(() => import('./pages/admin/stores/StoreListPage'));
 const AdminStoreForm = lazy(() => import('./pages/admin/stores/StoreFormPage'));
@@ -52,7 +53,7 @@ const PageLoader = () => {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="flex flex-col items-center gap-3">
-        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <img src="/ICON SET/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
         <p className="text-text-secondary text-sm">Loading...</p>
       </div>
     </div>
@@ -104,6 +105,7 @@ function App() {
           <Route path="products/new" element={<AdminProductForm />} />
           <Route path="products/:id/edit" element={<AdminProductForm />} />
           <Route path="products/bulk-import" element={<AdminBulkImport />} />
+          <Route path="products/bulk-image-import" element={<AdminBulkImageImport />} />
           <Route path="products/:id" element={<AdminProductDetails />} />
           <Route path="sets" element={<AdminSets />} />
           <Route path="sets/new" element={<AdminSetForm />} />
@@ -137,3 +139,5 @@ function App() {
 }
 
 export default App;
+
+

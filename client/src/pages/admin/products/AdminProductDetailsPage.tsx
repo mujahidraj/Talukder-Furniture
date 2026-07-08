@@ -29,7 +29,7 @@ export default function AdminProductDetailsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <img src="/ICON SET/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
         <p className="mt-3 text-sm text-gray-500">Loading...</p>
       </div>
     );
@@ -312,3 +312,5 @@ export default function AdminProductDetailsPage() {
     </div>
   );
 }
+
+

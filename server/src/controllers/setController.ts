@@ -12,7 +12,7 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
 
 export const getBySlug = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const set = await setService.getSetBySlug(req.params.slug);
+    const set = await setService.getSetBySlug(req.params.slug as string);
     res.json(set);
   } catch (error) {
     next(error);
@@ -21,7 +21,7 @@ export const getBySlug = async (req: Request, res: Response, next: NextFunction)
 
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const set = await setService.getSetById(req.params.id);
+    const set = await setService.getSetById(req.params.id as string);
     res.json(set);
   } catch (error) {
     next(error);
@@ -39,7 +39,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const set = await setService.updateSet(req.params.id, req.body);
+    const set = await setService.updateSet(req.params.id as string, req.body);
     res.json(set);
   } catch (error) {
     next(error);
@@ -48,7 +48,8 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await setService.deleteSet(req.params.id);
+    const id = req.params.id as string;
+    await setService.deleteSet(id);
     res.json({ message: 'Set deleted successfully' });
   } catch (error) {
     next(error);

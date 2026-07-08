@@ -510,7 +510,7 @@ export default function SetDetailsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[100vh] bg-white">
-        <img src="/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
+        <img src="/ICON SET/LOGO.gif" alt="Loading..." className="w-56 h-56 object-contain" />
         <p className="mt-4 text-sm font-serif italic tracking-[0.15em] text-gray-500">Curating Collection...</p>
       </div>
     );
@@ -744,3 +744,5 @@ export default function SetDetailsPage() {
     </div>
   );
 }
+
+

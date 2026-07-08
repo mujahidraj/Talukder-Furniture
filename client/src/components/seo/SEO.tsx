@@ -16,7 +16,7 @@ export default function SEO({
   description,
   type = 'website',
   name = 'Talukder Furniture',
-  image = 'https://talukderfurniture.com/furniture_logo.jpg', // Default image
+  image = 'https://talukderfurniture.com/ICON%20SET/furniture_logo.jpg', // Default image
   url = 'https://talukderfurniture.com',
   schema
 }: SEOProps) {
@@ -82,3 +82,4 @@ export default function SEO({
     </Helmet>
   );
 }
+
