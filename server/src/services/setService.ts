@@ -3,7 +3,7 @@ import slugify from 'slugify';
 import { AppError } from '../middleware/errorHandler.js';
 
 export const getSets = async (query: any = {}) => {
-  const { page = 1, limit = 20, category, admin } = query;
+  const { page = 1, limit = 20, category, admin, q } = query;
   const parsedLimit = parseInt(limit, 10);
   const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
   const skip = (parseInt(page, 10) - 1) * take;
@@ -28,6 +28,13 @@ export const getSets = async (query: any = {}) => {
         slug: category,
       };
     }
+  }
+
+  if (q) {
+    where.OR = [
+      { name: { contains: q, mode: 'insensitive' } },
+      { sku: { contains: q, mode: 'insensitive' } },
+    ];
   }
 
   const [sets, total] = await Promise.all([

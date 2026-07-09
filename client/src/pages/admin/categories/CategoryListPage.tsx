@@ -13,6 +13,8 @@ export default function CategoryListPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newSubCategory, setNewSubCategory] = useState({ name: '', parentId: '' });
 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const fetchCategories = async () => {
     setLoading(true);
     try {
@@ -93,6 +95,33 @@ export default function CategoryListPage() {
     }
   };
 
+  // Filter Categories
+  const filteredCategories = React.useMemo(() => {
+    if (!searchTerm) return categories;
+    const lowerTerm = searchTerm.toLowerCase();
+
+    const filterNode = (node: any): any => {
+      const matchSelf = node.name.toLowerCase().includes(lowerTerm) || node.slug.toLowerCase().includes(lowerTerm);
+      
+      let filteredChildren = [];
+      if (node.children) {
+        filteredChildren = node.children.map(filterNode).filter(Boolean);
+      }
+
+      if (matchSelf || filteredChildren.length > 0) {
+        return {
+          ...node,
+          children: filteredChildren.length > 0 ? filteredChildren : (matchSelf ? node.children : [])
+        };
+      }
+      return null;
+    };
+
+    return categories.map(filterNode).filter(Boolean);
+  }, [categories, searchTerm]);
+
+  const isExpanded = (id: number) => searchTerm ? true : expandedCats[id];
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -121,6 +150,8 @@ export default function CategoryListPage() {
           <div className="relative w-full sm:w-96">
             <input 
               type="text" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search categories..." 
               className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
             />
@@ -142,12 +173,12 @@ export default function CategoryListPage() {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr><td colSpan={5} className="p-8 text-center animate-pulse">Loading categories...</td></tr>
-              ) : categories.map((cat) => (
+              ) : filteredCategories.map((cat) => (
                 <React.Fragment key={cat.id}>
                   {/* Main Category Row */}
                   <tr className="bg-gray-50/50 hover:bg-gray-50 transition-colors group">
                     <td className="p-4 font-semibold text-primary flex items-center gap-2 cursor-pointer select-none" onClick={() => toggleExpand(cat.id)}>
-                      {expandedCats[cat.id] ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
+                      {isExpanded(cat.id) ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       {cat.name} <span className="text-xs font-normal text-gray-400 ml-2">({cat.children?.length || 0} sub-categories)</span>
                     </td>
                     <td className="p-4 text-sm text-gray-500">{cat.slug}</td>
@@ -168,12 +199,12 @@ export default function CategoryListPage() {
                   </tr>
 
                   {/* Sub Categories Rows */}
-                  {expandedCats[cat.id] && cat.children?.map((sub: any) => (
+                  {isExpanded(cat.id) && cat.children?.map((sub: any) => (
                     <React.Fragment key={sub.id}>
                       <tr className="hover:bg-gray-50 transition-colors group">
                         <td className="p-4 pl-12 text-gray-700 flex items-center gap-3 cursor-pointer select-none" onClick={() => toggleExpand(sub.id)}>
                           <CornerDownRight size={16} className="text-gray-300" />
-                          {expandedCats[sub.id] ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-400" />}
+                          {isExpanded(sub.id) ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-400" />}
                           {sub.name} <span className="text-xs font-normal text-gray-400 ml-2">({sub.children?.length || 0} sub-sub-categories)</span>
                         </td>
                         <td className="p-4 text-sm text-gray-500">{sub.slug}</td>
@@ -193,7 +224,7 @@ export default function CategoryListPage() {
                         </td>
                       </tr>
                       {/* Sub-Sub Categories Rows */}
-                      {expandedCats[sub.id] && sub.children?.map((subSub: any) => (
+                      {isExpanded(sub.id) && sub.children?.map((subSub: any) => (
                         <tr key={subSub.id} className="hover:bg-gray-50 transition-colors group">
                           <td className="p-4 pl-20 text-gray-600 flex items-center gap-3">
                             <CornerDownRight size={16} className="text-gray-300" />
