@@ -11,7 +11,7 @@ export default function CategoryListPage() {
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [newSubCategory, setNewSubCategory] = useState({ name: '', parentId: '' });
+  const [newSubCategory, setNewSubCategory] = useState({ name: '', parentId: '', order: 0 });
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -48,8 +48,19 @@ export default function CategoryListPage() {
 
   const handleEdit = (cat: any) => {
     setEditingId(cat.id);
-    setNewSubCategory({ name: cat.name, parentId: cat.parentId ? cat.parentId.toString() : '' });
+    setNewSubCategory({ name: cat.name, parentId: cat.parentId ? cat.parentId.toString() : '', order: cat.order || 0 });
     setShowModal(true);
+  };
+
+  const handleUpdateOrder = async (id: number, newOrder: number, oldOrder: number) => {
+    if (newOrder === (oldOrder || 0)) return;
+    try {
+      await api.put(`/categories/${id}`, { order: newOrder });
+      fetchCategories();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update order');
+    }
   };
 
   const handleAddSubCategory = async (e: React.FormEvent) => {
@@ -60,16 +71,18 @@ export default function CategoryListPage() {
         await api.put(`/categories/${editingId}`, {
           name: newSubCategory.name,
           parentId: newSubCategory.parentId ? parseInt(newSubCategory.parentId, 10) : null,
+          order: newSubCategory.order,
         });
       } else {
         await api.post('/categories', {
           name: newSubCategory.name,
           parentId: newSubCategory.parentId ? parseInt(newSubCategory.parentId, 10) : null,
+          order: newSubCategory.order,
         });
       }
       setShowModal(false);
       setEditingId(null);
-      setNewSubCategory({ name: '', parentId: '' });
+      setNewSubCategory({ name: '', parentId: '', order: 0 });
       fetchCategories();
     } catch (err) {
       console.error(err);
@@ -131,13 +144,13 @@ export default function CategoryListPage() {
         </div>
         <div className="flex gap-3">
           <button 
-            onClick={() => { setEditingId(null); setNewSubCategory({ name: '', parentId: '' }); setShowModal(true); }}
+            onClick={() => { setEditingId(null); setNewSubCategory({ name: '', parentId: '', order: 0 }); setShowModal(true); }}
             className="btn btn-outline text-sm flex items-center gap-2"
           >
             <Plus size={16} /> Add Main Category
           </button>
           <button 
-            onClick={() => { setEditingId(null); setNewSubCategory({ name: '', parentId: categories[0]?.id?.toString() || '' }); setShowModal(true); }}
+            onClick={() => { setEditingId(null); setNewSubCategory({ name: '', parentId: categories[0]?.id?.toString() || '', order: 0 }); setShowModal(true); }}
             className="btn btn-primary text-sm flex items-center gap-2"
           >
             <Plus size={16} /> Add Sub-Category
@@ -164,6 +177,7 @@ export default function CategoryListPage() {
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
                 <th className="p-4 font-semibold w-1/3">Name</th>
+                <th className="p-4 font-semibold w-24">Order</th>
                 <th className="p-4 font-semibold">Slug</th>
                 <th className="p-4 font-semibold">Products</th>
                 <th className="p-4 font-semibold">Status</th>
@@ -180,6 +194,14 @@ export default function CategoryListPage() {
                     <td className="p-4 font-semibold text-primary flex items-center gap-2 cursor-pointer select-none" onClick={() => toggleExpand(cat.id)}>
                       {isExpanded(cat.id) ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       {cat.name} <span className="text-xs font-normal text-gray-400 ml-2">({cat.children?.length || 0} sub-categories)</span>
+                    </td>
+                    <td className="p-4">
+                      <input 
+                        type="number" 
+                        defaultValue={cat.order || 0}
+                        onBlur={(e) => handleUpdateOrder(cat.id, parseInt(e.target.value) || 0, cat.order)}
+                        className="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                      />
                     </td>
                     <td className="p-4 text-sm text-gray-500">{cat.slug}</td>
                     <td className="p-4 text-sm font-medium text-gray-700">
@@ -207,6 +229,14 @@ export default function CategoryListPage() {
                           {isExpanded(sub.id) ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-400" />}
                           {sub.name} <span className="text-xs font-normal text-gray-400 ml-2">({sub.children?.length || 0} sub-sub-categories)</span>
                         </td>
+                        <td className="p-4">
+                          <input 
+                            type="number" 
+                            defaultValue={sub.order || 0}
+                            onBlur={(e) => handleUpdateOrder(sub.id, parseInt(e.target.value) || 0, sub.order)}
+                            className="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                          />
+                        </td>
                         <td className="p-4 text-sm text-gray-500">{sub.slug}</td>
                         <td className="p-4 text-sm font-medium text-gray-700">
                           <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(sub._count?.products || 0) + (sub._count?.sets || 0)}</span>
@@ -229,6 +259,14 @@ export default function CategoryListPage() {
                           <td className="p-4 pl-20 text-gray-600 flex items-center gap-3">
                             <CornerDownRight size={16} className="text-gray-300" />
                             {subSub.name}
+                          </td>
+                          <td className="p-4">
+                            <input 
+                              type="number" 
+                              defaultValue={subSub.order || 0}
+                              onBlur={(e) => handleUpdateOrder(subSub.id, parseInt(e.target.value) || 0, subSub.order)}
+                              className="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                            />
                           </td>
                           <td className="p-4 text-sm text-gray-500">{subSub.slug}</td>
                           <td className="p-4 text-sm font-medium text-gray-700">
@@ -300,6 +338,16 @@ export default function CategoryListPage() {
                     placeholder="e.g. Office Chairs"
                     className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                  <input
+                    type="number"
+                    value={newSubCategory.order}
+                    onChange={(e) => setNewSubCategory({...newSubCategory, order: parseInt(e.target.value) || 0})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Lower numbers appear first (e.g. 0, 1, 2...)</p>
                 </div>
               </div>
               <div className="mt-8 flex justify-end gap-3">
