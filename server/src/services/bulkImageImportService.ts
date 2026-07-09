@@ -76,30 +76,28 @@ export const processImageImport = async (folderPath: string, adminId: number): P
         
         if (type === 'product') {
           // Look for product by SKU
-          const product = await prisma.product.findUnique({
-            where: { sku: identifier },
+          // Find all products that match exactly OR are variations of this base SKU (e.g. -2D, -3D)
+          const products = await prisma.product.findMany({
+            where: {
+              OR: [
+                { sku: identifier },
+                { sku: { startsWith: `${identifier}-` } }
+              ]
+            },
             include: { images: true }
           });
 
-          if (!product) {
+          if (products.length === 0) {
             report.unmatchedCount++;
-            report.results.push({ file: originalFilename, status: 'unmatched', message: `No product found with SKU: ${identifier}` });
+            report.results.push({ file: originalFilename, status: 'unmatched', message: `No product found matching SKU: ${identifier}` });
             continue;
           }
 
-          // Check for duplicate by comparing folderName and original filename
-          const folderName = path.basename(path.dirname(filePath));
-          const uniqueAltText = `${folderName}/${originalFilename}`;
-          
-          const isDuplicate = product.images.some(img => img.altText === uniqueAltText);
-          if (isDuplicate) {
-            report.skippedCount++;
-            report.results.push({ file: originalFilename, status: 'skipped', message: `Image already exists for SKU: ${identifier} from folder: ${folderName}` });
-            continue;
-          }
-
-          // Process the image
+          // We only need to process the image file once, then we can attach it to all matched products
           const fileBuffer = await fs.readFile(filePath);
+          const fileStat = await fs.stat(filePath);
+          const fileSize = fileStat.size;
+          
           const fileObj = {
             buffer: fileBuffer,
             originalname: originalFilename,
@@ -107,23 +105,55 @@ export const processImageImport = async (folderPath: string, adminId: number): P
           };
 
           const processed = await processImage(fileObj);
+          
+          let attachedCount = 0;
+          let skippedCount = 0;
 
-          // Get max order
-          const maxOrder = product.images.reduce((max, img) => Math.max(max, img.order), -1);
-
-          await prisma.productImage.create({
-            data: {
-              productId: product.id,
-              url: processed.url,
-              thumbUrl: processed.thumbUrl,
-              altText: uniqueAltText, // Store folder and filename here for deduplication
-              isPrimary: maxOrder === -1, // First image is primary
-              order: maxOrder + 1
+          // Attach to all matched products
+          for (const product of products) {
+            // Check for duplicate by comparing original filename AND file size.
+            // This allows uploading a different image (e.g. new angle) with the same name from a different folder,
+            // while safely skipping if they accidentally run the import twice on the exact same file.
+            const uniqueAltText = `${originalFilename}_${fileSize}`;
+            
+            const isDuplicate = product.images.some(img => img.altText === uniqueAltText);
+            if (isDuplicate) {
+              skippedCount++;
+              continue;
             }
-          });
 
-          report.matchedCount++;
-          report.results.push({ file: originalFilename, status: 'matched', message: `Matched to product SKU: ${identifier}` });
+            // Get max order
+            const maxOrder = product.images.reduce((max, img) => Math.max(max, img.order), -1);
+
+            await prisma.productImage.create({
+              data: {
+                productId: product.id,
+                url: processed.url,
+                thumbUrl: processed.thumbUrl,
+                altText: uniqueAltText, // Store folder and filename here for deduplication
+                isPrimary: maxOrder === -1, // First image is primary
+                order: maxOrder + 1
+              }
+            });
+            attachedCount++;
+          }
+
+          if (attachedCount > 0) {
+            report.matchedCount++;
+            report.results.push({ 
+              file: originalFilename, 
+              status: 'matched', 
+              message: `Attached to ${attachedCount} product(s) (SKU base: ${identifier})` 
+            });
+          }
+          if (skippedCount > 0 && attachedCount === 0) {
+            report.skippedCount++;
+            report.results.push({ 
+              file: originalFilename, 
+              status: 'skipped', 
+              message: `Image already exists for all ${skippedCount} matching product(s)` 
+            });
+          }
 
         } else if (type === 'set') {
           // identifier could be "set 109", "set-109", "set_109"

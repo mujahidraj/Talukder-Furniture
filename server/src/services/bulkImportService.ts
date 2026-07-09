@@ -88,12 +88,56 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
   // Group rows by productCode (or productName if no code)
   const groupedRows: Record<string, any[][]> = {};
   
+  let lastProductName = '';
+  let lastMaterials = '';
+  let lastCatMain = '';
+  let lastCatSub = '';
+  let lastCatSubSub = '';
+  let lastDesc = '';
+  let lastCare = '';
+  let lastWarranty = '';
+  let lastPolicy = '';
+
   for (let i = 0; i < dataRows.length; i++) {
-    const row = dataRows[i];
-    const productCode = row[1]?.toString().trim();
-    const productName = row[2]?.toString().trim();
+    const row = [...dataRows[i]]; // Copy row so we can modify it
     
-    // Skip empty rows
+    // Check if row has any meaningful data
+    const hasData = row.some(cell => cell !== undefined && cell !== null && cell !== '');
+    if (!hasData) {
+      result.skippedCount++;
+      continue;
+    }
+
+    const productCode = row[1]?.toString().trim();
+    let productName = row[2]?.toString().trim();
+
+    // If product name exists, update our "last seen" memory
+    if (productName) {
+      lastProductName = productName;
+      lastMaterials = row[4]?.toString().trim() || '';
+      lastCatMain = row[5]?.toString().trim() || '';
+      lastCatSub = row[6]?.toString().trim() || '';
+      lastCatSubSub = row[7]?.toString().trim() || '';
+      lastDesc = row[13]?.toString().trim() || '';
+      lastCare = row[14]?.toString().trim() || '';
+      lastWarranty = row[15]?.toString().trim() || '';
+      lastPolicy = row[16]?.toString().trim() || '';
+    } else if (lastProductName) {
+      // If product name is blank, inherit from the last seen product
+      // This allows distinct SKUs (e.g., 2D vs 3D cupboard) to be treated as separate products 
+      // without needing to copy-paste the name and description on every row.
+      productName = lastProductName;
+      row[2] = lastProductName;
+      if (!row[4]) row[4] = lastMaterials;
+      if (!row[5]) row[5] = lastCatMain;
+      if (!row[6]) row[6] = lastCatSub;
+      if (!row[7]) row[7] = lastCatSubSub;
+      if (!row[13]) row[13] = lastDesc;
+      if (!row[14]) row[14] = lastCare;
+      if (!row[15]) row[15] = lastWarranty;
+      if (!row[16]) row[16] = lastPolicy;
+    }
+    
     if (!productCode && !productName) {
       result.skippedCount++;
       continue;
@@ -105,6 +149,8 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
       continue;
     }
     
+    // The key is the product code. If different rows have different product codes 
+    // (e.g. TFL-CBD-2D vs TFL-CBD-3D), they will be distinct keys and thus distinct products!
     const key = productCode || productName;
     if (!groupedRows[key]) {
       groupedRows[key] = [];
