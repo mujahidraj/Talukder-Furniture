@@ -80,12 +80,19 @@ export default function ShopPage() {
   useEffect(() => {
     // Fetch Categories
     api.get('/categories').then(res => {
-      // Flatten categories for the dropdown, or just use main categories
+      // Flatten categories for the dropdown
       const flatCats: any[] = [];
       res.data.forEach((main: any) => {
         flatCats.push(main);
         if (main.children) {
-          main.children.forEach((sub: any) => flatCats.push({ ...sub, name: `— ${sub.name}` }));
+          main.children.forEach((sub: any) => {
+            flatCats.push({ ...sub, name: `— ${sub.name}` });
+            if (sub.children) {
+              sub.children.forEach((subSub: any) => {
+                flatCats.push({ ...subSub, name: `—— ${subSub.name}` });
+              });
+            }
+          });
         }
       });
       setCategories(flatCats);

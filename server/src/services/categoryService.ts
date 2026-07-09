@@ -14,6 +14,14 @@ export const getTree = async () => {
         include: {
           _count: {
             select: { products: true, sets: true }
+          },
+          children: {
+            orderBy: { order: 'asc' },
+            include: {
+              _count: {
+                select: { products: true, sets: true }
+              }
+            }
           }
         }
       },
@@ -22,7 +30,17 @@ export const getTree = async () => {
 
   const rootCategories = categories.filter(c => c.parentId === null).map(cat => {
     // Calculate total products including sub-categories (products + sets)
-    const childProductCount = cat.children?.reduce((sum, child) => sum + (child._count?.products || 0) + (child._count?.sets || 0), 0) || 0;
+    let childProductCount = 0;
+    if (cat.children) {
+      for (const child of cat.children) {
+        childProductCount += (child._count?.products || 0) + (child._count?.sets || 0);
+        if (child.children) {
+          for (const subChild of child.children) {
+            childProductCount += (subChild._count?.products || 0) + (subChild._count?.sets || 0);
+          }
+        }
+      }
+    }
     return {
       ...cat,
       totalProducts: (cat._count?.products || 0) + (cat._count?.sets || 0) + childProductCount
@@ -49,7 +67,16 @@ export const getCategoryBySlug = async (slug) => {
 };
 
 export const createCategory = async (data) => {
-  const slug = data.slug || slugify(data.name, { lower: true, strict: true });
+  let baseSlug = data.slug || slugify(data.name, { lower: true, strict: true });
+  let slug = baseSlug;
+  
+  let existing = await prisma.category.findUnique({ where: { slug } });
+  let counter = 1;
+  while (existing) {
+    slug = `${baseSlug}-${counter}`;
+    existing = await prisma.category.findUnique({ where: { slug } });
+    counter++;
+  }
   
   return prisma.category.create({
     data: {
@@ -66,7 +93,17 @@ export const createCategory = async (data) => {
 export const updateCategory = async (id, data) => {
   const updateData = { ...data };
   if (data.name && !data.slug) {
-    updateData.slug = slugify(data.name, { lower: true, strict: true });
+    let baseSlug = slugify(data.name, { lower: true, strict: true });
+    let slug = baseSlug;
+    
+    let existing = await prisma.category.findUnique({ where: { slug } });
+    let counter = 1;
+    while (existing && existing.id !== parseInt(id, 10)) {
+      slug = `${baseSlug}-${counter}`;
+      existing = await prisma.category.findUnique({ where: { slug } });
+      counter++;
+    }
+    updateData.slug = slug;
   }
 
   return prisma.category.update({

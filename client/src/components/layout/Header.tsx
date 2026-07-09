@@ -66,17 +66,24 @@ export default function Header() {
 
           let megaMenu;
           if (cat.children && cat.children.length > 0) {
-            megaMenu = [];
-            for (let i = 0; i < cat.children.length; i += 4) {
-              const chunk = cat.children.slice(i, i + 4);
-              megaMenu.push({
-                title: i === 0 ? 'Categories' : 'More',
-                links: chunk.map((sub: any) => ({
-                  label: sub.name,
-                  path: `/shop?category=${sub.slug}`
-                }))
+            megaMenu = cat.children.map((sub: any) => {
+              const links = [];
+              if (sub.children && sub.children.length > 0) {
+                links.push(...sub.children.map((subSub: any) => ({
+                  label: subSub.name,
+                  path: `/shop?category=${subSub.slug}`
+                })));
+              }
+              links.push({
+                label: `Shop All ${sub.name}`,
+                path: `/shop?category=${sub.slug}`
               });
-            }
+
+              return {
+                title: sub.name,
+                links
+              };
+            });
           }
 
           return {
@@ -306,30 +313,45 @@ export default function Header() {
 
               {/* Right Side: Promotional Banner (Desktop only) */}
               <div className="hidden lg:block w-[320px] xl:w-[380px] shrink-0 border-l border-gray-100 pl-8 xl:pl-10">
-                <div className="relative w-full h-full min-h-[300px] bg-gray-900 rounded-xl overflow-hidden group">
-                  {/* Background Image */}
+                <div className="relative w-full h-full min-h-[320px] flex flex-col items-center justify-center group rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+                  {/* Local Background Image */}
                   <img 
-                    src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&q=80" 
-                    alt="Featured Furniture" 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60"
+                    src="/Images/hospital_furniture.png" 
+                    alt="Furniture Background" 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90"
                   />
-                  {/* Dark Gradient Overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  {/* Subtle Gradient Overlay (Less wash, better visibility) */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-white/10" />
                   
-                  <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                    <span className="text-white text-[11px] font-bold uppercase tracking-wider mb-2">Featured</span>
-                    <h4 className="text-[26px] font-light text-white mb-3 leading-[1.2]" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      Crafted for <br/>Your Comfort
+                  {/* Logo GIF */}
+                  <div className="relative z-10">
+                    <img 
+                      src="/ICON%20SET/LOGO.gif" 
+                      alt="Talukder Furniture Logo" 
+                      className="w-48 h-48 object-contain mb-2 mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                      onError={(e) => { e.currentTarget.src = "/ICON SET/LOGO.gif"; }}
+                    />
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-col items-center text-center px-6 pb-4">
+                    <span className="text-[#E32227] text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                       <span className="w-4 h-[2px] bg-[#E32227] rounded-full"></span> 
+                       Featured
+                       <span className="w-4 h-[2px] bg-[#E32227] rounded-full"></span> 
+                    </span>
+                    <h4 className="text-[24px] font-bold text-gray-900 mb-3 leading-tight tracking-tight">
+                      Talukder Exclusives
                     </h4>
-                    <p className="text-[13px] text-gray-200 mb-6 leading-relaxed">
-                      Discover our latest collection of premium furniture designed for modern living.
+                    <p className="text-[13px] text-gray-700 font-medium mb-6 leading-relaxed max-w-[240px]">
+                      Experience the finest craftsmanship and modern designs with our latest collection.
                     </p>
                     <Link 
                       to="/shop" 
-                      className="text-[12px] font-semibold text-white uppercase tracking-[0.1em] flex items-center gap-2 hover:text-[#E32227] transition-colors w-fit pb-1 border-b border-white hover:border-[#E32227]"
+                      className="text-[12px] font-bold text-[#E32227] uppercase tracking-[0.15em] flex items-center gap-2 hover:text-[#b3191d] transition-colors pb-1 border-b-2 border-[#E32227]/30 hover:border-[#E32227] group/link"
                       onClick={() => setHoveredNav(null)}
                     >
-                      Explore More <ArrowRight size={14} />
+                      Explore More <ArrowRight size={14} className="group-hover/link:translate-x-1.5 transition-transform duration-300" />
                     </Link>
                   </div>
                 </div>

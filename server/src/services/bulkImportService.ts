@@ -123,14 +123,15 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
       const materials = firstRow[4]?.toString().trim();
       const categoryMain = normalizeCategoryName(firstRow[5]?.toString());
       const categorySub = normalizeCategoryName(firstRow[6]?.toString());
-      const description = firstRow[12]?.toString().trim();
-      const careAndMaintenance = firstRow[13]?.toString().trim();
-      const warrantyInfo = firstRow[14]?.toString().trim();
-      const returnExchangePolicy = firstRow[15]?.toString().trim();
+      const categorySubSub = normalizeCategoryName(firstRow[7]?.toString());
+      const description = firstRow[13]?.toString().trim();
+      const careAndMaintenance = firstRow[14]?.toString().trim();
+      const warrantyInfo = firstRow[15]?.toString().trim();
+      const returnExchangePolicy = firstRow[16]?.toString().trim();
 
       // --- Category Resolution ---
       let categoryId: number;
-      const cacheKey = `${categoryMain}__${categorySub}`;
+      const cacheKey = `${categoryMain}__${categorySub}__${categorySubSub}`;
 
       if (categoryCache.has(cacheKey)) {
         categoryId = categoryCache.get(cacheKey)!;
@@ -145,9 +146,10 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
           });
         }
 
+        let subCategory = null;
         if (categorySub) {
           const subSlug = slugify(categorySub, { lower: true, strict: true });
-          const subCategory = await prisma.category.upsert({
+          subCategory = await prisma.category.upsert({
             where: { slug: subSlug },
             update: {},
             create: {
@@ -156,6 +158,21 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
               parentId: parentCategory?.id || null,
             },
           });
+        }
+
+        if (categorySubSub) {
+          const subSubSlug = slugify(categorySubSub, { lower: true, strict: true });
+          const subSubCategory = await prisma.category.upsert({
+            where: { slug: subSubSlug },
+            update: {},
+            create: {
+              name: categorySubSub,
+              slug: subSubSlug,
+              parentId: subCategory?.id || parentCategory?.id || null,
+            },
+          });
+          categoryId = subSubCategory.id;
+        } else if (subCategory) {
           categoryId = subCategory.id;
         } else if (parentCategory) {
           categoryId = parentCategory.id;
@@ -180,10 +197,10 @@ export const processExcelFile = async (fileBuffer: Buffer, adminId: number, file
       let discountPercentage: number | null = null;
 
       rowsGroup.forEach((row, index) => {
-        const measurement = row[7]?.toString().trim();
-        const colorName = row[8]?.toString().trim();
-        const mrp = row[10];
-        const discountRaw = row[11];
+        const measurement = row[8]?.toString().trim();
+        const colorName = row[9]?.toString().trim();
+        const mrp = row[11];
+        const discountRaw = row[12];
 
         // Parse price for this specific row/variation
         let rowPrice: number | null = null;
@@ -377,31 +394,31 @@ export const generateTemplate = (): Buffer => {
   const templateData = [
     ['Talukder Furniture Ltd.'],
     ['Home Furniture Specifications'],
-    ['SL No', 'Product Code', 'Product Name ', 'Picture ', 'Meterials', 'Category', '', 'Measurement', 'Color', 'Price', '', '', 'Description', 'Care and Maintenance', 'Warranty Info', 'Return & Exchange Policy'],
-    ['', '', '', '', '', 'Main', 'Sub', '', '', 'DP', 'MRP', 'Discount', '', '', '', ''],
+    ['SL No', 'Product Code', 'Product Name ', 'Picture ', 'Meterials', 'Category', '', '', 'Measurement', 'Color', 'Price', '', '', 'Description', 'Care and Maintenance', 'Warranty Info', 'Return & Exchange Policy'],
+    ['', '', '', '', '', 'Main', 'Sub', 'sub-sub', '', '', 'DP', 'MRP', 'Discount', '', '', '', ''],
     // Example row
-    [1, 'TFL-BED-001', 'Sample Double Bed', '', 'Melamine Face Chip Board & Imported Foreign Accessories', 'Home Furniture ', 'Bedroom Furniture', 'Double-L 2225 x W 1582 x H 875 mm', 'Antique', '', 15600, '22%', 'Product description here.', 'Care instructions here.', 'Warranty details here.', 'Return policy details here.'],
+    [1, 'TFL-BED-001', 'Sample Double Bed', '', 'Melamine Face Chip Board & Imported Foreign Accessories', 'Home Furniture ', 'Bedroom Furniture', 'Bed', 'Double-L 2225 x W 1582 x H 875 mm', 'Antique', '', 15600, '22%', 'Product description here.', 'Care instructions here.', 'Warranty details here.', 'Return policy details here.'],
   ];
 
   const ws = XLSX.utils.aoa_to_sheet(templateData);
 
   // Set cell merges to match the template structure
   ws['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 15 } }, // Talukder Furniture Ltd.
-    { s: { r: 1, c: 0 }, e: { r: 1, c: 15 } }, // Home Furniture Specifications
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 16 } }, // Talukder Furniture Ltd.
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 16 } }, // Home Furniture Specifications
     { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } }, // SL No
     { s: { r: 2, c: 1 }, e: { r: 3, c: 1 } }, // Product Code
     { s: { r: 2, c: 2 }, e: { r: 3, c: 2 } }, // Product Name
     { s: { r: 2, c: 3 }, e: { r: 3, c: 3 } }, // Picture
     { s: { r: 2, c: 4 }, e: { r: 3, c: 4 } }, // Meterials
-    { s: { r: 2, c: 5 }, e: { r: 2, c: 6 } }, // Category (Main, Sub)
-    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }, // Measurement
-    { s: { r: 2, c: 8 }, e: { r: 3, c: 8 } }, // Color
-    { s: { r: 2, c: 9 }, e: { r: 2, c: 11 } }, // Price (DP, MRP, Discount)
-    { s: { r: 2, c: 12 }, e: { r: 3, c: 12 } }, // Description
-    { s: { r: 2, c: 13 }, e: { r: 3, c: 13 } }, // Care and Maintenance
-    { s: { r: 2, c: 14 }, e: { r: 3, c: 14 } }, // Warranty Info
-    { s: { r: 2, c: 15 }, e: { r: 3, c: 15 } }, // Return & Exchange Policy
+    { s: { r: 2, c: 5 }, e: { r: 2, c: 7 } }, // Category (Main, Sub, sub-sub)
+    { s: { r: 2, c: 8 }, e: { r: 3, c: 8 } }, // Measurement
+    { s: { r: 2, c: 9 }, e: { r: 3, c: 9 } }, // Color
+    { s: { r: 2, c: 10 }, e: { r: 2, c: 12 } }, // Price (DP, MRP, Discount)
+    { s: { r: 2, c: 13 }, e: { r: 3, c: 13 } }, // Description
+    { s: { r: 2, c: 14 }, e: { r: 3, c: 14 } }, // Care and Maintenance
+    { s: { r: 2, c: 15 }, e: { r: 3, c: 15 } }, // Warranty Info
+    { s: { r: 2, c: 16 }, e: { r: 3, c: 16 } }, // Return & Exchange Policy
   ];
 
   // Set column widths for readability
@@ -413,6 +430,7 @@ export const generateTemplate = (): Buffer => {
     { wch: 35 },  // Meterials
     { wch: 18 },  // Category Main
     { wch: 22 },  // Category Sub
+    { wch: 22 },  // Category sub-sub
     { wch: 35 },  // Measurement
     { wch: 15 },  // Color
     { wch: 10 },  // DP (Dealer Price)

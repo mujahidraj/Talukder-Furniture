@@ -20,7 +20,14 @@ export default function CategoryListPage() {
       setCategories(data);
       // Expand all by default
       const expanded: Record<number, boolean> = {};
-      data.forEach((c: any) => { expanded[c.id] = true; });
+      data.forEach((c: any) => { 
+        expanded[c.id] = true; 
+        if (c.children) {
+          c.children.forEach((sub: any) => {
+            expanded[sub.id] = true;
+          });
+        }
+      });
       setExpandedCats(expanded);
     } catch (err) {
       console.error(err);
@@ -162,27 +169,54 @@ export default function CategoryListPage() {
 
                   {/* Sub Categories Rows */}
                   {expandedCats[cat.id] && cat.children?.map((sub: any) => (
-                    <tr key={sub.id} className="hover:bg-gray-50 transition-colors group">
-                      <td className="p-4 pl-12 text-gray-700 flex items-center gap-3">
-                        <CornerDownRight size={16} className="text-gray-300" />
-                        {sub.name}
-                      </td>
-                      <td className="p-4 text-sm text-gray-500">{sub.slug}</td>
-                      <td className="p-4 text-sm font-medium text-gray-700">
-                        <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(sub._count?.products || 0) + (sub._count?.sets || 0)}</span>
-                      </td>
-                      <td className="p-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          {sub.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => handleEdit(sub)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Edit"><Edit size={16} /></button>
-                          <button onClick={() => handleDelete(sub.id, false)} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 size={16} /></button>
-                        </div>
-                      </td>
-                    </tr>
+                    <React.Fragment key={sub.id}>
+                      <tr className="hover:bg-gray-50 transition-colors group">
+                        <td className="p-4 pl-12 text-gray-700 flex items-center gap-3 cursor-pointer select-none" onClick={() => toggleExpand(sub.id)}>
+                          <CornerDownRight size={16} className="text-gray-300" />
+                          {expandedCats[sub.id] ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-400" />}
+                          {sub.name} <span className="text-xs font-normal text-gray-400 ml-2">({sub.children?.length || 0} sub-sub-categories)</span>
+                        </td>
+                        <td className="p-4 text-sm text-gray-500">{sub.slug}</td>
+                        <td className="p-4 text-sm font-medium text-gray-700">
+                          <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(sub._count?.products || 0) + (sub._count?.sets || 0)}</span>
+                        </td>
+                        <td className="p-4">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {sub.isActive ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button onClick={(e) => { e.stopPropagation(); handleEdit(sub); }} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Edit"><Edit size={16} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); handleDelete(sub.id, false); }} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 size={16} /></button>
+                          </div>
+                        </td>
+                      </tr>
+                      {/* Sub-Sub Categories Rows */}
+                      {expandedCats[sub.id] && sub.children?.map((subSub: any) => (
+                        <tr key={subSub.id} className="hover:bg-gray-50 transition-colors group">
+                          <td className="p-4 pl-20 text-gray-600 flex items-center gap-3">
+                            <CornerDownRight size={16} className="text-gray-300" />
+                            {subSub.name}
+                          </td>
+                          <td className="p-4 text-sm text-gray-500">{subSub.slug}</td>
+                          <td className="p-4 text-sm font-medium text-gray-700">
+                            <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(subSub._count?.products || 0) + (subSub._count?.sets || 0)}</span>
+                          </td>
+                          <td className="p-4">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              {subSub.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                          </td>
+                          <td className="p-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button onClick={() => handleEdit(subSub)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Edit"><Edit size={16} /></button>
+                              <button onClick={() => handleDelete(subSub.id, false)} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 size={16} /></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
                   ))}
                 </React.Fragment>
               ))}
@@ -216,7 +250,12 @@ export default function CategoryListPage() {
                   >
                     <option value="">None (Main Category)</option>
                     {categories.map(c => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
+                      <React.Fragment key={c.id}>
+                        <option value={c.id}>{c.name}</option>
+                        {c.children && c.children.map((sub: any) => (
+                          <option key={sub.id} value={sub.id}>— {sub.name}</option>
+                        ))}
+                      </React.Fragment>
                     ))}
                   </select>
                 </div>
