@@ -3,7 +3,7 @@ import slugify from 'slugify';
 import { AppError } from '../middleware/errorHandler.js';
 
 export const getSets = async (query: any = {}) => {
-  const { page = 1, limit = 20, category, admin, q } = query;
+  const { page = 1, limit = 20, category, admin, q, price, sort = 'default' } = query;
   const parsedLimit = parseInt(limit, 10);
   const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
   const skip = (parseInt(page, 10) - 1) * take;
@@ -37,12 +37,53 @@ export const getSets = async (query: any = {}) => {
     ];
   }
 
+  // Price filter
+  if (price && price !== 'all') {
+    if (price === '100000+') {
+      where.basePrice = { gte: 100000 };
+    } else {
+      const [minStr, maxStr] = price.split('-');
+      const min = parseInt(minStr, 10);
+      const max = parseInt(maxStr, 10);
+      if (!isNaN(min) && !isNaN(max)) {
+        where.basePrice = { gte: min, lte: max };
+      }
+    }
+  }
+
+  let orderBy: any;
+  switch (sort) {
+    case 'name-asc':
+    case 'name_asc':
+      orderBy = { name: 'asc' };
+      break;
+    case 'name-desc':
+    case 'name_desc':
+      orderBy = { name: 'desc' };
+      break;
+    case 'price-asc':
+    case 'price_asc':
+      orderBy = { basePrice: 'asc' };
+      break;
+    case 'price-desc':
+    case 'price_desc':
+      orderBy = { basePrice: 'desc' };
+      break;
+    case 'oldest':
+      orderBy = { createdAt: 'asc' };
+      break;
+    case 'newest':
+    default:
+      orderBy = { createdAt: 'desc' };
+      break;
+  }
+
   const [sets, total] = await Promise.all([
     prisma.set.findMany({
       where,
       skip,
       take,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
       include: {
         category: true,
       },
