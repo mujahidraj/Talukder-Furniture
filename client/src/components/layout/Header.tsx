@@ -94,13 +94,6 @@ export default function Header() {
           };
         });
 
-        // Add a "Furnitures" root item
-        const shopMenu = {
-          name: 'Furnitures',
-          path: '/shop',
-          hasDropdown: false
-        };
-
         api.get('/sets?limit=50').then(setRes => {
           const sets = setRes.data.sets || [];
           
@@ -135,14 +128,14 @@ export default function Header() {
           }
 
           if (collectionsMenu) {
-            setNavLinks([shopMenu, collectionsMenu, ...dynamicLinks, companyMenu]);
+            setNavLinks([collectionsMenu, ...dynamicLinks, companyMenu]);
           } else {
-            setNavLinks([shopMenu, ...dynamicLinks, companyMenu]);
+            setNavLinks([...dynamicLinks, companyMenu]);
           }
           setLoadingNav(false);
         }).catch(err => {
           console.error(err);
-          setNavLinks([shopMenu, ...dynamicLinks, companyMenu]);
+          setNavLinks([...dynamicLinks, companyMenu]);
           setLoadingNav(false);
         });
       })
@@ -351,7 +344,7 @@ export default function Header() {
                       className="text-[12px] font-bold text-[#E32227] uppercase tracking-[0.15em] flex items-center gap-2 hover:text-[#b3191d] transition-colors pb-1 border-b-2 border-[#E32227]/30 hover:border-[#E32227] group/link"
                       onClick={() => setHoveredNav(null)}
                     >
-                      Explore More <ArrowRight size={14} className="group-hover/link:translate-x-1.5 transition-transform duration-300" />
+                      Explore All Furniture <ArrowRight size={14} className="group-hover/link:translate-x-1.5 transition-transform duration-300" />
                     </Link>
                   </div>
                 </div>

@@ -277,7 +277,12 @@ export default function ProductFormPage() {
                   <React.Fragment key={cat.id}>
                     <option value={cat.id} className="font-semibold text-gray-900">{cat.name} (Main Category)</option>
                     {cat.children?.map((sub: any) => (
-                      <option key={sub.id} value={sub.id}>&nbsp;&nbsp;&nbsp;— {sub.name}</option>
+                      <React.Fragment key={sub.id}>
+                        <option value={sub.id}>&nbsp;&nbsp;&nbsp;— {sub.name}</option>
+                        {sub.children?.map((subSub: any) => (
+                          <option key={subSub.id} value={subSub.id}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;—— {subSub.name}</option>
+                        ))}
+                      </React.Fragment>
                     ))}
                   </React.Fragment>
                 ))}
