@@ -334,7 +334,7 @@ export default function ProductDetailPage() {
 
                 {/* Discount Badge */}
                 {hasDiscount && (
-                  <div className="absolute top-5 right-5 bg-red-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-lg">
+                  <div className="absolute top-5 right-5 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg tracking-wider">
                     -{product.discountPercentage}%
                   </div>
                 )}
@@ -420,7 +420,7 @@ export default function ProductDetailPage() {
                       <span className="text-lg text-gray-300 line-through font-medium mb-0.5">
                         ৳ {currentPrice.toLocaleString()}
                       </span>
-                      <span className="text-xs font-bold text-red-500 bg-red-50 px-2.5 py-1 rounded-full mb-0.5">
+                      <span className="text-sm font-bold text-red-500 bg-red-50 px-4 py-1.5 rounded-full mb-0.5 tracking-wider">
                         -{product.discountPercentage}% OFF
                       </span>
                     </>

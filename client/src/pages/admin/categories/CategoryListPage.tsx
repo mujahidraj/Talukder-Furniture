@@ -52,10 +52,14 @@ export default function CategoryListPage() {
     setShowModal(true);
   };
 
-  const handleUpdateOrder = async (id: number, newOrder: number, oldOrder: number) => {
-    if (newOrder === (oldOrder || 0)) return;
+  const handleUpdateOrder = async (item: any, newOrder: number) => {
+    if (newOrder === (item.order || 0)) return;
     try {
-      await api.put(`/categories/${id}`, { order: newOrder });
+      await api.put(`/categories/${item.id}`, { 
+        name: item.name, 
+        parentId: item.parentId || null,
+        order: newOrder 
+      });
       fetchCategories();
     } catch (err) {
       console.error(err);
@@ -199,7 +203,7 @@ export default function CategoryListPage() {
                       <input 
                         type="number" 
                         defaultValue={cat.order || 0}
-                        onBlur={(e) => handleUpdateOrder(cat.id, parseInt(e.target.value) || 0, cat.order)}
+                        onBlur={(e) => handleUpdateOrder(cat, parseInt(e.target.value) || 0)}
                         className="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                       />
                     </td>
@@ -233,7 +237,7 @@ export default function CategoryListPage() {
                           <input 
                             type="number" 
                             defaultValue={sub.order || 0}
-                            onBlur={(e) => handleUpdateOrder(sub.id, parseInt(e.target.value) || 0, sub.order)}
+                            onBlur={(e) => handleUpdateOrder(sub, parseInt(e.target.value) || 0)}
                             className="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                           />
                         </td>
@@ -264,7 +268,7 @@ export default function CategoryListPage() {
                             <input 
                               type="number" 
                               defaultValue={subSub.order || 0}
-                              onBlur={(e) => handleUpdateOrder(subSub.id, parseInt(e.target.value) || 0, subSub.order)}
+                              onBlur={(e) => handleUpdateOrder(subSub, parseInt(e.target.value) || 0)}
                               className="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                             />
                           </td>
