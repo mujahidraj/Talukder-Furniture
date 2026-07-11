@@ -527,7 +527,7 @@ export default function SetDetailsPage() {
   const currentHeroImage = heroImages[heroIdx % heroImages.length];
 
   return (
-    <div className="bg-[#FAF9F6] min-h-screen pb-20 pt-[90px]">
+    <div className="bg-[#FAF9F6] min-h-screen pb-20 pt-[76px]">
       <SEO
         title={`${setItem.name} | Talukder Furniture Collections`}
         description={setItem.description || `Explore the ${setItem.name} collection.`}
@@ -536,17 +536,10 @@ export default function SetDetailsPage() {
         url={`/collections/${setItem.slug}`}
       />
 
-      {/* Collection Header (Moved from inside image) */}
-      <div className="max-w-[1700px] mx-auto px-4 md:px-8 xl:px-12 pt-4 pb-6 text-center flex flex-col items-center">
-        <h1 className="text-4xl md:text-6xl font-serif text-primary mb-3">{setItem.name}</h1>
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 xl:px-12 pt-0 pb-8">
         
-        {setItem.sku && (
-          <div className="text-gray-500 mb-4 tracking-wider text-sm uppercase">
-            SKU: <span className="font-medium text-gray-900">{setItem.sku}</span>
-          </div>
-        )}
-        
-        <div className="flex items-center gap-4 text-gray-500 text-sm md:text-base">
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-3 text-gray-500 text-sm mb-6 font-medium">
           <Link to="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight size={14} />
           <Link to="/shop?type=sets" className="hover:text-primary transition-colors">Collections</Link>
@@ -559,116 +552,116 @@ export default function SetDetailsPage() {
             </>
           )}
         </div>
-      </div>
 
-      {/* Set Image Gallery */}
-      <div className="max-w-[1700px] mx-auto px-4 md:px-8 xl:px-12 py-4 flex flex-col items-center">
-        <div className="w-full max-w-5xl">
-          <div className="relative aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 mb-6 shadow-sm">
-            <ImageMagnifier src={heroImages[heroIdx]} />
-          </div>
-          
-          {heroImages.length > 1 && (
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center">
-              {heroImages.map((img: string, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setHeroIdx(idx)}
-                  className={`relative w-24 h-24 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${idx === heroIdx ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-300'}`}
-                >
-                  <img src={img} alt={`${setItem.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+        {/* Top Title Section */}
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-primary mb-3 leading-tight">{setItem.name}</h1>
+          {setItem.sku && (
+            <div className="text-gray-500 tracking-widest text-xs uppercase font-bold">
+              SKU: <span className="text-gray-900">{setItem.sku}</span>
             </div>
           )}
         </div>
-      </div>
 
-      {/* Sticky Set Summary Bar */}
-      <div className="sticky top-[90px] z-30 bg-white border-b border-gray-100 shadow-sm py-4">
-        <div className="max-w-[1700px] mx-auto px-4 md:px-8 xl:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl md:text-2xl font-serif font-bold text-primary">{setItem.name}</h2>
-            <div className="hidden md:block h-6 w-px bg-gray-200"></div>
-            {setItem.basePrice && (
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold text-gray-900">৳ {discountedPrice.toLocaleString()}</span>
-                {setItem.discountPercentage > 0 && (
-                  <span className="text-sm text-gray-400 line-through">৳ {setItem.basePrice.toLocaleString()}</span>
-                )}
+        <div className="flex flex-col lg:flex-row gap-12 xl:gap-16">
+          {/* Left Column: Image Gallery */}
+          <div className="w-full lg:w-[60%]">
+            <div className="relative w-full bg-white rounded-2xl overflow-hidden mb-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+              <ImageMagnifier src={heroImages[heroIdx]} height="auto" />
+            </div>
+            
+            {heroImages.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-2 pt-2 scrollbar-hide">
+                {heroImages.map((img: string, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setHeroIdx(idx)}
+                    className={`relative w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden flex-shrink-0 transition-all duration-300 ${idx === heroIdx ? 'ring-2 ring-primary ring-offset-2 opacity-100' : 'opacity-60 hover:opacity-100 border border-gray-200'}`}
+                  >
+                    <img src={img} alt={`${setItem.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <button
-              onClick={() => setIsSetEnquireOpen(true)}
-              className="flex-1 md:flex-none btn bg-primary text-white hover:bg-gray-900 px-8 py-2.5 rounded-full text-sm font-medium transition-colors"
-            >
-              Enquire About Collection
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="max-w-[1700px] mx-auto px-4 md:px-8 xl:px-12 py-16">
+          {/* Right Column: Details & Actions */}
+          <div className="w-full lg:w-[40%] flex flex-col">
+            <div className="sticky top-[120px]">
+              <div className="flex items-baseline gap-4 mb-8">
+                <span className="text-3xl font-bold text-gray-900">৳ {discountedPrice.toLocaleString()}</span>
+                {setItem.discountPercentage > 0 && (
+                  <span className="text-lg text-gray-400 line-through font-medium">৳ {setItem.basePrice.toLocaleString()}</span>
+                )}
+              </div>
 
-        {/* Set Description */}
-        {setItem.description && (
-          <div className="max-w-3xl mx-auto text-center mb-24">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-6">About the Collection</h3>
-            <div className="text-lg md:text-xl text-gray-700 leading-relaxed font-serif text-left">
-              <FormattedText content={setItem.description} defaultText="" />
+              {setItem.description && (
+                <div className="prose prose-gray text-gray-600 mb-10 text-base leading-relaxed">
+                  <FormattedText content={setItem.description} defaultText="" />
+                </div>
+              )}
+
+              <div className="pt-8 border-t border-gray-200">
+                <button
+                  onClick={() => setIsSetEnquireOpen(true)}
+                  className="w-full btn bg-black text-white hover:bg-gray-900 py-4 rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-xl shadow-black/10 hover:shadow-black/20 flex items-center justify-center gap-3"
+                >
+                  <MessageSquare size={18} />
+                  Enquire About Collection
+                </button>
+                <div className="mt-4 flex items-center justify-center gap-6 text-sm text-gray-500 font-medium">
+                  <span className="flex items-center gap-2"><ShieldCheck size={16} className="text-accent" /> Premium Quality</span>
+                  <span className="flex items-center gap-2"><Truck size={16} className="text-accent" /> Secure Delivery</span>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Pieces in this Collection - GRID */}
         {setItem.products && setItem.products.length > 0 && (
-          <div>
-            <div className="flex items-end justify-between mb-10 border-b border-gray-200 pb-4">
-              <div>
-                <h3 className="text-3xl font-serif font-bold text-primary">Shop The Look</h3>
-                <p className="text-gray-500 mt-2">Discover the individual pieces that make up this stunning collection.</p>
-              </div>
-              <span className="text-sm font-medium text-gray-400 hidden sm:block">{setItem.products.length} Items</span>
+          <div className="mt-24 md:mt-32">
+            <div className="flex flex-col items-center text-center mb-12">
+              <h3 className="text-3xl md:text-4xl font-serif text-primary mb-4">Pieces in this Collection</h3>
+              <div className="w-12 h-1 bg-accent mb-6 rounded-full"></div>
+              <p className="text-gray-500 max-w-2xl text-lg">Discover the individual pieces that make up this stunning collection.</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
               {setItem.products.map((product: any) => (
                 <div key={product.id} className="group cursor-pointer flex flex-col h-full" onClick={() => setSelectedProduct(product)}>
-                  <div className="relative aspect-square mb-6 overflow-hidden bg-gray-100 rounded-xl">
+                  <div className="relative aspect-[4/5] mb-5 overflow-hidden bg-[#f8f8f8] rounded-2xl flex items-center justify-center border border-gray-100 transition-shadow duration-300 group-hover:shadow-lg">
                     {product.images?.[0] ? (
                       <img
                         src={product.images[0].url}
                         alt={product.name}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 mix-blend-multiply"
+                        className="w-full h-full object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                      <div className="text-gray-400 font-medium">No Image</div>
                     )}
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-black text-xs font-bold tracking-wider uppercase px-6 py-3 shadow-xl rounded-full flex items-center gap-2">
-                        View Details <ArrowLeft size={14} className="rotate-180" />
-                      </span>
+                    <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+                      <button className="w-full bg-white/95 backdrop-blur-sm text-black text-xs font-bold tracking-widest uppercase py-3.5 rounded-lg shadow-lg flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors">
+                        View Details
+                      </button>
                     </div>
                   </div>
 
-                  <div className="flex flex-col flex-1 text-center px-4">
-                    <h4 className="text-lg font-serif font-bold text-gray-900 group-hover:text-accent transition-colors mb-2 line-clamp-2">
+                  <div className="flex flex-col flex-1 px-2 text-center">
+                    <h4 className="text-lg font-serif font-medium text-gray-900 group-hover:text-accent transition-colors mb-2 line-clamp-1">
                       {product.name}
                     </h4>
                     <div className="mt-auto">
                       {product.basePrice ? (
-                        <p className="font-semibold text-gray-700">
+                        <p className="font-semibold text-gray-600 text-lg">
                           ৳{product.discountPercentage > 0
                             ? (product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()
                             : product.basePrice.toLocaleString()
                           }
                         </p>
                       ) : (
-                        <p className="font-semibold text-gray-700">{product.priceDisplay || `$${product.price}`}</p>
+                        <p className="font-semibold text-gray-600 text-lg">{product.priceDisplay || `$${product.price}`}</p>
                       )}
                     </div>
                   </div>
@@ -689,16 +682,16 @@ export default function SetDetailsPage() {
       {/* Set Enquiry Modal (for the whole collection) */}
       {isSetEnquireOpen && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform transition-all">
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-bold text-xl text-primary">Enquire About Collection</h3>
-              <button onClick={() => setIsSetEnquireOpen(false)} className="text-gray-400 hover:text-red-500 transition-colors p-2">
+          <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform transition-all">
+            <div className="bg-gray-50 px-8 py-5 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="font-bold text-xl text-primary font-serif">Enquire About Collection</h3>
+              <button onClick={() => setIsSetEnquireOpen(false)} className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-gray-200">
                 <X size={24} />
               </button>
             </div>
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-6 p-4 bg-secondary/50 rounded-lg border border-gray-100">
-                <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 bg-white">
+            <div className="p-8">
+              <div className="flex items-center gap-5 mb-8 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-[#f8f8f8] border border-gray-50">
                   {setItem.imageUrls?.[0] ? (
                     <img src={setItem.imageUrls[0]} alt={setItem.name} className="w-full h-full object-cover" />
                   ) : (
@@ -706,40 +699,40 @@ export default function SetDetailsPage() {
                   )}
                 </div>
                 <div>
-                  <h4 className="font-bold text-primary">{setItem.name}</h4>
-                  <div className="text-sm text-gray-500">Collection Set</div>
+                  <h4 className="font-bold text-primary font-serif text-lg">{setItem.name}</h4>
+                  <div className="text-sm text-gray-500 mt-1 font-medium tracking-wide uppercase">Collection Set</div>
                 </div>
               </div>
 
               {enquiryStatus === 'success' ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ShieldCheck size={32} />
+                <div className="text-center py-10">
+                  <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <ShieldCheck size={40} />
                   </div>
-                  <h4 className="text-2xl font-bold text-gray-900 mb-2">Enquiry Sent!</h4>
+                  <h4 className="text-2xl font-bold text-gray-900 mb-3 font-serif">Enquiry Sent!</h4>
                   <p className="text-gray-600">Our team will get back to you shortly regarding this collection.</p>
                 </div>
               ) : (
-                <form onSubmit={handleSetEnquirySubmit} className="space-y-4">
+                <form onSubmit={handleSetEnquirySubmit} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
-                    <input type="text" required value={enquiryForm.name} onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })} placeholder="John Doe" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Your Name *</label>
+                    <input type="text" required value={enquiryForm.name} onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })} placeholder="John Doe" className="w-full px-5 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all bg-gray-50 focus:bg-white" />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                      <input type="tel" required value={enquiryForm.phone} onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })} placeholder="+880 1..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none" />
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number *</label>
+                      <input type="tel" required value={enquiryForm.phone} onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })} placeholder="+880 1..." className="w-full px-5 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all bg-gray-50 focus:bg-white" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                      <input type="email" value={enquiryForm.email} onChange={(e) => setEnquiryForm({ ...enquiryForm, email: e.target.value })} placeholder="john@example.com" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none" />
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+                      <input type="email" value={enquiryForm.email} onChange={(e) => setEnquiryForm({ ...enquiryForm, email: e.target.value })} placeholder="john@example.com" className="w-full px-5 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all bg-gray-50 focus:bg-white" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Message *</label>
-                    <textarea required rows={4} value={enquiryForm.message} onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })} placeholder="I would like to know more about customizing this collection..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none resize-none"></textarea>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Your Message *</label>
+                    <textarea required rows={4} value={enquiryForm.message} onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })} placeholder="I would like to know more about customizing this collection..." className="w-full px-5 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none resize-none transition-all bg-gray-50 focus:bg-white"></textarea>
                   </div>
-                  <button type="submit" disabled={enquiryStatus === 'submitting'} className="w-full btn py-3 flex justify-center items-center bg-black text-white hover:bg-gray-900 border-none">
+                  <button type="submit" disabled={enquiryStatus === 'submitting'} className="w-full btn py-4 mt-2 flex justify-center items-center bg-black text-white hover:bg-gray-900 border-none rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-lg hover:shadow-xl">
                     {enquiryStatus === 'submitting' ? <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span> : 'Send Enquiry'}
                   </button>
                 </form>
