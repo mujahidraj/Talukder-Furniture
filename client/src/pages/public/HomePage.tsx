@@ -226,12 +226,22 @@ export default function HomePage() {
               <SwiperSlide key={`${slide.id}-${index}`}>
                 {({ isActive }) => (
                   <div className="relative w-full h-screen">
-                    {/* Full-bleed background image */}
-                    <img
-                      src={slide.imageUrl || slide.image}
-                      alt={slide.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
+                    {slide.videoUrl ? (
+                      <video
+                        src={slide.videoUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={slide.imageUrl || slide.image}
+                        alt={slide.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    )}
 
                     {/* Dark gradient overlay for text readability */}
                     <div

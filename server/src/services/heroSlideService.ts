@@ -24,7 +24,8 @@ export const heroSlideService = {
   },
 
   create: async (data: {
-    imageUrl: string;
+    imageUrl?: string | null;
+    videoUrl?: string | null;
     title?: string;
     subtitle?: string;
     ctaText?: string;
@@ -43,6 +44,7 @@ export const heroSlideService = {
     return prisma.heroSlide.create({
       data: {
         imageUrl: data.imageUrl,
+        videoUrl: data.videoUrl,
         title: data.title,
         subtitle: data.subtitle,
         ctaText: data.ctaText,
@@ -56,7 +58,8 @@ export const heroSlideService = {
   update: async (
     id: number,
     data: {
-      imageUrl?: string;
+      imageUrl?: string | null;
+      videoUrl?: string | null;
       title?: string;
       subtitle?: string;
       ctaText?: string;
@@ -74,14 +77,27 @@ export const heroSlideService = {
   delete: async (id: number) => {
     // Get the slide to delete its image if necessary
     const slide = await prisma.heroSlide.findUnique({ where: { id } });
-    if (slide && slide.imageUrl.startsWith('/uploads/')) {
+    if (slide && slide.imageUrl && slide.imageUrl.startsWith('/uploads/')) {
       const filename = path.basename(slide.imageUrl);
-      const filePath = path.join(path.resolve(config.upload.localPath), 'images', filename);
+      // Wait, heroSlide image uploads were going to 'uploads/slides' not 'images'
+      // the controller deletes it correctly, but here we can just use the path as is
+      const filePath = path.join(process.cwd(), slide.imageUrl);
       if (fs.existsSync(filePath)) {
         try {
           fs.unlinkSync(filePath);
         } catch (e) {
           console.error(`Failed to delete hero slide image: ${filePath}`, e);
+        }
+      }
+    }
+    
+    if (slide && slide.videoUrl && slide.videoUrl.startsWith('/uploads/')) {
+      const filePath = path.join(process.cwd(), slide.videoUrl);
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (e) {
+          console.error(`Failed to delete hero slide video: ${filePath}`, e);
         }
       }
     }

@@ -21,6 +21,10 @@ export default function HeroSlideFormPage() {
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [clearVideo, setClearVideo] = useState(false);
+
   useEffect(() => {
     if (isEdit && id) {
       fetchSlide(id);
@@ -38,6 +42,7 @@ export default function HeroSlideFormPage() {
       setOrder(s.order?.toString() || '0');
       setIsActive(s.isActive);
       setImageUrl(s.imageUrl || '');
+      setVideoUrl(s.videoUrl || '');
     } catch (err) {
       console.error(err);
       alert('Failed to fetch slide');
@@ -52,6 +57,21 @@ export default function HeroSlideFormPage() {
       setImageFile(file);
       setImageUrl(URL.createObjectURL(file));
     }
+  };
+
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setVideoFile(file);
+      setVideoUrl(URL.createObjectURL(file));
+      setClearVideo(false);
+    }
+  };
+
+  const handleClearVideo = () => {
+    setVideoFile(null);
+    setVideoUrl('');
+    setClearVideo(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +95,16 @@ export default function HeroSlideFormPage() {
         formData.append('image', imageFile);
       } else if (imageUrl) {
         formData.append('imageUrl', imageUrl);
+      }
+
+      if (videoFile) {
+        formData.append('video', videoFile);
+      } else if (videoUrl && !clearVideo) {
+        formData.append('videoUrl', videoUrl);
+      }
+
+      if (clearVideo) {
+        formData.append('clearVideo', 'true');
       }
 
       if (isEdit) {
@@ -114,7 +144,7 @@ export default function HeroSlideFormPage() {
         
         {/* Image Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Slide Image (Required)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Slide Background Image</label>
           <div className="flex items-start gap-6">
             <div className="w-64 h-40 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative">
               {imageUrl ? (
@@ -126,7 +156,7 @@ export default function HeroSlideFormPage() {
               ) : (
                 <div className="text-center p-4">
                   <Upload size={24} className="mx-auto text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-500">1200x600 recommended</span>
+                  <span className="text-xs text-gray-500">Image Preview</span>
                 </div>
               )}
               <input 
@@ -141,8 +171,50 @@ export default function HeroSlideFormPage() {
               <ul className="list-disc pl-4 space-y-1">
                 <li>High resolution (e.g. 1920x800)</li>
                 <li>Landscape orientation</li>
-                <li>Keep main subjects centered</li>
-                <li>Max file size: 25MB</li>
+                <li>Fallback for video (if video is provided)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Video Upload */}
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">Slide Background Video (Optional)</label>
+            {videoUrl && (
+              <button type="button" onClick={handleClearVideo} className="text-xs text-red-500 hover:underline">
+                Remove Video
+              </button>
+            )}
+          </div>
+          <div className="flex items-start gap-6">
+            <div className="w-64 h-40 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative">
+              {videoUrl ? (
+                <video 
+                  src={videoUrl.startsWith('blob:') || videoUrl.startsWith('http') ? videoUrl : `${import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace('/api', '') : 'http://localhost:5000'}${videoUrl}`} 
+                  className="w-full h-full object-cover"
+                  autoPlay loop muted playsInline
+                />
+              ) : (
+                <div className="text-center p-4">
+                  <Upload size={24} className="mx-auto text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-500">Upload Video</span>
+                </div>
+              )}
+              <input 
+                type="file" 
+                accept="video/*" 
+                onChange={handleVideoChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+            </div>
+            <div className="flex-1 text-sm text-gray-500">
+              <p className="mb-2 font-medium text-gray-700">Video Guidelines:</p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>MP4 or WebM format recommended</li>
+                <li>Max file size: 50MB</li>
+                <li>Keep it short (10-15 seconds)</li>
+                <li>Video will autoplay without sound</li>
               </ul>
             </div>
           </div>

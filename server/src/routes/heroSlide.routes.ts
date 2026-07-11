@@ -22,20 +22,23 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter — images only
-const imageFilter = (req: any, file: any, cb: any) => {
-  const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+// File filter — images and videos
+const mediaFilter = (req: any, file: any, cb: any) => {
+  const allowedMimes = [
+    'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif',
+    'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'
+  ];
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files (JPEG, PNG, WebP, GIF, AVIF) are allowed.'), false);
+    cb(new Error('Only image and video files are allowed.'), false);
   }
 };
 
 const upload = multer({
   storage,
-  fileFilter: imageFilter,
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB max
+  fileFilter: mediaFilter,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
 });
 
 // Public endpoints
@@ -58,8 +61,13 @@ const heroSlideSchema = Joi.object({
   // image is handled by multer
 });
 
-router.post('/', upload.single('image'), validateRequest(heroSlideSchema), heroSlideController.create);
-router.put('/:id', upload.single('image'), validateRequest(heroSlideSchema), heroSlideController.update);
+const uploadFields = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'video', maxCount: 1 }
+]);
+
+router.post('/', uploadFields, validateRequest(heroSlideSchema), heroSlideController.create);
+router.put('/:id', uploadFields, validateRequest(heroSlideSchema), heroSlideController.update);
 router.delete('/:id', heroSlideController.delete);
 
 export default router;

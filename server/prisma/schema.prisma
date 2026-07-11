@@ -149,7 +149,8 @@ model FaqItem {
 
 model HeroSlide {
   id       Int     @id @default(autoincrement())
-  imageUrl String
+  imageUrl String?
+  videoUrl String?
   title    String?
   subtitle String?
   ctaText  String?
