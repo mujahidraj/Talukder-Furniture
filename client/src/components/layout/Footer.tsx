@@ -85,6 +85,7 @@ export default function Footer() {
             {[
               { name: 'Shipping', path: '/shipping' },
               { name: 'Return & Refund', path: '/returns' },
+              { name: 'Warranty', path: '/warranty' },
               { name: 'Privacy Policy', path: '/privacy' },
               { name: 'Terms of Use', path: '/terms' },
               { name: 'Contact Us', path: '/contact' },
