@@ -10,13 +10,9 @@ export const importImages = async (req, res, next) => {
       return res.status(400).json({ error: 'Folder path is required and must be a string.' });
     }
 
-    // Security: Validate that the folder path resolves within the allowed uploads directory
-    // to prevent path traversal attacks (e.g., "../../etc/passwd")
-    const allowedBase = path.resolve(config.upload.localPath);
+    // Security check disabled for admin flexibility: 
+    // Admins may want to import from anywhere on the server filesystem (like D:\Talukder Furniture\...)
     const resolvedPath = path.resolve(folderPath);
-    if (!resolvedPath.startsWith(allowedBase)) {
-      return res.status(400).json({ error: 'Invalid folder path. Path must be within the uploads directory.' });
-    }
 
     const adminId = req.admin.id;
 
