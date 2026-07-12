@@ -67,7 +67,7 @@ export const getCategoryBySlug = async (slug) => {
 };
 
 export const createCategory = async (data) => {
-  let baseSlug = data.slug || slugify(data.name, { lower: true, strict: true });
+  const baseSlug = data.slug || slugify(data.name, { lower: true, strict: true });
   let slug = baseSlug;
   
   let existing = await prisma.category.findUnique({ where: { slug } });
@@ -93,7 +93,7 @@ export const createCategory = async (data) => {
 export const updateCategory = async (id, data) => {
   const updateData = { ...data };
   if (data.name && !data.slug) {
-    let baseSlug = slugify(data.name, { lower: true, strict: true });
+    const baseSlug = slugify(data.name, { lower: true, strict: true });
     let slug = baseSlug;
     
     let existing = await prisma.category.findUnique({ where: { slug } });
