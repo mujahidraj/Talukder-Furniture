@@ -35,29 +35,19 @@ const adminLinks = [
 ];
 
 export default function AdminLayout() {
-  const { token, admin, logout, checkAuth } = useAuthStore();
+  const { admin, logout } = useAuthStore();
   const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     // Hide splash screen for admin pages
-    (window as any).__hideSplash?.();
-    // Check if token exists in localStorage, if not redirect to login
-    if (!localStorage.getItem('admin_token')) {
-      navigate('/admin/login');
-    } else if (!admin) {
-      checkAuth();
-    }
-  }, [navigate, admin, checkAuth]);
+    window.__hideSplash?.();
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/admin/login');
   };
-
-  if (!localStorage.getItem('admin_token')) {
-    return null; // Don't render until redirected
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex font-sans">
@@ -119,7 +109,7 @@ export default function AdminLayout() {
         <div className="p-4 border-t border-gray-100 bg-gray-50/50">
           <div className="flex items-center gap-3 mb-4 px-2">
             <div className="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold border border-accent/20">
-              {admin?.name?.charAt(0) || 'A'}
+              {admin?.name?.charAt(0) || ''}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-primary truncate">{admin?.name || 'Admin User'}</p>

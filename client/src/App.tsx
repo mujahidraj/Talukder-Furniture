@@ -4,6 +4,7 @@ import { Suspense, lazy, useEffect } from 'react';
 // Layouts
 import PublicLayout from './components/layout/PublicLayout';
 import AdminLayout from './pages/admin/AdminLayout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 // Eagerly loaded pages (critical path)
 import HomePage from './pages/public/HomePage';
@@ -99,7 +100,8 @@ function App() {
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/new" element={<AdminProductForm />} />
@@ -127,6 +129,7 @@ function App() {
           <Route path="trust-badges" element={<AdminTrustBadges />} />
           <Route path="team" element={<AdminTeamMembers />} />
           <Route path="leads" element={<AdminLeads />} />
+        </Route>
         </Route>
 
         {/* 404 */}
