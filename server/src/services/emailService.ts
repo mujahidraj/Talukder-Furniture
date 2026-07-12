@@ -37,18 +37,38 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
   }
 };
 
+/**
+ * Escape HTML entities to prevent injection in email templates.
+ */
+const escapeHtml = (str: string | undefined | null): string => {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+};
+
 export const sendLeadNotification = async (lead: any) => {
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@talukder-furniture.com';
   
-  const subject = `New Inquiry: ${lead.subject}`;
+  // Escape user input to prevent HTML injection in email body
+  const safeName = escapeHtml(lead.name);
+  const safeEmail = escapeHtml(lead.email);
+  const safePhone = escapeHtml(lead.phone) || 'N/A';
+  const safeSubject = escapeHtml(lead.subject || lead.category || 'General Inquiry');
+  const safeMessage = escapeHtml(lead.message);
+
+  const subject = `New Inquiry: ${lead.subject || lead.category || 'General Inquiry'}`;
   const html = `
     <h2>New Inquiry Received</h2>
-    <p><strong>Name:</strong> ${lead.name}</p>
-    <p><strong>Email:</strong> ${lead.email}</p>
-    <p><strong>Phone:</strong> ${lead.phone || 'N/A'}</p>
-    <p><strong>Subject:</strong> ${lead.subject}</p>
+    <p><strong>Name:</strong> ${safeName}</p>
+    <p><strong>Email:</strong> ${safeEmail}</p>
+    <p><strong>Phone:</strong> ${safePhone}</p>
+    <p><strong>Subject:</strong> ${safeSubject}</p>
     <h3>Message:</h3>
-    <p>${lead.message}</p>
+    <p>${safeMessage}</p>
   `;
 
   return sendEmail(adminEmail, subject, html);

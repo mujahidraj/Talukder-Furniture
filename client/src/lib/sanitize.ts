@@ -13,7 +13,7 @@ export const sanitizeHtml = (dirty: string): string => {
       'img', 'hr', 'sub', 'sup',
     ],
     ALLOWED_ATTR: [
-      'href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style',
+      'href', 'target', 'rel', 'src', 'alt', 'title', 'class',
       'width', 'height', 'colspan', 'rowspan',
     ],
     ALLOW_DATA_ATTR: false,

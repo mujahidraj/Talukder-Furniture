@@ -21,6 +21,18 @@ export const refresh = async (req, res, next) => {
   }
 };
 
+export const logout = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (req.admin && refreshToken) {
+      await authService.logout(req.admin.id, refreshToken);
+    }
+    res.json({ success: true, message: 'Logged out successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const me = async (req, res, next) => {
   try {
     const admin = await prisma.admin.findUnique({

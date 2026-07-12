@@ -1,7 +1,8 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import * as productController from '../controllers/productController.js';
 import { validateRequest } from '../middleware/validateRequest.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
 import Joi from 'joi';
 
 const router = Router();
@@ -34,10 +35,16 @@ const productSchema = Joi.object({
 });
 
 // Public endpoints
-router.get('/', productController.list);
+router.get('/', optionalAuthMiddleware, productController.list);
 router.get('/search', productController.search);
 router.get('/:slug', productController.getBySlug);
-router.post('/:slug/view', productController.incrementView);
+
+const viewLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 5, // Limit each IP to 5 view requests per `window` (here, per minute)
+  message: 'Too many view requests from this IP, please try again after a minute'
+});
+router.post('/:slug/view', viewLimiter, productController.incrementView);
 
 // Protected admin endpoints
 router.use(authMiddleware);

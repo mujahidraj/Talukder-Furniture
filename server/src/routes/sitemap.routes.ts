@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/db.js';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 const CLIENT_URL = process.env.CLIENT_URL || 'https://talukderfurniture.com';
 

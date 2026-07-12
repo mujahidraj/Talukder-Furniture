@@ -74,6 +74,16 @@ export const login = async (email, password) => {
     expiresIn: config.jwt.refreshExpiresIn as any,
   });
 
+  // Store refresh token in database
+  await prisma.admin.update({
+    where: { id: admin.id },
+    data: {
+      refreshTokens: {
+        push: refreshToken
+      }
+    }
+  });
+
   return {
     admin: {
       id: admin.id,
@@ -99,6 +109,11 @@ export const refresh = async (refreshTokenString) => {
       throw new AppError('Admin not found', 401);
     }
 
+    // Check if the refresh token exists in the admin's active sessions
+    if (!admin.refreshTokens.includes(refreshTokenString)) {
+      throw new AppError('Invalid or revoked refresh token', 401);
+    }
+
     const payload = {
       id: admin.id,
       email: admin.email,
@@ -113,11 +128,33 @@ export const refresh = async (refreshTokenString) => {
       expiresIn: config.jwt.refreshExpiresIn as any,
     });
 
+    // Replace the old refresh token with the new one
+    const updatedTokens = admin.refreshTokens.filter(t => t !== refreshTokenString);
+    updatedTokens.push(newRefreshToken);
+
+    await prisma.admin.update({
+      where: { id: admin.id },
+      data: { refreshTokens: updatedTokens }
+    });
+
     return {
       token,
       refreshToken: newRefreshToken,
     };
   } catch (err) {
     throw new AppError('Invalid or expired refresh token', 401);
+  }
+};
+
+export const logout = async (adminId: number, refreshTokenString: string) => {
+  if (!refreshTokenString) return;
+
+  const admin = await prisma.admin.findUnique({ where: { id: adminId } });
+  if (admin) {
+    const updatedTokens = admin.refreshTokens.filter(t => t !== refreshTokenString);
+    await prisma.admin.update({
+      where: { id: adminId },
+      data: { refreshTokens: updatedTokens }
+    });
   }
 };

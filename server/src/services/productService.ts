@@ -4,7 +4,7 @@ import { AppError } from '../middleware/errorHandler.js';
 import { deleteImage } from '../middleware/upload.js';
 
 export const getProducts = async (query: any = {}) => {
-  const { page = 1, limit = 20, category, sort = 'default', q, admin, status, isFeatured, price } = query;
+  const { page = 1, limit = 20, category, sort = 'default', q, isAdmin, status, isFeatured, price } = query;
   const parsedLimit = parseInt(limit, 10);
   const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
   const skip = (parseInt(page, 10) - 1) * take;
@@ -12,7 +12,7 @@ export const getProducts = async (query: any = {}) => {
   const where: any = {};
 
   // If not admin, only show active products
-  if (admin !== 'true') {
+  if (!isAdmin) {
     where.isActive = true;
   }
 

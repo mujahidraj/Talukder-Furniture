@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as jobController from '../controllers/jobController.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -16,8 +17,12 @@ const jobSchema = Joi.object({
   isActive: Joi.boolean().optional(),
 });
 
+// Public endpoints
 router.get('/', jobController.getAll);
 router.get('/:id', jobController.getById);
+
+// Protected admin endpoints
+router.use(authMiddleware);
 router.post('/', validateRequest(jobSchema), jobController.create);
 router.put('/:id', validateRequest(jobSchema), jobController.update);
 router.delete('/:id', jobController.remove);

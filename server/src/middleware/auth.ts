@@ -47,6 +47,35 @@ export const authMiddleware = async (req, res, next) => {
 };
 
 /**
+ * Optional JWT authentication middleware.
+ * If a valid token is provided, sets req.admin. Otherwise, continues without error.
+ */
+export const optionalAuthMiddleware = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return next();
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, config.jwt.secret as string) as any;
+    const admin = await prisma.admin.findUnique({ where: { id: decoded.id } });
+    
+    if (admin) {
+      (req as any).admin = {
+        id: decoded.id,
+        email: decoded.email,
+        role: admin.role,
+      };
+    }
+    next();
+  } catch (error) {
+    // Ignore errors for optional auth (e.g., expired token just acts as unauthenticated)
+    next();
+  }
+};
+
+/**
  * Role-based authorization middleware.
  * Must be used after authMiddleware.
  */

@@ -151,6 +151,7 @@ export default function AdminLayout() {
             <Link 
               to="/" 
               target="_blank" 
+              rel="noopener noreferrer"
               className="text-sm font-medium text-gray-500 hover:text-accent transition-colors"
             >
               View Live Site

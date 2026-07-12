@@ -86,7 +86,8 @@ export const heroSlideController = {
         
         // delete old image if replaced
         if (oldSlide && oldSlide.imageUrl && oldSlide.imageUrl.startsWith('/uploads/')) {
-          const oldPath = path.join(process.cwd(), oldSlide.imageUrl);
+          const filename = path.basename(oldSlide.imageUrl);
+          const oldPath = path.resolve(process.cwd(), 'uploads', 'slides', filename);
           if (fs.existsSync(oldPath)) {
             try { fs.unlinkSync(oldPath); } catch (e) { /* ignore */ }
           }
@@ -98,7 +99,8 @@ export const heroSlideController = {
         
         // delete old video if replaced
         if (oldSlide && oldSlide.videoUrl && oldSlide.videoUrl.startsWith('/uploads/')) {
-          const oldPath = path.join(process.cwd(), oldSlide.videoUrl);
+          const filename = path.basename(oldSlide.videoUrl);
+          const oldPath = path.resolve(process.cwd(), 'uploads', 'slides', filename);
           if (fs.existsSync(oldPath)) {
             try { fs.unlinkSync(oldPath); } catch (e) { /* ignore */ }
           }
@@ -109,7 +111,8 @@ export const heroSlideController = {
       if (req.body.clearVideo === 'true') {
         videoUrl = null;
         if (oldSlide && oldSlide.videoUrl && oldSlide.videoUrl.startsWith('/uploads/')) {
-          const oldPath = path.join(process.cwd(), oldSlide.videoUrl);
+          const filename = path.basename(oldSlide.videoUrl);
+          const oldPath = path.resolve(process.cwd(), 'uploads', 'slides', filename);
           if (fs.existsSync(oldPath)) {
             try { fs.unlinkSync(oldPath); } catch (e) { /* ignore */ }
           }
@@ -142,13 +145,15 @@ export const heroSlideController = {
       const oldSlide = await heroSlideService.getById(Number(req.params.id));
       if (oldSlide) {
         if (oldSlide.imageUrl && oldSlide.imageUrl.startsWith('/uploads/')) {
-          const oldPath = path.join(process.cwd(), oldSlide.imageUrl);
+          const filename = path.basename(oldSlide.imageUrl);
+          const oldPath = path.resolve(process.cwd(), 'uploads', 'slides', filename);
           if (fs.existsSync(oldPath)) {
             try { fs.unlinkSync(oldPath); } catch (e) { /* ignore */ }
           }
         }
         if (oldSlide.videoUrl && oldSlide.videoUrl.startsWith('/uploads/')) {
-          const oldPath = path.join(process.cwd(), oldSlide.videoUrl);
+          const filename = path.basename(oldSlide.videoUrl);
+          const oldPath = path.resolve(process.cwd(), 'uploads', 'slides', filename);
           if (fs.existsSync(oldPath)) {
             try { fs.unlinkSync(oldPath); } catch (e) { /* ignore */ }
           }

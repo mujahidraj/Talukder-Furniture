@@ -15,7 +15,7 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
   clearError: () => void;
 }
@@ -51,7 +51,16 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  logout: () => {
+  logout: async () => {
+    const refreshToken = localStorage.getItem('admin_refresh_token');
+    if (refreshToken) {
+      try {
+        await api.post('/auth/logout', { refreshToken });
+      } catch (error) {
+        console.error('Logout failed on server:', error);
+      }
+    }
+    
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_refresh_token');
     set({

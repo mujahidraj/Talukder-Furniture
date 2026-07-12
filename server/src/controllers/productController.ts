@@ -2,7 +2,8 @@ import * as productService from '../services/productService.js';
 
 export const list = async (req, res, next) => {
   try {
-    const result = await productService.getProducts(req.query);
+    const query = { ...req.query, isAdmin: !!(req as any).admin };
+    const result = await productService.getProducts(query);
     res.json(result);
   } catch (error) {
     next(error);

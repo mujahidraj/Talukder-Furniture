@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as storeController from '../controllers/storeController.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -16,8 +17,12 @@ const storeSchema = Joi.object({
   isActive: Joi.boolean().optional(),
 });
 
+// Public endpoints
 router.get('/', storeController.getAll);
 router.get('/:id', storeController.getById);
+
+// Protected admin endpoints
+router.use(authMiddleware);
 router.post('/', validateRequest(storeSchema), storeController.create);
 router.put('/:id', validateRequest(storeSchema), storeController.update);
 router.delete('/:id', storeController.remove);
