@@ -182,14 +182,20 @@ export default function SetFormPage() {
     return <div className="p-8 text-center text-gray-500">Loading...</div>;
   }
 
-  // Flatten categories
-  const flatCats: any[] = [];
-  categories.forEach(main => {
-    flatCats.push(main);
-    if (main.children) {
-      main.children.forEach((sub: any) => flatCats.push({ ...sub, name: `— ${sub.name}` }));
-    }
-  });
+  // Flatten categories recursively to support sub-sub-categories
+  const flattenCategories = (cats: any[], level = 0): any[] => {
+    const result: any[] = [];
+    const prefix = '—'.repeat(level);
+    cats.forEach(cat => {
+      result.push({ ...cat, name: level > 0 ? `${prefix} ${cat.name}` : cat.name });
+      if (cat.children && cat.children.length > 0) {
+        result.push(...flattenCategories(cat.children, level + 1));
+      }
+    });
+    return result;
+  };
+
+  const flatCats = flattenCategories(categories);
 
   return (
     <div className="max-w-4xl mx-auto">
