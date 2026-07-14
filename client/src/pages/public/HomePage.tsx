@@ -423,9 +423,12 @@ export default function HomePage() {
                         : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
                     </span>
                     {product.basePrice && product.discountPercentage > 0 && (
-                      <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
-                        ৳ {product.basePrice.toLocaleString()}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
+                          ৳ {product.basePrice.toLocaleString()}
+                        </span>
+                        <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -531,11 +534,21 @@ export default function HomePage() {
                       />
                     </div>
                     <h3 className="text-[16px] md:text-[18px] font-semibold text-[#1a1a1a] mb-1">{product.name}</h3>
-                    <p className="text-[17px] md:text-[19px] font-bold text-[#1a1a1a]">
-                      {product.basePrice && product.discountPercentage > 0
-                        ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
-                        : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-[17px] md:text-[19px] font-bold text-[#1a1a1a]">
+                        {product.basePrice && product.discountPercentage > 0
+                          ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
+                          : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
+                      </p>
+                      {product.basePrice && product.discountPercentage > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
+                            ৳ {product.basePrice.toLocaleString()}
+                          </span>
+                          <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
+                        </div>
+                      )}
+                    </div>
                   </Link>
                 </SwiperSlide>
               ))}

@@ -122,7 +122,7 @@ export default function ProductDetailPage() {
 
         // Fetch related products from the same category
         if (res.data.category?.slug) {
-          api.get(`/products?category=${res.data.category.slug}&limit=4`)
+          api.get(`/products?category=${res.data.category.slug}&limit=5`)
             .then(relatedRes => {
               // Filter out the current product from related products
               const filtered = relatedRes.data.products?.filter((p: any) => p.id !== res.data.id).slice(0, 4) || [];
