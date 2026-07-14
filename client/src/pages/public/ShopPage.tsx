@@ -127,8 +127,8 @@ export default function ShopPage() {
         .then(([prodRes, setRes]) => {
           const prods = prodRes.data.products || [];
           const sets = (setRes.data.sets || []).map((s: any) => ({ ...s, _isSet: true }));
-          // Mix them: Sets first, then Products
-          setProducts([...sets, ...prods]);
+          // Mix them: Products first, then Sets
+          setProducts([...prods, ...sets]);
           setTotalPages(Math.max(prodRes.data.totalPages || 1, setRes.data.totalPages || 1));
         })
         .catch(console.error)
@@ -221,8 +221,8 @@ export default function ShopPage() {
       {/* Toolbar Wrapper - Full width transition container */}
       <div
         className={`sticky top-[90px] z-30 transition-all duration-500 ease-in-out ${isSticky
-            ? 'w-full bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200 py-3'
-            : 'w-full bg-transparent py-0 mb-8'
+          ? 'w-full bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200 py-3'
+          : 'w-full bg-transparent py-0 mb-8'
           }`}
       >
         <div className={`transition-all duration-500 ease-in-out mx-auto ${isSticky ? 'max-w-full px-4 md:px-8 xl:px-12' : 'max-w-[1800px] px-4 md:px-8 xl:px-12'
@@ -462,12 +462,12 @@ export default function ShopPage() {
                         (product.images && product.images.length > 1) ||
                         (product.imageUrls && product.imageUrls.length > 1)
                       ) && (
-                        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                          <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
-                            View Details
-                          </span>
-                        </div>
-                      )}
+                          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
+                              View Details
+                            </span>
+                          </div>
+                        )}
                     </Link>
 
                     <div className={`${viewMode === 'list' ? 'flex flex-col justify-center flex-1 p-4 sm:p-0 sm:py-8 sm:pr-8' : 'flex flex-col flex-1 justify-start p-4 md:p-5'}`}>
@@ -488,8 +488,8 @@ export default function ShopPage() {
                           {product.basePrice !== null && product.basePrice !== undefined ? (
                             <div className="flex items-center gap-3">
                               <span className={`font-semibold text-[#1a1a1a] ${viewMode === 'list' ? 'text-2xl' : 'text-[17px]'}`}>
-                                ৳ {product.discountPercentage ? 
-                                  (product.basePrice - (product.basePrice * (product.discountPercentage / 100))).toLocaleString() : 
+                                ৳ {product.discountPercentage ?
+                                  (product.basePrice - (product.basePrice * (product.discountPercentage / 100))).toLocaleString() :
                                   product.basePrice.toLocaleString()}
                               </span>
                               {product.discountPercentage > 0 && (
@@ -589,8 +589,8 @@ export default function ShopPage() {
                           setSearchParams(newParams);
                         }}
                         className={`w-10 h-10 text-[14px] font-medium flex items-center justify-center transition-all duration-300 ${pageParam === pageNum
-                            ? 'bg-[#1a1a1a] text-white rounded-full'
-                            : 'text-gray-500 hover:text-[#1a1a1a] hover:bg-gray-100 rounded-full'
+                          ? 'bg-[#1a1a1a] text-white rounded-full'
+                          : 'text-gray-500 hover:text-[#1a1a1a] hover:bg-gray-100 rounded-full'
                           }`}
                       >
                         {pageNum}
