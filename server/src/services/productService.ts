@@ -70,6 +70,22 @@ export const getProducts = async (query: any = {}) => {
     case 'name_desc':
       orderBy = { name: 'desc' };
       break;
+    case 'sku-asc':
+    case 'sku_asc':
+      orderBy = { sku: 'asc' };
+      break;
+    case 'sku-desc':
+    case 'sku_desc':
+      orderBy = { sku: 'desc' };
+      break;
+    case 'status-asc':
+    case 'status_asc':
+      orderBy = { isActive: 'asc' };
+      break;
+    case 'status-desc':
+    case 'status_desc':
+      orderBy = { isActive: 'desc' };
+      break;
     case 'price-asc':
     case 'price_asc':
       orderBy = { basePrice: 'asc' };

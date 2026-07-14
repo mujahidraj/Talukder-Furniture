@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Edit, Trash2, Filter, Eye } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Filter, Eye, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import api from '../../../lib/api';
 
 export default function ProductListPage() {
@@ -82,6 +82,21 @@ export default function ProductListPage() {
     }
   };
 
+  const handleSort = (field: string) => {
+    if (sort === `${field}-asc`) {
+      setSort(`${field}-desc`);
+    } else {
+      setSort(`${field}-asc`);
+    }
+    setCurrentPage(1);
+  };
+
+  const getSortIcon = (field: string) => {
+    if (sort === `${field}-asc`) return <ChevronUp size={16} className="text-accent" />;
+    if (sort === `${field}-desc`) return <ChevronDown size={16} className="text-accent" />;
+    return <ArrowUpDown size={14} className="text-gray-300 group-hover:text-gray-400" />;
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -139,10 +154,18 @@ export default function ProductListPage() {
               className="border border-gray-200 rounded-lg text-sm px-3 py-2 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent flex-1 min-w-[140px]"
             >
               <option value="newest">Newest</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+              <option value="sku-asc">Product Code (A-Z)</option>
+              <option value="sku-desc">Product Code (Z-A)</option>
+              <option value="price-asc">Price (Low to High)</option>
+              <option value="price-desc">Price (High to Low)</option>
               <option value="views-desc">Views (High to Low)</option>
               <option value="views-asc">Views (Low to High)</option>
               <option value="enquiries-desc">Enquiries (High to Low)</option>
               <option value="enquiries-asc">Enquiries (Low to High)</option>
+              <option value="status-desc">Status (Active First)</option>
+              <option value="status-asc">Status (Draft First)</option>
             </select>
             <select
               value={filterStatus}
@@ -180,12 +203,24 @@ export default function ProductListPage() {
                     className="rounded border-gray-300 text-accent focus:ring-accent"
                   />
                 </th>
-                <th className="p-4 font-semibold">Product</th>
-                <th className="p-4 font-semibold">Product Code</th>
-                <th className="p-4 font-semibold">Discounted Price</th>
-                <th className="p-4 font-semibold">Views</th>
-                <th className="p-4 font-semibold">Enquiries</th>
-                <th className="p-4 font-semibold">Status</th>
+                <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('name')}>
+                  <div className="flex items-center gap-2">Product {getSortIcon('name')}</div>
+                </th>
+                <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('sku')}>
+                  <div className="flex items-center gap-2">Product Code {getSortIcon('sku')}</div>
+                </th>
+                <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('price')}>
+                  <div className="flex items-center gap-2">Discounted Price {getSortIcon('price')}</div>
+                </th>
+                <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('views')}>
+                  <div className="flex items-center gap-2 justify-center">Views {getSortIcon('views')}</div>
+                </th>
+                <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('enquiries')}>
+                  <div className="flex items-center gap-2 justify-center">Enquiries {getSortIcon('enquiries')}</div>
+                </th>
+                <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('status')}>
+                  <div className="flex items-center gap-2">Status {getSortIcon('status')}</div>
+                </th>
                 <th className="p-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
