@@ -393,14 +393,14 @@ export default function HomePage() {
                     src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p1}
                     alt={product.name}
                     loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                    className={`absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-all duration-700 group-hover:scale-105 ${product.images && product.images.length > 1 ? 'group-hover:opacity-0' : ''}`}
                   />
                   {product.images && product.images.length > 1 && (
                     <img
                       src={product.images[1].url}
                       alt={product.name}
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                      className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100"
                     />
                   )}
                   {/* Hover Overlay 'View Details' Button */}
