@@ -268,13 +268,12 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mega Menu Dropdown Overlay */}
       <div
-        className={`absolute top-[90px] left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200/50 transition-all duration-300 ease-in-out shadow-lg z-40 ${hoveredNav && navLinks.find(n => n.name === hoveredNav)?.megaMenu
+        className={`absolute top-[90px] left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200/50 transition-all duration-300 ease-in-out shadow-lg z-40 overflow-y-auto overflow-x-hidden custom-scrollbar ${hoveredNav && navLinks.find(n => n.name === hoveredNav)?.megaMenu
             ? 'opacity-100 visible'
             : 'opacity-0 invisible'
           }`}
-        style={{ minHeight: '280px' }}
+        style={{ minHeight: '280px', maxHeight: 'calc(100vh - 90px)' }}
       >
         <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 py-10 flex">
           {navLinks.find(n => n.name === hoveredNav)?.megaMenu && (
