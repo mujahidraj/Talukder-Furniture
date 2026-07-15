@@ -8,12 +8,12 @@ import Joi from 'joi';
 import { validateRequest } from '../middleware/validateRequest.js';
 
 const storeSchema = Joi.object({
-  name: Joi.string().required(),
-  address: Joi.string().required(),
-  city: Joi.string().optional().allow(null, ''),
-  phone: Joi.string().optional().allow(null, ''),
-  email: Joi.string().email().optional().allow(null, ''),
-  mapUrl: Joi.string().uri().optional().allow(null, ''),
+  name: Joi.string().max(200).required(),
+  address: Joi.string().max(500).required(),
+  city: Joi.string().max(100).optional().allow(null, ''),
+  phone: Joi.string().max(30).optional().allow(null, ''),
+  email: Joi.string().email().max(254).optional().allow(null, ''),
+  mapUrl: Joi.string().uri().max(2000).optional().allow(null, ''), // #15 Fix
   isActive: Joi.boolean().optional(),
 });
 

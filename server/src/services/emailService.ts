@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
   auth: {
     user: process.env.SMTP_USER, // generated ethereal user
-    pass: process.env.SMTP_PASS, // generated ethereal password
+    pass: process.env.SMTP_PASSWORD, // #10 Fix: was SMTP_PASS, but .env uses SMTP_PASSWORD
   },
 });
 
@@ -60,7 +60,9 @@ export const sendLeadNotification = async (lead: any) => {
   const safeSubject = escapeHtml(lead.subject || lead.category || 'General Inquiry');
   const safeMessage = escapeHtml(lead.message);
 
-  const subject = `New Inquiry: ${lead.subject || lead.category || 'General Inquiry'}`;
+  // #9 Fix: Strip newlines from subject to prevent email header injection
+  const rawSubject = lead.subject || lead.category || 'General Inquiry';
+  const subject = `New Inquiry: ${rawSubject.replace(/[\r\n]/g, '').substring(0, 200)}`;
   const html = `
     <h2>New Inquiry Received</h2>
     <p><strong>Name:</strong> ${safeName}</p>

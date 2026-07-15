@@ -8,12 +8,12 @@ import Joi from 'joi';
 import { validateRequest } from '../middleware/validateRequest.js';
 
 const jobSchema = Joi.object({
-  title: Joi.string().required(),
-  department: Joi.string().optional().allow(null, ''),
-  location: Joi.string().optional().allow(null, ''),
-  type: Joi.string().optional().allow(null, ''),
-  description: Joi.string().optional().allow(null, ''),
-  requirements: Joi.string().optional().allow(null, ''),
+  title: Joi.string().max(300).required(),
+  department: Joi.string().max(200).optional().allow(null, ''),
+  location: Joi.string().max(300).optional().allow(null, ''),
+  type: Joi.string().max(50).optional().allow(null, ''),
+  description: Joi.string().max(20000).optional().allow(null, ''), // #15 Fix: Limit text fields
+  requirements: Joi.string().max(10000).optional().allow(null, ''),
   isActive: Joi.boolean().optional(),
 });
 

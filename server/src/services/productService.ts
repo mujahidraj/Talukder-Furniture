@@ -1,7 +1,7 @@
 import prisma from '../config/db.js';
 import slugify from 'slugify';
 import { AppError } from '../middleware/errorHandler.js';
-import { deleteImage } from '../middleware/upload.js';
+import { deleteFilesByUrls } from '../utils/fileCleaner.js';
 
 export const getProducts = async (query: any = {}) => {
   const { page = 1, limit = 20, category, sort = 'default', q, isAdmin, status, isFeatured, price } = query;
@@ -231,6 +231,8 @@ export const updateProduct = async (id, data) => {
     updateData.slug = data.slug;
   } else if (data.name !== undefined) {
     // Generate slug from name, but ensure it doesn't collide with another product's slug
+    // #6 Fix: Add loop limit to prevent infinite iteration
+    const MAX_SLUG_ATTEMPTS = 100;
     let candidateSlug = slugify(data.name, { lower: true, strict: true });
     
     // Check if this slug already belongs to a DIFFERENT product
@@ -238,14 +240,19 @@ export const updateProduct = async (id, data) => {
     if (existingWithSlug && existingWithSlug.id !== productId) {
       // Append a numeric suffix to make it unique
       let suffix = 2;
-      while (true) {
+      let found = false;
+      while (suffix <= MAX_SLUG_ATTEMPTS + 1) {
         const trySlug = `${candidateSlug}-${suffix}`;
         const conflict = await prisma.product.findUnique({ where: { slug: trySlug } });
         if (!conflict || conflict.id === productId) {
           candidateSlug = trySlug;
+          found = true;
           break;
         }
         suffix++;
+      }
+      if (!found) {
+        throw new AppError('Unable to generate a unique slug. Too many products with similar names.', 400);
       }
     }
     updateData.slug = candidateSlug;
@@ -278,7 +285,7 @@ export const updateProduct = async (id, data) => {
     // Delete old physical files if they are not in the new image URLs
     for (const oldImage of oldImages) {
       if (!data.images.includes(oldImage.url)) {
-        await deleteImage(oldImage.url, oldImage.thumbUrl);
+        await deleteFilesByUrls([oldImage.url, oldImage.thumbUrl]);
       }
     }
   }
@@ -301,7 +308,7 @@ export const deleteProduct = async (id) => {
 
   if (product && product.images) {
     for (const image of product.images) {
-      await deleteImage(image.url, image.thumbUrl);
+      await deleteFilesByUrls([image.url, image.thumbUrl]);
     }
   }
 
@@ -359,7 +366,7 @@ export const bulkDeleteProducts = async (ids: number[]) => {
   for (const product of products) {
     if (product.images) {
       for (const image of product.images) {
-        await deleteImage(image.url, image.thumbUrl);
+        await deleteFilesByUrls([image.url, image.thumbUrl]);
       }
     }
   }

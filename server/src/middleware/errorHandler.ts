@@ -1,9 +1,28 @@
+import fs from 'fs';
+
 /**
  * Centralized error handler middleware.
  * Catches all errors thrown/passed via next(err) in route handlers.
  */
 export const errorHandler = (err, req, res, _next) => {
   console.error('Error:', err.message);
+
+  // #7 Fix: Clean up orphaned multer uploads on error
+  // If files were uploaded (via multer disk storage) but the request failed,
+  // delete them to prevent orphaned files on disk.
+  if (req.files) {
+    const files = Array.isArray(req.files)
+      ? req.files
+      : Object.values(req.files).flat();
+    for (const file of files as any[]) {
+      if (file.path && fs.existsSync(file.path)) {
+        try { fs.unlinkSync(file.path); } catch { /* ignore cleanup errors */ }
+      }
+    }
+  }
+  if (req.file && (req.file as any).path && fs.existsSync((req.file as any).path)) {
+    try { fs.unlinkSync((req.file as any).path); } catch { /* ignore */ }
+  }
 
   if (process.env.NODE_ENV === 'development') {
     console.error(err.stack);

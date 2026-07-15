@@ -8,6 +8,34 @@ import { AppError } from '../middleware/errorHandler.js';
 const loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_REFRESH_TOKENS = 10; // Maximum concurrent sessions per admin
+
+// #8 Fix: Periodically clean up expired brute-force entries to prevent memory leaks
+const CLEANUP_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [email, record] of loginAttempts.entries()) {
+    // Remove entries that are past their lockout and have no active count
+    if (record.lockedUntil > 0 && record.lockedUntil < now) {
+      loginAttempts.delete(email);
+    }
+  }
+}, CLEANUP_INTERVAL_MS);
+
+/**
+ * Remove expired refresh tokens from the array by verifying each JWT.
+ * Returns only the tokens that are still valid.
+ */
+const cleanExpiredRefreshTokens = (tokens: string[]): string[] => {
+  return tokens.filter(token => {
+    try {
+      jwt.verify(token, config.jwt.refreshSecret as string);
+      return true;
+    } catch {
+      return false; // Token expired or invalid — remove it
+    }
+  });
+};
 
 export const login = async (email, password) => {
   const now = Date.now();
@@ -30,11 +58,12 @@ export const login = async (email, password) => {
     loginAttempts.set(email, record);
     throw new AppError('Invalid email or password', 401);
   };
-  const isFallbackSuperAdmin = email === config.admin.seedEmail && password === config.admin.seedPassword;
 
   let admin = await prisma.admin.findUnique({ where: { email } });
 
-  if (!admin && isFallbackSuperAdmin) {
+  // #3 Fix: Only allow seed credentials to auto-create the admin if it doesn't exist yet.
+  // Once the admin exists, always verify against the stored passwordHash.
+  if (!admin && email === config.admin.seedEmail && password === config.admin.seedPassword) {
     const passwordHash = await bcrypt.hash(config.admin.seedPassword, config.bcrypt.saltRounds);
     admin = await prisma.admin.create({
       data: {
@@ -50,11 +79,10 @@ export const login = async (email, password) => {
     return handleFailedAttempt();
   }
 
-  if (!isFallbackSuperAdmin) {
-    const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
-    if (!isPasswordValid) {
-      return handleFailedAttempt();
-    }
+  // Always verify password against stored hash — no plaintext fallback
+  const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
+  if (!isPasswordValid) {
+    return handleFailedAttempt();
   }
 
   // Clear attempts on successful login
@@ -74,14 +102,18 @@ export const login = async (email, password) => {
     expiresIn: config.jwt.refreshExpiresIn as any,
   });
 
-  // Store refresh token in database
+  // #2 Fix: Clean expired tokens and enforce max session limit
+  let currentTokens = cleanExpiredRefreshTokens(admin.refreshTokens);
+  currentTokens.push(refreshToken);
+
+  // If over the limit, remove the oldest tokens (first in the array)
+  if (currentTokens.length > MAX_REFRESH_TOKENS) {
+    currentTokens = currentTokens.slice(currentTokens.length - MAX_REFRESH_TOKENS);
+  }
+
   await prisma.admin.update({
     where: { id: admin.id },
-    data: {
-      refreshTokens: {
-        push: refreshToken
-      }
-    }
+    data: { refreshTokens: currentTokens }
   });
 
   return {
@@ -128,9 +160,15 @@ export const refresh = async (refreshTokenString) => {
       expiresIn: config.jwt.refreshExpiresIn as any,
     });
 
-    // Replace the old refresh token with the new one
-    const updatedTokens = admin.refreshTokens.filter(t => t !== refreshTokenString);
+    // Replace old token, clean expired ones, enforce limit
+    let updatedTokens = cleanExpiredRefreshTokens(
+      admin.refreshTokens.filter(t => t !== refreshTokenString)
+    );
     updatedTokens.push(newRefreshToken);
+
+    if (updatedTokens.length > MAX_REFRESH_TOKENS) {
+      updatedTokens = updatedTokens.slice(updatedTokens.length - MAX_REFRESH_TOKENS);
+    }
 
     await prisma.admin.update({
       where: { id: admin.id },
@@ -142,6 +180,7 @@ export const refresh = async (refreshTokenString) => {
       refreshToken: newRefreshToken,
     };
   } catch (err) {
+    if (err instanceof AppError) throw err;
     throw new AppError('Invalid or expired refresh token', 401);
   }
 };

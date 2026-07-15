@@ -52,10 +52,10 @@ import Joi from 'joi';
 import { validateRequest } from '../middleware/validateRequest.js';
 
 const heroSlideSchema = Joi.object({
-  title: Joi.string().optional().allow(null, ''),
-  subtitle: Joi.string().optional().allow(null, ''),
-  ctaText: Joi.string().optional().allow(null, ''),
-  ctaLink: Joi.string().optional().allow(null, ''),
+  title: Joi.string().max(200).optional().allow(null, ''),
+  subtitle: Joi.string().max(500).optional().allow(null, ''),
+  ctaText: Joi.string().max(100).optional().allow(null, ''),
+  ctaLink: Joi.string().max(500).optional().allow(null, ''), // #15 Fix
   order: Joi.number().integer().optional(),
   isActive: Joi.boolean().optional(),
   // image is handled by multer

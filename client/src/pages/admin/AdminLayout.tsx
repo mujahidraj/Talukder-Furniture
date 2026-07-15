@@ -23,7 +23,7 @@ import { Helmet } from 'react-helmet-async';
 const adminLinks = [
   { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
   { name: 'Products', path: '/admin/products', icon: Package },
-  { name: 'Bulk Import', path: '/admin/products/bulk-import', icon: Upload },
+  { name: 'Bulk Import', path: '/admin/products/bulk-import', icon: Upload, requireSuperAdmin: true },
   { name: 'Categories', path: '/admin/categories', icon: Grid },
   { name: 'Sets (Collections)', path: '/admin/sets', icon: Package },
   { name: 'Stores', path: '/admin/stores', icon: Store },
@@ -31,7 +31,7 @@ const adminLinks = [
   { name: 'Leads / Inbox', path: '/admin/leads', icon: MessageSquare },
   { name: 'Hero Slides', path: '/admin/hero-slides', icon: ImageIcon },
   { name: 'FAQs', path: '/admin/faqs', icon: HelpCircle },
-  { name: 'Users', path: '/admin/users', icon: Users },
+  { name: 'Users', path: '/admin/users', icon: Users, requireSuperAdmin: true },
 ];
 
 export default function AdminLayout() {
@@ -83,6 +83,9 @@ export default function AdminLayout() {
         <div className="flex-grow overflow-y-auto py-4 custom-scrollbar">
           <nav className="px-4 space-y-1">
             {adminLinks.map((link) => {
+              if (link.requireSuperAdmin && admin?.role !== 'SUPER_ADMIN') {
+                return null;
+              }
               const Icon = link.icon;
               return (
                 <NavLink

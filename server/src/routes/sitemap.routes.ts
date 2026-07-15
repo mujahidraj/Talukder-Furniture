@@ -5,6 +5,15 @@ const router = Router();
 
 const CLIENT_URL = process.env.CLIENT_URL || 'https://talukderfurniture.com';
 
+// #16 Fix: Escape XML special characters in sitemap output
+const escapeXml = (str: string): string =>
+  str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
 router.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.send(`User-agent: *
@@ -48,7 +57,7 @@ router.get('/sitemap.xml', async (req, res) => {
     categories.forEach(cat => {
       xml += `
   <url>
-    <loc>${CLIENT_URL}/shop?category=${cat.slug}</loc>
+    <loc>${escapeXml(CLIENT_URL)}/shop?category=${escapeXml(cat.slug)}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`;
@@ -57,7 +66,7 @@ router.get('/sitemap.xml', async (req, res) => {
     products.forEach(prod => {
       xml += `
   <url>
-    <loc>${CLIENT_URL}/product/${prod.slug}</loc>
+    <loc>${escapeXml(CLIENT_URL)}/product/${escapeXml(prod.slug)}</loc>
     <lastmod>${prod.updatedAt.toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

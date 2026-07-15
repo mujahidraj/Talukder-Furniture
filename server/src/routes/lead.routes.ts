@@ -7,13 +7,13 @@ import Joi from 'joi';
 const router = Router();
 
 const createLeadSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().allow(null, '').optional(),
-  referenceNumber: Joi.string().allow(null, '').optional(),
-  message: Joi.string().required(),
+  name: Joi.string().max(200).required(),
+  email: Joi.string().email().max(254).required(),
+  phone: Joi.string().max(30).allow(null, '').optional(),
+  referenceNumber: Joi.string().max(100).allow(null, '').optional(),
+  message: Joi.string().max(5000).required(), // #15 Fix: Limit message length
   source: Joi.string().valid('contact-form', 'faq-form', 'product-enquiry').optional(),
-  category: Joi.string().allow(null, '').optional(),
+  category: Joi.string().max(200).allow(null, '').optional(),
 });
 
 const updateStatusSchema = Joi.object({

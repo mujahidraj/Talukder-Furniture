@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import * as bulkImportController from '../controllers/bulkImportController.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware, requireRole } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -23,10 +23,11 @@ const upload = multer({
   },
 });
 
+// #5 Fix: Only SUPER_ADMIN can bulk import
 // Template download (protected)
-router.get('/template', authMiddleware, bulkImportController.downloadTemplate);
+router.get('/template', authMiddleware, requireRole('SUPER_ADMIN'), bulkImportController.downloadTemplate);
 
 // File upload (protected)
-router.post('/upload', authMiddleware, upload.single('file'), bulkImportController.upload);
+router.post('/upload', authMiddleware, requireRole('SUPER_ADMIN'), upload.single('file'), bulkImportController.upload);
 
 export default router;

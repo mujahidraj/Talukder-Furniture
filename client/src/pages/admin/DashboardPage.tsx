@@ -16,8 +16,10 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../lib/api';
+import useAuthStore from '../../stores/useAuthStore';
 
 export default function DashboardPage() {
+  const { admin } = useAuthStore();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -168,24 +170,28 @@ export default function DashboardPage() {
               </div>
               <span className="text-sm font-medium text-primary">Add Product</span>
             </Link>
-            <Link to="/admin/products/bulk-import" className="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 text-center group">
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
-                <UploadCloud size={20} className="text-blue-500" />
-              </div>
-              <span className="text-sm font-medium text-primary">Bulk Import</span>
-            </Link>
+            {admin?.role === 'SUPER_ADMIN' && (
+              <Link to="/admin/products/bulk-import" className="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 text-center group">
+                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                  <UploadCloud size={20} className="text-blue-500" />
+                </div>
+                <span className="text-sm font-medium text-primary">Bulk Import</span>
+              </Link>
+            )}
             <Link to="/admin/leads" className="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 text-center group">
               <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
                 <MessageSquare size={20} className="text-green-500" />
               </div>
               <span className="text-sm font-medium text-primary">View Leads</span>
             </Link>
-            <Link to="/admin/users" className="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 text-center group">
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
-                <Users size={20} className="text-purple-500" />
-              </div>
-              <span className="text-sm font-medium text-primary">Manage Users</span>
-            </Link>
+            {admin?.role === 'SUPER_ADMIN' && (
+              <Link to="/admin/users" className="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 text-center group">
+                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                  <Users size={20} className="text-purple-500" />
+                </div>
+                <span className="text-sm font-medium text-primary">Manage Users</span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -223,50 +229,52 @@ export default function DashboardPage() {
       </div>
 
       {/* Third Row: Recent Bulk Imports */}
-      <div className="mt-8 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="font-bold text-primary text-lg">Recent Bulk Imports</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="p-4 font-semibold text-sm text-gray-600">File Name</th>
-                <th className="p-4 font-semibold text-sm text-gray-600">Status</th>
-                <th className="p-4 font-semibold text-sm text-gray-600">Imported</th>
-                <th className="p-4 font-semibold text-sm text-gray-600">Failed</th>
-                <th className="p-4 font-semibold text-sm text-gray-600 text-right">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {stats.recentImports?.map((log: any) => (
-                <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="p-4 text-sm font-medium text-primary">{log.fileName}</td>
-                  <td className="p-4 text-sm">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      log.status === 'completed' && log.failCount === 0 ? 'bg-green-100 text-green-700' :
-                      log.status === 'failed' ? 'bg-red-100 text-red-700' :
-                      'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {log.status.charAt(0).toUpperCase() + log.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm text-green-600 font-medium">{log.successCount}</td>
-                  <td className="p-4 text-sm text-red-600 font-medium">{log.failCount}</td>
-                  <td className="p-4 text-sm text-gray-500 text-right">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </td>
+      {admin?.role === 'SUPER_ADMIN' && (
+        <div className="mt-8 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="font-bold text-primary text-lg">Recent Bulk Imports</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="p-4 font-semibold text-sm text-gray-600">File Name</th>
+                  <th className="p-4 font-semibold text-sm text-gray-600">Status</th>
+                  <th className="p-4 font-semibold text-sm text-gray-600">Imported</th>
+                  <th className="p-4 font-semibold text-sm text-gray-600">Failed</th>
+                  <th className="p-4 font-semibold text-sm text-gray-600 text-right">Date</th>
                 </tr>
-              ))}
-              {(!stats.recentImports || stats.recentImports.length === 0) && (
-                <tr>
-                  <td colSpan={5} className="p-6 text-center text-gray-500">No recent imports found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {stats.recentImports?.map((log: any) => (
+                  <tr key={log.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4 text-sm font-medium text-primary">{log.fileName}</td>
+                    <td className="p-4 text-sm">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        log.status === 'completed' && log.failCount === 0 ? 'bg-green-100 text-green-700' :
+                        log.status === 'failed' ? 'bg-red-100 text-red-700' :
+                        'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {log.status.charAt(0).toUpperCase() + log.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm text-green-600 font-medium">{log.successCount}</td>
+                    <td className="p-4 text-sm text-red-600 font-medium">{log.failCount}</td>
+                    <td className="p-4 text-sm text-gray-500 text-right">
+                      {new Date(log.createdAt).toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+                {(!stats.recentImports || stats.recentImports.length === 0) && (
+                  <tr>
+                    <td colSpan={5} className="p-6 text-center text-gray-500">No recent imports found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

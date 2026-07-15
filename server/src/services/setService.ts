@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import slugify from 'slugify';
 import { AppError } from '../middleware/errorHandler.js';
+import { deleteFilesByUrls } from '../utils/fileCleaner.js';
 
 export const getSets = async (query: any = {}) => {
   const { page = 1, limit = 20, category, admin, q, price, sort = 'default' } = query;
@@ -173,7 +174,29 @@ export const updateSet = async (id: string | number, data: any) => {
   if (data.slug !== undefined) {
     updateData.slug = data.slug;
   } else if (data.name !== undefined) {
-    updateData.slug = slugify(data.name, { lower: true, strict: true });
+    // #17 Fix: Add slug collision handling (like productService)
+    let candidateSlug = slugify(data.name, { lower: true, strict: true });
+    const setId = parseInt(id.toString(), 10);
+    const existingWithSlug = await prisma.set.findUnique({ where: { slug: candidateSlug } });
+    if (existingWithSlug && existingWithSlug.id !== setId) {
+      let suffix = 2;
+      const MAX_SLUG_ATTEMPTS = 100;
+      let found = false;
+      while (suffix <= MAX_SLUG_ATTEMPTS + 1) {
+        const trySlug = `${candidateSlug}-${suffix}`;
+        const conflict = await prisma.set.findUnique({ where: { slug: trySlug } });
+        if (!conflict || conflict.id === setId) {
+          candidateSlug = trySlug;
+          found = true;
+          break;
+        }
+        suffix++;
+      }
+      if (!found) {
+        throw new AppError('Unable to generate a unique slug for this set.', 400);
+      }
+    }
+    updateData.slug = candidateSlug;
   }
   
   if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
@@ -191,19 +214,66 @@ export const updateSet = async (id: string | number, data: any) => {
     };
   }
 
+  const setId = parseInt(id.toString(), 10);
+
+  // If images are being updated, delete the old ones that are no longer used
+  if (data.imageUrl !== undefined || data.imageUrls !== undefined) {
+    const oldSet = await prisma.set.findUnique({ where: { id: setId } });
+    if (oldSet) {
+      const urlsToDelete: string[] = [];
+      if (data.imageUrl !== undefined && oldSet.imageUrl && oldSet.imageUrl !== data.imageUrl) {
+        urlsToDelete.push(oldSet.imageUrl);
+      }
+      if (data.imageUrls !== undefined && oldSet.imageUrls.length > 0) {
+        for (const oldUrl of oldSet.imageUrls) {
+          if (!data.imageUrls.includes(oldUrl)) {
+            urlsToDelete.push(oldUrl);
+          }
+        }
+      }
+      if (urlsToDelete.length > 0) {
+        await deleteFilesByUrls(urlsToDelete);
+      }
+    }
+  }
+
   return prisma.set.update({
-    where: { id: parseInt(id.toString(), 10) },
+    where: { id: setId },
     data: updateData,
   });
 };
 
 export const deleteSet = async (id: string | number) => {
+  const setId = parseInt(id.toString(), 10);
+  const set = await prisma.set.findUnique({ where: { id: setId } });
+  
+  if (set) {
+    const urlsToDelete: string[] = [];
+    if (set.imageUrl) urlsToDelete.push(set.imageUrl);
+    if (set.imageUrls) urlsToDelete.push(...set.imageUrls);
+    if (urlsToDelete.length > 0) {
+      await deleteFilesByUrls(urlsToDelete);
+    }
+  }
+
   return prisma.set.delete({
-    where: { id: parseInt(id.toString(), 10) },
+    where: { id: setId },
   });
 };
 
 export const bulkDeleteSets = async (ids: number[]) => {
+  const sets = await prisma.set.findMany({ where: { id: { in: ids } } });
+  
+  const urlsToDelete: string[] = [];
+  sets.forEach(set => {
+    if (set.imageUrl) urlsToDelete.push(set.imageUrl);
+    if (set.imageUrls) urlsToDelete.push(...set.imageUrls);
+  });
+
+  if (urlsToDelete.length > 0) {
+    await deleteFilesByUrls(urlsToDelete);
+  }
+
   return prisma.set.deleteMany({
     where: {
       id: {

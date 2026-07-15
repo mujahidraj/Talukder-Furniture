@@ -15,14 +15,14 @@ app.listen(PORT, () => {
 process.on('unhandledRejection', (err: any) => {
   console.error('UNHANDLED REJECTION! 💥 Shutting down...', err.name, err.message);
   console.error(err);
-  // Optionally, you could exit here with process.exit(1), but to keep the server alive 
-  // despite rogue promises we'll just log it for now.
+  // #22 Fix: Exit so process manager can restart cleanly
+  process.exit(1);
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err: any) => {
   console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...', err.name, err.message);
   console.error(err);
-  // Uncaught exceptions usually mean the process is in an undefined state, 
-  // so it's generally best practice to restart the server, but for development we'll log it.
+  // #22 Fix: Uncaught exceptions leave the process in an undefined state — must exit
+  process.exit(1);
 });

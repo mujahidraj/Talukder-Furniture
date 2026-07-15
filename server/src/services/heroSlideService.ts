@@ -78,10 +78,9 @@ export const heroSlideService = {
     // Get the slide to delete its image if necessary
     const slide = await prisma.heroSlide.findUnique({ where: { id } });
     if (slide && slide.imageUrl && slide.imageUrl.startsWith('/uploads/')) {
+      // #18 Fix: Use path.basename to prevent path traversal from tampered DB values
       const filename = path.basename(slide.imageUrl);
-      // Wait, heroSlide image uploads were going to 'uploads/slides' not 'images'
-      // the controller deletes it correctly, but here we can just use the path as is
-      const filePath = path.join(process.cwd(), slide.imageUrl);
+      const filePath = path.resolve(config.upload.localPath, 'slides', filename);
       if (fs.existsSync(filePath)) {
         try {
           fs.unlinkSync(filePath);
@@ -92,7 +91,9 @@ export const heroSlideService = {
     }
     
     if (slide && slide.videoUrl && slide.videoUrl.startsWith('/uploads/')) {
-      const filePath = path.join(process.cwd(), slide.videoUrl);
+      // #18 Fix: Use path.basename to prevent path traversal
+      const filename = path.basename(slide.videoUrl);
+      const filePath = path.resolve(config.upload.localPath, 'slides', filename);
       if (fs.existsSync(filePath)) {
         try {
           fs.unlinkSync(filePath);

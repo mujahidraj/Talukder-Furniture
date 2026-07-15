@@ -14,18 +14,31 @@ router.get('/:id', requireRole('SUPER_ADMIN', 'ADMIN'), adminUserController.getA
 import Joi from 'joi';
 import { validateRequest } from '../middleware/validateRequest.js';
 
+// #21 Fix: Password complexity — min 8 chars, uppercase, lowercase, number, special char
+const passwordSchema = Joi.string()
+  .min(8)
+  .pattern(/[A-Z]/, 'uppercase')
+  .pattern(/[a-z]/, 'lowercase')
+  .pattern(/[0-9]/, 'number')
+  .pattern(/[!@#$%^&*(),.?":{}|<>]/, 'special character')
+  .messages({
+    'string.min': 'Password must be at least 8 characters',
+    'string.pattern.name': 'Password must contain at least one {#name}',
+  });
+
 const createAdminSchema = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().max(100).required(),
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).optional(),
+  password: passwordSchema.optional(),
   role: Joi.string().valid('ADMIN', 'SUPER_ADMIN').required(),
 });
 
 const updateAdminSchema = Joi.object({
-  name: Joi.string().optional(),
+  name: Joi.string().max(100).optional(),
   email: Joi.string().email().optional(),
-  password: Joi.string().min(6).optional(),
+  password: passwordSchema.optional(),
   role: Joi.string().valid('ADMIN', 'SUPER_ADMIN').optional(),
+  superAdminPassword: Joi.string().required(),  // #4 Fix: Required for admin updates
 });
 
 // Only Super Admins can modify

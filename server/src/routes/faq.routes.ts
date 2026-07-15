@@ -8,9 +8,9 @@ import Joi from 'joi';
 import { validateRequest } from '../middleware/validateRequest.js';
 
 const faqSchema = Joi.object({
-  groupName: Joi.string().required(),
-  question: Joi.string().required(),
-  answer: Joi.string().required(),
+  groupName: Joi.string().max(200).required(),
+  question: Joi.string().max(500).required(),
+  answer: Joi.string().max(10000).required(), // #15 Fix: Limit answer length
   order: Joi.number().integer().optional(),
   isActive: Joi.boolean().optional(),
 });

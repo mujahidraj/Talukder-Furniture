@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, Filter, Eye, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import api from '../../../lib/api';
+import useAuthStore from '../../../stores/useAuthStore';
 
 export default function ProductListPage() {
+  const { admin } = useAuthStore();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -110,12 +112,16 @@ export default function ProductListPage() {
               <Trash2 size={16} /> Delete ({selectedIds.length})
             </button>
           )}
-          <Link to="/admin/products/bulk-import" className="btn btn-outline text-sm hidden sm:inline-flex">
-            Bulk Import (Excel)
-          </Link>
-          <Link to="/admin/products/bulk-image-import" className="btn btn-outline text-sm hidden sm:inline-flex">
-            Bulk Import (Images)
-          </Link>
+          {admin?.role === 'SUPER_ADMIN' && (
+            <>
+              <Link to="/admin/products/bulk-import" className="btn btn-outline text-sm hidden sm:inline-flex">
+                Bulk Import (Excel)
+              </Link>
+              <Link to="/admin/products/bulk-image-import" className="btn btn-outline text-sm hidden sm:inline-flex">
+                Bulk Import (Images)
+              </Link>
+            </>
+          )}
           <Link to="/admin/products/new" className="btn bg-black text-white hover:bg-gray-900 text-sm flex items-center gap-2 transition-colors">
             <Plus size={16} /> Add Product
           </Link>

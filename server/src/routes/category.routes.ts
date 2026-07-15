@@ -7,10 +7,10 @@ import Joi from 'joi';
 const router = Router();
 
 const categorySchema = Joi.object({
-  name: Joi.string().required(),
-  slug: Joi.string().optional(),
+  name: Joi.string().max(200).required(),
+  slug: Joi.string().max(200).optional(),
   parentId: Joi.number().integer().allow(null).optional(),
-  imageUrl: Joi.string().uri().allow(null, '').optional(),
+  imageUrl: Joi.string().uri().max(2000).allow(null, '').optional(), // #15 Fix
   order: Joi.number().integer().optional(),
   isActive: Joi.boolean().optional(),
 });

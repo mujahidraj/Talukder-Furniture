@@ -21,7 +21,7 @@ async function main() {
       name: 'Super Admin',
       email: adminEmail,
       passwordHash,
-      role: 'superadmin',
+      role: 'SUPER_ADMIN', // #11 Fix: was 'superadmin', but auth checks for 'SUPER_ADMIN'
     },
   });
   console.log('✅ Admin user seeded');
