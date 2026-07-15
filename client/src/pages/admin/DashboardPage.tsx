@@ -12,7 +12,8 @@ import {
   Store,
   Briefcase,
   Star,
-  UploadCloud
+  UploadCloud,
+  Layers
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../lib/api';
@@ -79,6 +80,8 @@ export default function DashboardPage() {
     { title: 'Physical Stores', value: stats.totalStores, icon: Store, change: 0, isPositive: true },
     { title: 'Active Jobs', value: stats.activeJobs, icon: Briefcase, change: 0, isPositive: true },
     { title: 'Featured Products', value: stats.featuredProducts, icon: Star, change: 0, isPositive: true },
+    { title: 'Total Sets', value: stats.totalSets || 0, icon: Layers, change: 0, isPositive: true },
+    { title: 'Set Categories', value: stats.setCategoryCount || 0, icon: Grid, change: 0, isPositive: true },
   ];
 
   return (

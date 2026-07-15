@@ -132,31 +132,39 @@ export const deleteCategory = async (id) => {
   const children = await prisma.category.findMany({ where: { parentId: catId } });
   const childIds = children.map(c => c.id);
   
-  const categoryIdsToDeleteProducts = [catId, ...childIds];
+  const categoryIdsToReassign = [catId, ...childIds];
   
-  if (categoryIdsToDeleteProducts.length > 0) {
-    // Fetch products to delete their physical images before deleting the DB records
-    const productsToDelete = await prisma.product.findMany({
-      where: { categoryId: { in: categoryIdsToDeleteProducts } },
-      include: { images: true }
+  if (categoryIdsToReassign.length > 0) {
+    // 1. Ensure "Uncategorized" category exists
+    let uncategorized = await prisma.category.findUnique({
+      where: { slug: 'uncategorized' }
     });
 
-    const fileUrlsToDelete: string[] = [];
-    productsToDelete.forEach(prod => {
-      if (prod.images) {
-        prod.images.forEach(img => {
-          if (img.url) fileUrlsToDelete.push(img.url);
-          if (img.thumbUrl) fileUrlsToDelete.push(img.thumbUrl);
-        });
-      }
-    });
-
-    if (fileUrlsToDelete.length > 0) {
-      await deleteFilesByUrls(fileUrlsToDelete);
+    if (!uncategorized) {
+      uncategorized = await prisma.category.create({
+        data: {
+          name: 'Uncategorized',
+          slug: 'uncategorized',
+          isActive: false // Usually you don't want "Uncategorized" to show up publicly by default
+        }
+      });
     }
 
-    await prisma.product.deleteMany({
-      where: { categoryId: { in: categoryIdsToDeleteProducts } }
+    // 2. Prevent deleting the Uncategorized category itself
+    if (categoryIdsToReassign.includes(uncategorized.id)) {
+      throw new AppError('Cannot delete the Uncategorized category', 400);
+    }
+
+    // 3. Reassign products to Uncategorized
+    await prisma.product.updateMany({
+      where: { categoryId: { in: categoryIdsToReassign } },
+      data: { categoryId: uncategorized.id }
+    });
+    
+    // 4. Reassign sets to Uncategorized (since Sets also belong to a category)
+    await prisma.set.updateMany({
+      where: { categoryId: { in: categoryIdsToReassign } },
+      data: { categoryId: uncategorized.id }
     });
   }
   

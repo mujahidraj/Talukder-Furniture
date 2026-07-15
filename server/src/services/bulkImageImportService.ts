@@ -237,5 +237,21 @@ export const processImageImport = async (folderPath: string, adminId: number): P
     report.errorCount++;
   }
 
+  try {
+    await prisma.bulkImportLog.create({
+      data: {
+        adminId,
+        fileName: `Image Import: ${path.basename(folderPath)}`,
+        totalRows: report.totalScanned,
+        successCount: report.matchedCount,
+        failCount: report.unmatchedCount + report.errorCount,
+        status: report.errorCount > 0 ? (report.matchedCount > 0 ? 'completed' : 'failed') : 'completed',
+        errorReport: report.results as any
+      }
+    });
+  } catch (logErr) {
+    console.error('Failed to save BulkImportLog for images:', logErr);
+  }
+
   return report;
 };

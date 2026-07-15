@@ -10,11 +10,13 @@ import {
   Server,
   FileText,
   FileCheck,
-  FileWarning
+  FileWarning,
+  ImageIcon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../../lib/api';
+import RecentBulkImportsTable from './components/RecentBulkImportsTable';
 
 export default function BulkImportPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -128,13 +130,22 @@ export default function BulkImportPage() {
             <p className="text-sm text-gray-500 mt-1">Upload an Excel (.xlsx) file to add or update multiple products seamlessly.</p>
           </div>
         </div>
-        <button 
-          onClick={handleDownloadTemplate}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 hover:shadow-lg transition-all"
-        >
-          <Download size={18} />
-          Get Template
-        </button>
+        <div className="flex gap-3">
+          <Link 
+            to="/admin/products/bulk-image-import"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-xl hover:bg-purple-700 hover:shadow-lg transition-all"
+          >
+            <ImageIcon size={18} />
+            Image Import
+          </Link>
+          <button 
+            onClick={handleDownloadTemplate}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 hover:shadow-lg transition-all"
+          >
+            <Download size={18} />
+            Get Template
+          </button>
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -381,6 +392,8 @@ export default function BulkImportPage() {
           </div>
         </motion.div>
       </div>
+      
+      <RecentBulkImportsTable refreshTrigger={status} />
     </div>
   );
 }

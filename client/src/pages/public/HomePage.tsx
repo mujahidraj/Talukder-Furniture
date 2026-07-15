@@ -334,11 +334,11 @@ export default function HomePage() {
       <section style={{ padding: '100px 0 80px', backgroundColor: 'white' }}>
         <div className="w-full max-w-[1800px] mx-auto px-6 xl:px-12">
           {/* Heading */}
-          <div className="flex items-center gap-3 mb-8">
-            <h2 className="text-2xl md:text-3xl font-light text-[#1a1a1a]" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <div className="flex items-center gap-3 mb-10 group cursor-pointer w-max">
+            <h2 className="text-3xl md:text-4xl font-serif text-[#1a1a1a] tracking-tight">
               Popular Furniture
             </h2>
-            <ArrowRight size={22} className="text-[#1a1a1a]" strokeWidth={1.5} />
+            <ArrowRight size={24} className="text-[#1a1a1a] group-hover:translate-x-2 transition-transform duration-300" strokeWidth={1.5} />
           </div>
 
           {/* 7-column grid layout for desktop, responsive grid for mobile */}
@@ -350,16 +350,18 @@ export default function HomePage() {
                 className="flex flex-col items-center gap-3 group w-full"
                 style={{ textDecoration: 'none' }}
               >
-                <div className="w-full aspect-square rounded-xl overflow-hidden bg-[#f5f5f5] transition-shadow duration-300 group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+                <div className="relative w-full aspect-[4/5] sm:aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:border-transparent">
                   <img
                     src={cat.image}
                     alt={cat.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  {/* Subtle hover overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
                 </div>
-                <span className="text-[13px] md:text-[14px] text-[#444] font-normal text-center whitespace-nowrap">
+                <h3 className="text-[14px] md:text-[15px] text-[#1a1a1a] font-medium text-center mt-1 group-hover:text-[#E32227] transition-colors duration-300">
                   {cat.name}
-                </span>
+                </h3>
               </Link>
             ))}
           </div>
@@ -385,50 +387,58 @@ export default function HomePage() {
               <Link
                 key={product.id}
                 to={`/products/${product.slug}`}
-                className="group relative block w-[260px] sm:w-auto snap-start shrink-0"
+                className="group relative flex flex-col w-[260px] sm:w-auto snap-start shrink-0"
               >
                 {/* Image Container */}
-                <div className="relative w-full aspect-square bg-[#f5f5f5] mb-5 overflow-hidden">
+                <div className="relative w-full aspect-[4/5] sm:aspect-square bg-gray-50 mb-5 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-lg transition-shadow duration-500">
                   <img
                     src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p1}
                     alt={product.name}
                     loading="lazy"
-                    className={`absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-all duration-700 group-hover:scale-105 ${product.images && product.images.length > 1 ? 'group-hover:opacity-0' : ''}`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${product.images && product.images.length > 1 ? 'group-hover:opacity-0' : ''}`}
                   />
                   {product.images && product.images.length > 1 && (
                     <img
                       src={product.images[1].url}
                       alt={product.name}
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-0 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100"
+                      className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100"
                     />
                   )}
+                  
+                  {/* Discount Badge on Image */}
+                  {product.basePrice && product.discountPercentage > 0 && (
+                    <div className="absolute top-4 left-4 bg-[#E32227] text-white text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-full uppercase shadow-md z-10">
+                      -{product.discountPercentage}%
+                    </div>
+                  )}
+
                   {/* Hover Overlay 'View Details' Button */}
-                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
+                  <div className="absolute inset-x-0 bottom-0 p-5 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-6 group-hover:translate-y-0 z-20 flex justify-center">
+                    <span className="bg-white/95 backdrop-blur-md text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300 text-[13px] font-semibold tracking-widest uppercase px-8 py-3.5 rounded-full shadow-xl w-full text-center">
                       View Details
                     </span>
                   </div>
+                  
+                  {/* Gradient Overlay for bottom button contrast */}
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
                 </div>
 
                 {/* Text Content */}
-                <div className="flex flex-col flex-1 justify-start px-2">
-                  <h3 className="font-medium text-[#1a1a1a] text-[15px] md:text-[16px] leading-snug line-clamp-2 mb-2 group-hover:text-[#E32227] transition-colors duration-300">
+                <div className="flex flex-col flex-1 px-1">
+                  <h3 className="font-serif text-[#1a1a1a] text-[17px] md:text-[19px] leading-snug line-clamp-2 mb-1.5 group-hover:text-[#E32227] transition-colors duration-300">
                     {product.name}
                   </h3>
-                  <div className="flex items-center gap-2.5">
-                    <span className="font-semibold text-[#1a1a1a] text-[16px]">
+                  <div className="flex items-center gap-3 mt-auto">
+                    <span className="font-bold text-[#1a1a1a] text-[16px] md:text-[18px]">
                       {product.basePrice && product.discountPercentage > 0
                         ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
                         : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
                     </span>
                     {product.basePrice && product.discountPercentage > 0 && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
-                          ৳ {product.basePrice.toLocaleString()}
-                        </span>
-                        <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
-                      </div>
+                      <span className="text-[13px] md:text-[14px] text-gray-400 line-through font-medium">
+                        ৳ {product.basePrice.toLocaleString()}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -445,29 +455,36 @@ export default function HomePage() {
         <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-12">
 
           {/* Top Split Section */}
-          <div className="flex flex-col lg:flex-row items-stretch min-h-[500px] lg:min-h-[700px]">
+          <div className="flex flex-col lg:flex-row items-stretch gap-2 lg:gap-2 min-h-[500px] lg:min-h-[750px]">
             {/* Left Content Area — Deep Charcoal */}
-            <div className="w-full lg:w-[45%] bg-[#141414] p-12 lg:p-20 xl:p-28 flex flex-col justify-center relative">
-              <span className="text-[#a0a0a0] uppercase tracking-[0.3em] text-[12px] font-bold mb-6 block">
-                Exclusive Collection
-              </span>
-              <h2 className="text-4xl sm:text-5xl lg:text-[4rem] font-serif text-white leading-[1.1] mb-8">
-                Elevate Your<br />Everyday Living
-              </h2>
-              <p className="text-[16px] lg:text-[18px] text-gray-400 font-light mb-12 max-w-[400px] leading-relaxed">
-                Immerse yourself in spaces designed with passion and crafted for absolute perfection. Experience true luxury.
-              </p>
-              <Link to="/shop" className="group inline-flex items-center gap-4 self-start text-white text-[14px] tracking-[0.2em] uppercase font-semibold">
-                <span className="border-b border-transparent group-hover:border-white transition-colors duration-300 pb-0.5">
-                  Explore Spaces
+            <div className="w-full lg:w-[45%] bg-[#111] p-12 lg:p-20 xl:p-28 flex flex-col justify-center relative rounded-xl overflow-hidden group/text">
+              {/* Subtle background glow/gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#222] to-transparent opacity-50 pointer-events-none"></div>
+              <div className="absolute -top-40 -left-40 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none transition-transform duration-1000 group-hover/text:translate-x-10 group-hover/text:translate-y-10"></div>
+              
+              <div className="relative z-10">
+                <span className="text-[#a0a0a0] uppercase tracking-[0.35em] text-[11px] font-bold mb-8 block flex items-center gap-4">
+                  <span className="w-8 h-[1px] bg-[#a0a0a0]"></span>
+                  Exclusive Collection
                 </span>
-                <span className="w-8 h-[1px] bg-white group-hover:w-12 transition-all duration-300"></span>
-              </Link>
+                <h2 className="text-4xl sm:text-5xl lg:text-[4.5rem] font-serif text-white leading-[1.05] mb-8 tracking-tight">
+                  Elevate Your<br />Everyday<br />Living
+                </h2>
+                <p className="text-[16px] lg:text-[18px] text-gray-400 font-light mb-12 max-w-[420px] leading-relaxed">
+                  Immerse yourself in spaces designed with passion and crafted for absolute perfection. Experience true luxury tailored to your lifestyle.
+                </p>
+                <Link to="/shop" className="group inline-flex items-center gap-4 self-start text-white text-[13px] tracking-[0.25em] uppercase font-semibold">
+                  <span className="border-b border-transparent group-hover:border-white transition-colors duration-300 pb-1">
+                    Explore Spaces
+                  </span>
+                  <span className="w-10 h-[1px] bg-white group-hover:w-16 transition-all duration-500 ease-out"></span>
+                </Link>
+              </div>
             </div>
 
             {/* Right Perfectly Packed Grid Image Gallery */}
-            <div className="w-full lg:w-[55%] bg-white p-2 h-[500px] lg:h-auto">
-              <div className="grid grid-cols-3 grid-rows-4 gap-2 w-full h-full">
+            <div className="w-full lg:w-[55%] h-[600px] lg:h-auto">
+              <div className="grid grid-cols-3 grid-rows-4 gap-2 lg:gap-2 w-full h-full">
                 {[
                   { src: '/Images/Elevate-section/03.jpg', span: 'col-span-1 row-span-2' },
                   { src: '/Images/Elevate-section/37.png', span: 'col-span-1 row-span-2' },
@@ -475,14 +492,14 @@ export default function HomePage() {
                   { src: '/Images/Elevate-section/TFL-CFT-102-WD-1.jpg', span: 'col-span-2 row-span-2' },
                   { src: '/Images/Elevate-section/TFL-SOF-104-WD-1.jpg', span: 'col-span-1 row-span-1' },
                 ].map((img, i) => (
-                  <div key={i} className={`relative group overflow-hidden bg-gray-100 ${img.span}`}>
+                  <div key={i} className={`relative group overflow-hidden rounded-xl bg-gray-50 shadow-sm ${img.span}`}>
                     <img
                       src={img.src}
                       alt="Gallery Snapshot"
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110 ease-out"
                     />
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
                   </div>
                 ))}
               </div>
@@ -525,29 +542,47 @@ export default function HomePage() {
               {(newestProducts.length > 0 ? newestProducts : livingRoomMockProducts).map((product) => (
                 <SwiperSlide key={product.id}>
                   <Link to={`/products/${product.slug}`} className="block group">
-                    <div className="w-full aspect-[4/3] bg-[#f8f8f8] mb-4 rounded-md overflow-hidden relative">
+                    {/* Image Container */}
+                    <div className="w-full aspect-[4/3] bg-gray-50 mb-4 rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-shadow duration-500">
                       <img
                         src={product.images && product.images.length > 0 ? product.images[0].url : product.image || IMG.p5}
                         alt={product.name}
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                    </div>
-                    <h3 className="text-[16px] md:text-[18px] font-semibold text-[#1a1a1a] mb-1">{product.name}</h3>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-[17px] md:text-[19px] font-bold text-[#1a1a1a]">
-                        {product.basePrice && product.discountPercentage > 0
-                          ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
-                          : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
-                      </p>
+                      
+                      {/* Hover overlay with button */}
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
+                        <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white/95 backdrop-blur-sm text-[#1a1a1a] hover:bg-black hover:text-white text-[12px] font-semibold tracking-wider uppercase px-6 py-2.5 rounded-full shadow-lg">
+                          View Details
+                        </span>
+                      </div>
+                      
+                      {/* Discount Badge on Image */}
                       {product.basePrice && product.discountPercentage > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
-                            ৳ {product.basePrice.toLocaleString()}
-                          </span>
-                          <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
+                        <div className="absolute top-3 left-3 bg-[#E32227] text-white text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-full uppercase shadow-sm z-30">
+                          -{product.discountPercentage}%
                         </div>
                       )}
+                    </div>
+
+                    {/* Text Content */}
+                    <div className="px-1">
+                      <h3 className="text-[17px] md:text-[19px] font-serif text-[#1a1a1a] mb-1.5 group-hover:text-[#E32227] transition-colors duration-300 line-clamp-1">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        <p className="text-[16px] md:text-[18px] font-bold text-[#1a1a1a]">
+                          {product.basePrice && product.discountPercentage > 0
+                            ? `৳ ${(product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()}`
+                            : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
+                        </p>
+                        {product.basePrice && product.discountPercentage > 0 && (
+                          <span className="text-[13px] md:text-[14px] text-gray-400 line-through font-medium">
+                            ৳ {product.basePrice.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </Link>
                 </SwiperSlide>
@@ -591,18 +626,18 @@ export default function HomePage() {
                 to={`/shop?category=${cat.slug}`}
                 className="group flex flex-col items-center w-[130px] sm:w-[150px] lg:w-[180px]"
               >
-                <div className="w-full aspect-square rounded-full bg-white mb-5 p-2 shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-gray-100 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] group-hover:border-gray-200 transition-all duration-500">
-                  <div className="w-full h-full rounded-full overflow-hidden relative">
+                <div className="w-full aspect-square rounded-full bg-white mb-5 p-2 shadow-sm border border-gray-100 group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)] group-hover:border-transparent transition-all duration-500 transform group-hover:-translate-y-1">
+                  <div className="w-full h-full rounded-full overflow-hidden relative bg-gray-50">
                     <img
                       src={cat.image}
                       alt={cat.name}
                       loading="lazy"
-                      className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
                   </div>
                 </div>
-                <h4 className="text-[#1a1a1a] font-medium text-[15px] lg:text-[16px] text-center group-hover:text-[#E32227] transition-colors">
+                <h4 className="text-[#1a1a1a] font-semibold text-[15px] lg:text-[16px] text-center group-hover:text-[#E32227] transition-colors duration-300">
                   {cat.name}
                 </h4>
               </Link>
@@ -631,7 +666,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-3">
             {[
               { name: 'Talukder Prestige Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/03.jpg', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
               { name: 'Cozy Sofa Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/06.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },

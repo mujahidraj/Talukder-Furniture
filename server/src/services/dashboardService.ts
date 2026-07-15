@@ -17,7 +17,9 @@ export const getDashboardStats = async () => {
     recentProducts,
     recentImports,
     newProductsLast30,
-    newLeadsLast30
+    newLeadsLast30,
+    totalSets,
+    setCategoryCount
   ] = await Promise.all([
     prisma.product.count(),
     prisma.contactLead.count(),
@@ -49,7 +51,9 @@ export const getDashboardStats = async () => {
       orderBy: { createdAt: 'desc' }
     }),
     prisma.product.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
-    prisma.contactLead.count({ where: { createdAt: { gte: thirtyDaysAgo } } })
+    prisma.contactLead.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
+    prisma.set.count(),
+    prisma.category.count({ where: { sets: { some: {} } } })
   ]);
 
   const oldTotalProducts = totalProducts - newProductsLast30;
@@ -80,6 +84,8 @@ export const getDashboardStats = async () => {
     inquiryRateChange,
     totalCategories,
     totalStores,
+    totalSets,
+    setCategoryCount,
     activeJobs,
     featuredProducts,
     recentLeads: recentLeads.map(lead => ({

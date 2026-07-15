@@ -218,11 +218,17 @@ export default function ProductListPage() {
                 <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('price')}>
                   <div className="flex items-center gap-2">Discounted Price {getSortIcon('price')}</div>
                 </th>
+                <th className="p-4 font-semibold text-center">
+                  Colors
+                </th>
                 <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('views')}>
                   <div className="flex items-center gap-2 justify-center">Views {getSortIcon('views')}</div>
                 </th>
                 <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('enquiries')}>
                   <div className="flex items-center gap-2 justify-center">Enquiries {getSortIcon('enquiries')}</div>
+                </th>
+                <th className="p-4 font-semibold text-center">
+                  Images
                 </th>
                 <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('status')}>
                   <div className="flex items-center gap-2">Status {getSortIcon('status')}</div>
@@ -238,8 +244,10 @@ export default function ProductListPage() {
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-3/4"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-1/2"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-1/2"></div></td>
+                    <td className="p-4"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-1/3"></div></td>
                     <td className="p-4"><div className="h-6 bg-gray-200 rounded-full w-16"></div></td>
+                    <td className="p-4"><div className="h-6 bg-gray-200 rounded-full w-12 mx-auto"></div></td>
                     <td className="p-4"><div className="h-8 bg-gray-200 rounded w-16 ml-auto"></div></td>
                   </tr>
                 ))
@@ -285,11 +293,30 @@ export default function ProductListPage() {
                         )
                         : product.priceDisplay || '-'}
                     </td>
+                    <td className="p-4">
+                      {product.colors && Array.isArray(product.colors) && product.colors.length > 0 ? (
+                        <div className="flex flex-wrap items-center justify-center gap-1">
+                          {product.colors.map((c: any, i: number) => (
+                            <div 
+                              key={i} 
+                              className="w-4 h-4 rounded-full border border-gray-300 shadow-sm"
+                              style={{ backgroundColor: c.hex || c.colorHex || '#ccc' }}
+                              title={c.name || c.colorName || 'Color'}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center text-gray-400 text-xs">-</div>
+                      )}
+                    </td>
                     <td className="p-4 text-sm font-medium text-gray-900 text-center">
                       <span className="bg-blue-50 text-blue-700 py-1 px-2.5 rounded-full">{product.viewCount || 0}</span>
                     </td>
                     <td className="p-4 text-sm font-medium text-gray-900 text-center">
                       <span className="bg-purple-50 text-purple-700 py-1 px-2.5 rounded-full">{product.enquiryCount || 0}</span>
+                    </td>
+                    <td className="p-4 text-sm font-medium text-gray-900 text-center">
+                      <span className="bg-gray-50 text-gray-700 py-1 px-2.5 rounded-full">{product.images?.length || 0}</span>
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -315,7 +342,7 @@ export default function ProductListPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-gray-500">
+                  <td colSpan={10} className="p-8 text-center text-gray-500">
                     No products found. Add your first product to get started.
                   </td>
                 </tr>
@@ -376,10 +403,23 @@ export default function ProductListPage() {
                         {product.isActive ? 'Active' : 'Draft'}
                       </span>
                       {product.isFeatured && <span className="text-[10px] uppercase tracking-wider text-accent font-bold">Featured</span>}
+                      {product.colors && Array.isArray(product.colors) && product.colors.length > 0 && (
+                        <div className="flex items-center gap-1 ml-1">
+                          {product.colors.map((c: any, i: number) => (
+                            <div 
+                              key={i} 
+                              className="w-3 h-3 rounded-full border border-gray-300 shadow-sm"
+                              style={{ backgroundColor: c.hex || c.colorHex || '#ccc' }}
+                              title={c.name || c.colorName || 'Color'}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-3 mt-2 text-[11px] text-gray-500">
                       <span className="bg-blue-50 text-blue-700 py-0.5 px-2 rounded-full font-medium">{product.viewCount || 0} views</span>
                       <span className="bg-purple-50 text-purple-700 py-0.5 px-2 rounded-full font-medium">{product.enquiryCount || 0} enquiries</span>
+                      <span className="bg-gray-50 text-gray-700 py-0.5 px-2 rounded-full font-medium">{product.images?.length || 0} imgs</span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 flex-shrink-0">

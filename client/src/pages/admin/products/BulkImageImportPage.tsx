@@ -14,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../../lib/api';
+import RecentBulkImportsTable from './components/RecentBulkImportsTable';
 
 export default function BulkImageImportPage() {
   const [folderPath, setFolderPath] = useState('');
@@ -321,6 +322,8 @@ export default function BulkImageImportPage() {
           </div>
         </motion.div>
       </div>
+      
+      <RecentBulkImportsTable refreshTrigger={status} />
     </div>
   );
 }

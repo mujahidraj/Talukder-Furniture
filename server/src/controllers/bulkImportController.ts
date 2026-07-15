@@ -1,4 +1,5 @@
 import * as bulkImportService from '../services/bulkImportService.js';
+import prisma from '../config/db.js';
 
 export const upload = async (req, res, next) => {
   try {
@@ -24,6 +25,18 @@ export const downloadTemplate = async (req, res, next) => {
     res.setHeader('Content-Disposition', 'attachment; filename="Talukder_Furniture_Product_Template.xlsx"');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.send(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLogs = async (req, res, next) => {
+  try {
+    const logs = await prisma.bulkImportLog.findMany({
+      take: 10,
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(logs);
   } catch (error) {
     next(error);
   }

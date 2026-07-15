@@ -30,4 +30,7 @@ router.get('/template', authMiddleware, requireRole('SUPER_ADMIN'), bulkImportCo
 // File upload (protected)
 router.post('/upload', authMiddleware, requireRole('SUPER_ADMIN'), upload.single('file'), bulkImportController.upload);
 
+// Get recent logs (protected)
+router.get('/logs', authMiddleware, requireRole('SUPER_ADMIN', 'ADMIN'), bulkImportController.getLogs);
+
 export default router;
