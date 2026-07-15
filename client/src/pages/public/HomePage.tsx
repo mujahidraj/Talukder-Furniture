@@ -209,7 +209,7 @@ export default function HomePage() {
       <section className="relative w-full h-screen overflow-hidden">
         {!loadingHero && (
           <Swiper
-            modules={[Pagination, Autoplay, EffectFade]}
+            modules={[Pagination, Autoplay]}
             pagination={{
               clickable: true,
               el: '.hatil-hero-pagination',
@@ -218,13 +218,10 @@ export default function HomePage() {
             }}
             autoplay={{ delay: 6500, disableOnInteraction: false }}
             speed={1800}
-            effect="fade"
-            fadeEffect={{ crossFade: true }}
             loop={true}
             slidesPerView={1}
             spaceBetween={0}
             className="w-full h-full"
-            allowTouchMove={false}
           >
             {finalHeroSlides.map((slide: any, index: number) => (
               <SwiperSlide key={`${slide.id}-${index}`}>
@@ -257,14 +254,14 @@ export default function HomePage() {
 
                     {/* Rich, Moody Gradient Overlay */}
                     <div
-                      className="absolute inset-0"
+                      className="absolute inset-0 pointer-events-none"
                       style={{
                         background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0.85) 100%)',
                       }}
                     />
 
                     {/* Highly Animated Text Content */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-end pb-20 md:pb-32 text-center z-10 px-4">
+                    <div className="absolute inset-0 flex flex-col items-center justify-end pb-20 md:pb-32 text-center z-10 px-4 pointer-events-none">
                       {/* Blurred reveal for Main Title */}
                       <motion.h1
                         initial={{ opacity: 0, y: 40, filter: 'blur(12px)', scale: 0.95 }}
@@ -300,7 +297,7 @@ export default function HomePage() {
                           initial={{ opacity: 0, y: 30 }}
                           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 1.1 }}
-                          className="mt-10"
+                          className="mt-10 pointer-events-auto"
                         >
                           <Link
                             to={slide.ctaLink || slide.link}

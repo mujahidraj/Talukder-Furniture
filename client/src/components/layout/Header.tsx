@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Heart, Menu, X, ChevronDown, ArrowRight, Phone } from 'lucide-react';
 import useSearchStore from '../../stores/useSearchStore';
 import useWishlistStore from '../../stores/useWishlistStore';
@@ -174,12 +175,12 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isTransparent
           ? 'bg-transparent'
-          : 'bg-white shadow-sm'
+          : 'bg-white/90 backdrop-blur-md border-b border-gray-100/50 shadow-sm'
         }`}
       onMouseLeave={() => setHoveredNav(null)}
     >
       <div 
-        className="flex items-center justify-between h-[90px] relative px-4 md:px-8 xl:px-12 w-full"
+        className="flex items-center justify-between relative px-4 md:px-8 xl:px-12 w-full transition-all duration-500 h-[90px]"
         style={{ maxWidth: '1800px', margin: '0 auto' }}
       >
         {/* Mobile Menu Button */}
@@ -193,11 +194,11 @@ export default function Header() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center flex-shrink-0" onClick={() => setHoveredNav(null)}>
-          <div className="overflow-hidden rounded-md transition-all duration-300">
+          <div className="overflow-hidden rounded-md transition-all duration-500 flex items-center">
             <img
               src="/ICON%20SET/Talukder-Furniture-LTD.png"
               alt="Talukder Furniture"
-              className="h-[90px] md:h-[130px] object-contain transition-all duration-300"
+              className="object-contain transition-all duration-500 h-[70px] md:h-[90px]"
             />
           </div>
         </Link>
@@ -219,24 +220,52 @@ export default function Header() {
               >
                 {link.hasDropdown ? (
                   <div
-                    className={`flex items-center gap-1 pb-0.5 border-b-2 transition-all duration-300 ${hoveredNav === link.name || isActive(link.path) ? borderActiveColor : 'border-transparent'
-                      }`}
+                    className="flex items-center gap-1.5 py-1 relative"
                     onClick={(e) => {
                       e.preventDefault();
                       setHoveredNav(hoveredNav === link.name ? null : link.name);
                     }}
                   >
-                    <span className={`text-[16px] xl:text-[17px] font-medium ${textColor} whitespace-nowrap transition-colors duration-300`}>
+                    <span className={`text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.1em] ${textColor} whitespace-nowrap transition-colors duration-300`}>
                       {link.name}
                     </span>
-                    <ChevronDown size={12} className={`${textColor} transition-colors duration-300`} strokeWidth={2} />
+                    <motion.div
+                      animate={{ rotate: hoveredNav === link.name ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-center"
+                    >
+                      <ChevronDown size={14} className={`${textColor} transition-colors duration-300`} strokeWidth={2.5} />
+                    </motion.div>
+                    
+                    {/* Animated Underline */}
+                    {(hoveredNav === link.name || isActive(link.path)) && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        className={`absolute left-0 right-0 -bottom-[4px] h-[2px] ${isTransparent ? 'bg-white' : 'bg-[#E32227]'}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
                   </div>
                 ) : (
-                  <Link to={link.path} className={`flex items-center gap-1 pb-0.5 border-b-2 transition-all duration-300 ${hoveredNav === link.name || isActive(link.path) ? borderActiveColor : 'border-transparent'
-                    }`}>
-                    <span className={`text-[16px] xl:text-[17px] font-medium ${textColor} whitespace-nowrap transition-colors duration-300`}>
+                  <Link to={link.path} className="flex items-center gap-1.5 py-1 relative group-hover:opacity-100">
+                    <span className={`text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.1em] ${textColor} whitespace-nowrap transition-colors duration-300`}>
                       {link.name}
                     </span>
+                    
+                    {/* Animated Underline */}
+                    {(hoveredNav === link.name || isActive(link.path)) && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        className={`absolute left-0 right-0 -bottom-[4px] h-[2px] ${isTransparent ? 'bg-white' : 'bg-[#E32227]'}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
                   </Link>
                 )}
               </div>
@@ -248,19 +277,19 @@ export default function Header() {
         <div className="flex items-center gap-1 xl:gap-3 flex-shrink-0">
           <button
             onClick={openSearch}
-            className={`${textColor} ${textColorHover} transition-colors duration-300 min-w-[40px] min-h-[40px] flex items-center justify-center`}
+            className={`${textColor} ${textColorHover} transition-all duration-300 w-[42px] h-[42px] flex items-center justify-center rounded-full hover:bg-black/5 active:scale-95`}
             aria-label="Search"
           >
-            <Search size={20} strokeWidth={1.5} />
+            <Search size={18} strokeWidth={2} />
           </button>
           <Link
             to="/wishlist"
-            className={`${textColor} ${textColorHover} transition-colors duration-300 relative min-w-[40px] min-h-[40px] flex items-center justify-center`}
+            className={`${textColor} ${textColorHover} transition-all duration-300 relative w-[42px] h-[42px] flex items-center justify-center rounded-full hover:bg-black/5 active:scale-95`}
             aria-label="Wishlist"
           >
-            <Heart size={20} strokeWidth={1.5} />
+            <Heart size={18} strokeWidth={2} />
             {wishlistCount > 0 && (
-              <span className="absolute top-0.5 right-0.5 bg-[#E32227] text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute top-1 right-1 bg-[#E32227] text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
                 {wishlistCount}
               </span>
             )}
@@ -268,16 +297,17 @@ export default function Header() {
         </div>
       </div>
 
-      <div
-        className={`absolute top-[90px] left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200/50 transition-all duration-300 ease-in-out shadow-lg z-40 overflow-y-auto overflow-x-hidden custom-scrollbar ${hoveredNav && navLinks.find(n => n.name === hoveredNav)?.megaMenu
-            ? 'opacity-100 visible'
-            : 'opacity-0 invisible'
-          }`}
-        style={{ minHeight: '280px', maxHeight: 'calc(100vh - 90px)' }}
-      >
-        <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 py-10 flex">
-          {navLinks.find(n => n.name === hoveredNav)?.megaMenu && (
-            <>
+      <AnimatePresence>
+        {hoveredNav && navLinks.find(n => n.name === hoveredNav)?.megaMenu && (
+          <motion.div
+            initial={{ opacity: 0, y: -15, rotateX: -5 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            exit={{ opacity: 0, y: -15, rotateX: -5 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="absolute top-[90px] left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-lg z-40 overflow-y-auto overflow-x-hidden custom-scrollbar origin-top"
+            style={{ minHeight: '280px', maxHeight: 'calc(100vh - 90px)' }}
+          >
+            <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 py-10 flex">
               {/* Left Side: Columns */}
               <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10 lg:pr-10">
                 {navLinks.find(n => n.name === hoveredNav)?.megaMenu?.map((column: any, idx: number) => (
@@ -312,7 +342,7 @@ export default function Header() {
                     alt="Furniture Background" 
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90"
                   />
-                  {/* Subtle Gradient Overlay (Less wash, better visibility) */}
+                  {/* Subtle Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-white/10" />
                   
                   {/* Logo GIF */}
@@ -348,15 +378,22 @@ export default function Header() {
                   </div>
                 </div>
               </div>
-            </>
-          )}
-        </div>
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-[70px] left-0 right-0 bg-white border-t border-gray-100 shadow-lg py-4 px-6 flex flex-col space-y-1 max-h-[80vh] overflow-auto z-50">
-          {navLinks.map((link) => (
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="lg:hidden absolute top-[70px] left-0 right-0 bg-white border-t border-gray-100 shadow-lg py-4 px-6 flex flex-col space-y-1 max-h-[80vh] overflow-auto z-50 origin-top"
+          >
+            {navLinks.map((link) => (
             <div key={link.name} className="flex flex-col">
               <div className="flex items-center justify-between py-3 border-b border-gray-50">
                 <Link
@@ -379,32 +416,40 @@ export default function Header() {
                 )}
               </div>
               {/* Mobile Submenu */}
-              {link.megaMenu && hoveredNav === link.name && (
-                <div className="pl-4 py-2 space-y-4 bg-gray-50">
-                  {link.megaMenu.map((column: any, idx: number) => (
-                    <div key={idx}>
-                      <h4 className="text-xs font-bold text-[#003580] mb-2">{column.title}</h4>
-                      <ul className="space-y-2">
-                        {column.links.map((subLink: any, subIdx: number) => (
-                          <li key={subIdx}>
-                            <Link
-                              to={typeof subLink === 'string' ? `/shop?search=${encodeURIComponent(subLink)}` : subLink.path}
-                              onClick={closeMobileMenu}
-                              className="text-[13px] text-gray-600 hover:text-primary block py-1"
-                            >
-                              {typeof subLink === 'string' ? subLink : subLink.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <AnimatePresence>
+                {link.megaMenu && hoveredNav === link.name && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="pl-4 py-2 space-y-4 bg-gray-50 overflow-hidden"
+                  >
+                    {link.megaMenu.map((column: any, idx: number) => (
+                      <div key={idx}>
+                        <h4 className="text-xs font-bold text-[#003580] mb-2">{column.title}</h4>
+                        <ul className="space-y-2">
+                          {column.links.map((subLink: any, subIdx: number) => (
+                            <li key={subIdx}>
+                              <Link
+                                to={typeof subLink === 'string' ? `/shop?search=${encodeURIComponent(subLink)}` : subLink.path}
+                                onClick={closeMobileMenu}
+                                className="text-[13px] text-gray-600 hover:text-primary block py-1"
+                              >
+                                {typeof subLink === 'string' ? subLink : subLink.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
