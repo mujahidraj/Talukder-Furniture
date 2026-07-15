@@ -372,11 +372,10 @@ export default function ProductDetailPage() {
                     <button
                       key={img.id || idx}
                       onClick={() => { setActiveImage(idx); setImageLoaded(false); }}
-                      className={`relative flex-shrink-0 w-[72px] h-[72px] md:w-20 md:h-20 rounded-xl overflow-hidden transition-all duration-300 ${
-                        activeImage === idx
-                          ? 'ring-2 ring-primary ring-offset-2 scale-[1.02]'
-                          : 'ring-1 ring-gray-200 opacity-60 hover:opacity-100 hover:ring-gray-400'
-                      }`}
+                      className={`relative flex-shrink-0 w-[72px] h-[72px] md:w-20 md:h-20 rounded-xl overflow-hidden transition-all duration-300 ${activeImage === idx
+                        ? 'ring-2 ring-primary ring-offset-2 scale-[1.02]'
+                        : 'ring-1 ring-gray-200 opacity-60 hover:opacity-100 hover:ring-gray-400'
+                        }`}
                     >
                       <img src={img.url} alt={`${product.name} view ${idx + 1}`} className="w-full h-full object-cover" />
                     </button>
@@ -446,11 +445,10 @@ export default function ProductDetailPage() {
                     <button
                       key={idx}
                       onClick={() => setActiveSizeIdx(idx)}
-                      className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                        activeSizeIdx === idx
-                          ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                          : 'bg-[#f5f3f0] text-gray-600 hover:bg-gray-200 hover:text-primary'
-                      }`}
+                      className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${activeSizeIdx === idx
+                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                        : 'bg-[#f5f3f0] text-gray-600 hover:bg-gray-200 hover:text-primary'
+                        }`}
                     >
                       {size.label}
                     </button>
@@ -499,11 +497,10 @@ export default function ProductDetailPage() {
               <div className="flex gap-3">
                 <button
                   onClick={handleWishlistToggle}
-                  className={`flex-1 py-3.5 px-6 rounded-xl text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] ${
-                    isWishlisted
-                      ? 'bg-red-50 text-red-500 border border-red-200 hover:bg-red-100'
-                      : 'bg-[#f5f3f0] text-gray-600 hover:bg-gray-200 hover:text-primary border border-transparent'
-                  }`}
+                  className={`flex-1 py-3.5 px-6 rounded-xl text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] ${isWishlisted
+                    ? 'bg-red-50 text-red-500 border border-red-200 hover:bg-red-100'
+                    : 'bg-[#f5f3f0] text-gray-600 hover:bg-gray-200 hover:text-primary border border-transparent'
+                    }`}
                 >
                   <Heart size={18} className={isWishlisted ? "fill-current" : ""} />
                   {isWishlisted ? 'Saved' : 'Wishlist'}
@@ -560,18 +557,16 @@ export default function ProductDetailPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative flex-shrink-0 py-4 px-5 md:px-8 text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${
-                  activeTab === tab.id
-                    ? 'text-primary'
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className={`relative flex-shrink-0 py-4 px-5 md:px-8 text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${activeTab === tab.id
+                  ? 'text-primary'
+                  : 'text-gray-400 hover:text-gray-600'
+                  }`}
               >
                 {tab.label}
                 {/* Active indicator */}
                 <span
-                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-primary transition-all duration-300 ${
-                    activeTab === tab.id ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
-                  }`}
+                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-primary transition-all duration-300 ${activeTab === tab.id ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
+                    }`}
                 />
               </button>
             ))}
@@ -657,9 +652,9 @@ export default function ProductDetailPage() {
                   <span className="font-bold text-primary text-sm md:text-base">
                     {p.basePrice
                       ? `৳ ${(p.discountPercentage > 0
-                          ? Math.round(p.basePrice * (1 - p.discountPercentage / 100))
-                          : p.basePrice
-                        ).toLocaleString()}`
+                        ? Math.round(p.basePrice * (1 - p.discountPercentage / 100))
+                        : p.basePrice
+                      ).toLocaleString()}`
                       : p.priceDisplay || 'Contact for Price'}
                   </span>
                 </div>
