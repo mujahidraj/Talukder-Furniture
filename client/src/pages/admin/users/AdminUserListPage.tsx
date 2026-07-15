@@ -52,12 +52,18 @@ export default function AdminUserListPage() {
     setSaving(true);
     setError('');
     try {
-      const payload = {
-        ...formData,
+      const payload: any = {
+        name: formData.name,
+        email: formData.email,
         role: formData.role === 'superadmin' ? 'SUPER_ADMIN' : 'ADMIN'
       };
 
+      if (formData.password) {
+        payload.password = formData.password;
+      }
+
       if (editingId) {
+        payload.superAdminPassword = formData.superAdminPassword;
         await api.put(`/admin/users/${editingId}`, payload);
       } else {
         if (!formData.password) {
@@ -68,7 +74,13 @@ export default function AdminUserListPage() {
       setShowModal(false);
       fetchAdmins();
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message || 'An error occurred');
+      const data = err.response?.data;
+      if (data?.details && Array.isArray(data.details)) {
+        const errorMessages = data.details.map((d: any) => d.message).join(', ');
+        setError(`Validation failed: ${errorMessages}`);
+      } else {
+        setError(data?.error || err.message || 'An error occurred');
+      }
     } finally {
       setSaving(false);
     }
