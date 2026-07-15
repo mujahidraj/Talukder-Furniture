@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import { ChevronRight, ChevronLeft, Truck, RotateCcw, Headphones, Award, ArrowRight, Phone } from 'lucide-react';
 import type { Swiper as SwiperType } from 'swiper';
 import SEO from '../../components/seo/SEO';
@@ -11,6 +11,7 @@ import api from '../../lib/api';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 /* ================================================================
    IMAGE SOURCES — Using picsum.photos for reliability
@@ -208,100 +209,105 @@ export default function HomePage() {
       <section className="relative w-full h-screen overflow-hidden">
         {!loadingHero && (
           <Swiper
-            modules={[Pagination, Autoplay]}
+            modules={[Pagination, Autoplay, EffectFade]}
             pagination={{
               clickable: true,
               el: '.hatil-hero-pagination',
               bulletClass: 'hatil-hero-bullet',
               bulletActiveClass: 'hatil-hero-bullet-active',
             }}
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
-            speed={1200}
+            autoplay={{ delay: 6500, disableOnInteraction: false }}
+            speed={1800}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
             loop={true}
             slidesPerView={1}
             spaceBetween={0}
             className="w-full h-full"
+            allowTouchMove={false}
           >
             {finalHeroSlides.map((slide: any, index: number) => (
               <SwiperSlide key={`${slide.id}-${index}`}>
                 {({ isActive }) => (
-                  <div className="relative w-full h-screen">
-                    {slide.videoUrl ? (
-                      <video
-                        src={slide.videoUrl}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={slide.imageUrl || slide.image}
-                        alt={slide.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                    )}
+                  <div className="relative w-full h-screen overflow-hidden group">
+                    {/* Cinematic Ken Burns Background Zoom */}
+                    <motion.div 
+                      className="absolute inset-0 w-full h-full"
+                      initial={{ scale: 1.15 }}
+                      animate={isActive ? { scale: 1 } : { scale: 1.15 }}
+                      transition={{ duration: 8, ease: "easeOut" }}
+                    >
+                      {slide.videoUrl ? (
+                        <video
+                          src={slide.videoUrl}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={slide.imageUrl || slide.image}
+                          alt={slide.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      )}
+                    </motion.div>
 
-                    {/* Dark gradient overlay for text readability */}
+                    {/* Rich, Moody Gradient Overlay */}
                     <div
                       className="absolute inset-0"
                       style={{
-                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.02) 30%, rgba(0,0,0,0.15) 70%, rgba(0,0,0,0.3) 100%)',
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0.85) 100%)',
                       }}
                     />
 
-                    {/* Text content — closer to bottom */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 md:pb-24 text-center z-10 px-0">
+                    {/* Highly Animated Text Content */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-end pb-20 md:pb-32 text-center z-10 px-4">
+                      {/* Blurred reveal for Main Title */}
                       <motion.h1
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                        className="text-white text-3xl sm:text-3xl md:text-5xl lg:text-4xl font-bold leading-[1.3] whitespace-pre-line mb-6 tracking-wide max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-4"
-                        style={{
-                          fontFamily: "'Inter', 'Segoe UI', sans-serif",
-                          textShadow: '0 2px 20px rgba(0,0,0,0.3)',
-                          letterSpacing: '0.03em',
-                        }}
+                        initial={{ opacity: 0, y: 40, filter: 'blur(12px)', scale: 0.95 }}
+                        animate={isActive ? { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 } : { opacity: 0, y: 40, filter: 'blur(12px)', scale: 0.95 }}
+                        transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                        className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold leading-[1.2] mb-6 tracking-wide max-w-3xl mx-auto drop-shadow-2xl"
+                        style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}
                       >
                         {slide.title}
                       </motion.h1>
 
-                      {/* Horizontal divider line */}
+                      {/* Expanding Divider Line */}
                       <motion.div
                         initial={{ opacity: 0, scaleX: 0 }}
                         animate={isActive ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 }}
-                        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
-                        className="w-[280px] sm:w-[350px] md:w-[450px] h-[1px] bg-white/60 mb-5"
+                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.7 }}
+                        className="w-[120px] md:w-[200px] h-[3px] bg-white/80 rounded-full mb-6"
                       />
 
-                      {/* Subtitle */}
+                      {/* Smooth fade-up Subtitle */}
                       <motion.p
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                        className="text-white/80 text-lg sm:text-xl md:text-2xl font-light tracking-wide max-w-md md:max-w-lg lg:max-w-xl px-4"
-                        style={{
-                          fontFamily: "'Inter', 'Segoe UI', sans-serif",
-                          textShadow: '0 1px 8px rgba(0,0,0,0.3)',
-                        }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.9 }}
+                        className="text-white/90 text-lg sm:text-xl md:text-2xl font-light tracking-wide max-w-2xl px-4 drop-shadow-md"
                       >
                         {slide.subtitle || 'Bundle of satisfaction'}
                       </motion.p>
 
-                      {/* CTA Button */}
+                      {/* Magnetic CTA Button Reveal */}
                       {(slide.ctaLink || slide.link) && (
                         <motion.div
                           initial={{ opacity: 0, y: 30 }}
                           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.65 }}
-                          className="mt-8 sm:mt-10"
+                          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 1.1 }}
+                          className="mt-10"
                         >
                           <Link
                             to={slide.ctaLink || slide.link}
-                            className="inline-flex items-center justify-center bg-white text-[#1a1a1a] px-4 md:px-8 py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold tracking-[0.15em] uppercase hover:bg-black hover:text-white transition-all duration-500 shadow-lg"
+                            className="group relative inline-flex items-center justify-center bg-white text-[#1a1a1a] px-8 md:px-10 py-3 md:py-4 text-xs md:text-sm font-bold tracking-[0.2em] uppercase overflow-hidden shadow-2xl transition-transform hover:scale-105 duration-500 rounded-sm"
                           >
-                            {slide.ctaText || 'Explore Collection'}
+                            <span className="relative z-10 group-hover:text-white transition-colors duration-500">{slide.ctaText || 'Explore Collection'}</span>
+                            <div className="absolute inset-0 bg-[#1a1a1a] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out"></div>
                           </Link>
                         </motion.div>
                       )}
@@ -341,27 +347,37 @@ export default function HomePage() {
             <ArrowRight size={24} className="text-[#1a1a1a] group-hover:translate-x-2 transition-transform duration-300" strokeWidth={1.5} />
           </div>
 
-          {/* 7-column grid layout for desktop, responsive grid for mobile */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-5 lg:gap-6 pb-4">
-            {categoryPills.map((cat) => (
+          {/* Premium Grid Layout (Fits all 7 on desktop) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 lg:gap-5 xl:gap-6 pb-4">
+            {categoryPills.map((cat, index) => (
               <Link
                 key={cat.slug}
                 to={`/shop?category=${cat.slug}`}
-                className="flex flex-col items-center gap-3 group w-full"
+                className="group relative w-full aspect-[4/5] rounded-[20px] overflow-hidden bg-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 block"
                 style={{ textDecoration: 'none' }}
               >
-                <div className="relative w-full aspect-[4/5] sm:aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:border-transparent">
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  {/* Subtle hover overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
+                {/* Image */}
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+                />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Text Content */}
+                <div className="absolute inset-0 p-4 xl:p-5 flex flex-col justify-end">
+                  <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    <h3 className="text-lg xl:text-xl font-serif text-white tracking-wide mb-1 leading-tight">
+                      {cat.name}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-white/90 text-[11px] xl:text-xs tracking-wider uppercase font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-75">
+                      <span>Explore</span>
+                      <ArrowRight size={14} />
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-[14px] md:text-[15px] text-[#1a1a1a] font-medium text-center mt-1 group-hover:text-[#E32227] transition-colors duration-300">
-                  {cat.name}
-                </h3>
               </Link>
             ))}
           </div>
