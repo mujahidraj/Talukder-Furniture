@@ -219,6 +219,9 @@ export default function ProductListPage() {
                   <div className="flex items-center gap-2">Discounted Price {getSortIcon('price')}</div>
                 </th>
                 <th className="p-4 font-semibold text-center">
+                  Category
+                </th>
+                <th className="p-4 font-semibold text-center">
                   Colors
                 </th>
                 <th className="p-4 font-semibold cursor-pointer group select-none hover:bg-gray-100 transition-colors" onClick={() => handleSort('views')}>
@@ -244,6 +247,7 @@ export default function ProductListPage() {
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-3/4"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-1/2"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-1/2"></div></td>
+                    <td className="p-4"><div className="h-4 bg-gray-200 rounded w-20 mx-auto"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
                     <td className="p-4"><div className="h-4 bg-gray-200 rounded w-1/3"></div></td>
                     <td className="p-4"><div className="h-6 bg-gray-200 rounded-full w-16"></div></td>
@@ -292,6 +296,13 @@ export default function ProductListPage() {
                           </div>
                         )
                         : product.priceDisplay || '-'}
+                    </td>
+                    <td className="p-4 text-sm text-gray-600 text-center">
+                      {product.category?.name ? (
+                        <span className="bg-gray-100 text-gray-800 py-1 px-2.5 rounded-md">{product.category.name}</span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                     <td className="p-4">
                       {product.colors && Array.isArray(product.colors) && product.colors.length > 0 ? (
@@ -342,7 +353,7 @@ export default function ProductListPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-gray-500">
+                  <td colSpan={11} className="p-8 text-center text-gray-500">
                     No products found. Add your first product to get started.
                   </td>
                 </tr>
@@ -388,6 +399,9 @@ export default function ProductListPage() {
                   <div className="flex-1 min-w-0">
                     <Link to={`/admin/products/${product.id}`} className="font-semibold text-primary text-sm truncate block hover:underline">{product.name}</Link>
                     <p className="text-xs text-gray-500 mt-0.5">{product.sku || 'No SKU'}</p>
+                    {product.category?.name && (
+                      <p className="text-[11px] text-accent mt-0.5 font-medium">{product.category.name}</p>
+                    )}
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                       <span className="text-sm font-medium text-gray-900">
                         {product.basePrice 
