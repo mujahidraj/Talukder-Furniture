@@ -132,7 +132,13 @@ export const getSetById = async (id: string | number) => {
           parent: true
         }
       },
-      products: true,
+      products: {
+        include: {
+          images: {
+            orderBy: { order: 'asc' },
+          },
+        }
+      },
     },
   });
 

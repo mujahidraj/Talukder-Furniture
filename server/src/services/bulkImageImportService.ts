@@ -76,7 +76,6 @@ export const processImageImport = async (folderPath: string, adminId: number): P
         
         if (type === 'product') {
           // Look for product by SKU
-          // Find all products that match exactly OR are variations of this base SKU (e.g. -2D, -3D)
           const products = await prisma.product.findMany({
             where: {
               OR: [
@@ -93,36 +92,38 @@ export const processImageImport = async (folderPath: string, adminId: number): P
             continue;
           }
 
-          // We only need to process the image file once, then we can attach it to all matched products
+          // Build the unique dedup key from the import root directory + relative file path
+          const rootDirName = path.basename(folderPath);
+          const relativePath = path.relative(folderPath, filePath).replace(/\\/g, '/');
+          const uniqueAltText = `${rootDirName}/${relativePath}`;
+
+          // Check which products already have this exact image (same directory source)
+          const productsNeedingImage = products.filter(
+            product => !product.images.some(img => img.altText === uniqueAltText)
+          );
+
+          if (productsNeedingImage.length === 0) {
+            // ALL products already have this image from this exact directory — skip entirely
+            report.skippedCount++;
+            report.results.push({ 
+              file: originalFilename, 
+              status: 'skipped', 
+              message: `Already imported from this directory for all ${products.length} matching product(s)` 
+            });
+            continue;
+          }
+
+          // Only NOW process the image file (since at least 1 product needs it)
           const fileBuffer = await fs.readFile(filePath);
-          const fileStat = await fs.stat(filePath);
-          const fileSize = fileStat.size;
-          
           const fileObj = {
             buffer: fileBuffer,
             originalname: originalFilename,
             mimetype: 'image/' + path.extname(originalFilename).slice(1).replace('jpg', 'jpeg')
           };
-
           const processed = await processImage(fileObj);
-          
-          let attachedCount = 0;
-          let skippedCount = 0;
 
-          // Attach to all matched products
-          for (const product of products) {
-            // Check for duplicate by comparing original filename AND file size.
-            // This allows uploading a different image (e.g. new angle) with the same name from a different folder,
-            // while safely skipping if they accidentally run the import twice on the exact same file.
-            const uniqueAltText = `${originalFilename}_${fileSize}`;
-            
-            const isDuplicate = product.images.some(img => img.altText === uniqueAltText);
-            if (isDuplicate) {
-              skippedCount++;
-              continue;
-            }
-
-            // Get max order
+          // Attach to all products that need it
+          for (const product of productsNeedingImage) {
             const maxOrder = product.images.reduce((max, img) => Math.max(max, img.order), -1);
 
             await prisma.productImage.create({
@@ -130,30 +131,19 @@ export const processImageImport = async (folderPath: string, adminId: number): P
                 productId: product.id,
                 url: processed.url,
                 thumbUrl: processed.thumbUrl,
-                altText: uniqueAltText, // Store folder and filename here for deduplication
-                isPrimary: maxOrder === -1, // First image is primary
+                altText: uniqueAltText,
+                isPrimary: maxOrder === -1,
                 order: maxOrder + 1
               }
             });
-            attachedCount++;
           }
 
-          if (attachedCount > 0) {
-            report.matchedCount++;
-            report.results.push({ 
-              file: originalFilename, 
-              status: 'matched', 
-              message: `Attached to ${attachedCount} product(s) (SKU base: ${identifier})` 
-            });
-          }
-          if (skippedCount > 0 && attachedCount === 0) {
-            report.skippedCount++;
-            report.results.push({ 
-              file: originalFilename, 
-              status: 'skipped', 
-              message: `Image already exists for all ${skippedCount} matching product(s)` 
-            });
-          }
+          report.matchedCount++;
+          report.results.push({ 
+            file: originalFilename, 
+            status: 'matched', 
+            message: `Attached to ${productsNeedingImage.length} product(s) (SKU base: ${identifier})` 
+          });
 
         } else if (type === 'set') {
           // identifier could be "set 109", "set-109", "set_109"
@@ -167,7 +157,6 @@ export const processImageImport = async (folderPath: string, adminId: number): P
             setNum
           ];
 
-          // Match set by checking if sku matches any format, or name/slug contains the set number
           const sets = await prisma.set.findMany({
             where: {
               OR: [
@@ -192,27 +181,39 @@ export const processImageImport = async (folderPath: string, adminId: number): P
 
           const set = sets[0];
 
-          // Process image
+          // Build unique dedup tag from import root directory + relative file path
+          const rootDirName = path.basename(folderPath);
+          const relativePath = path.relative(folderPath, filePath).replace(/\\/g, '/');
+          const dedupTag = `__imported:${rootDirName}/${relativePath}`;
+
+          // Check if this exact source file was already imported for this set
+          if (set.imageUrls && set.imageUrls.includes(dedupTag)) {
+            report.skippedCount++;
+            report.results.push({ 
+              file: originalFilename, 
+              status: 'skipped', 
+              message: `Already imported from this directory for set: ${set.name}` 
+            });
+            continue;
+          }
+
+          // Process image only if not a duplicate
           const fileBuffer = await fs.readFile(filePath);
           const fileObj = {
             buffer: fileBuffer,
             originalname: originalFilename,
             mimetype: 'image/' + path.extname(originalFilename).slice(1).replace('jpg', 'jpeg')
           };
-
           const processed = await processImage(fileObj);
 
-          // Add to set. Check for duplicates in imageUrls
-          // Since imageUrls is an array of generated paths, we don't have original filenames.
-          // But we can check if it's already there? No, we can't easily.
-          // We will just append it. If imageUrl is null, set it.
+          // Build update: push actual URL + dedup tag
           const updateData: any = {};
           if (!set.imageUrl) {
             updateData.imageUrl = processed.url;
           }
           
           updateData.imageUrls = {
-            push: processed.url
+            push: [processed.url, dedupTag]
           };
 
           await prisma.set.update({

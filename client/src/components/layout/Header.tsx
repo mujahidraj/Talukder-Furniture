@@ -52,7 +52,8 @@ export default function Header() {
     // Fetch categories from API
     api.get('/categories')
       .then(res => {
-        const dynamicLinks = res.data.map((cat: any) => {
+        const activeCategories = res.data.filter((cat: any) => cat.isActive !== false);
+        const dynamicLinks = activeCategories.map((cat: any) => {
           let name = cat.name.replace(/furniture|room|collection/gi, '').trim();
 
           // Specific renames
@@ -67,10 +68,13 @@ export default function Header() {
 
           let megaMenu;
           if (cat.children && cat.children.length > 0) {
-            megaMenu = cat.children.map((sub: any) => {
-              const links = [];
-              if (sub.children && sub.children.length > 0) {
-                links.push(...sub.children.map((subSub: any) => ({
+            const activeChildren = cat.children.filter((sub: any) => sub.isActive !== false);
+            if (activeChildren.length > 0) {
+              megaMenu = activeChildren.map((sub: any) => {
+                const links = [];
+                if (sub.children && sub.children.length > 0) {
+                  const activeSubChildren = sub.children.filter((subSub: any) => subSub.isActive !== false);
+                  links.push(...activeSubChildren.map((subSub: any) => ({
                   label: subSub.name,
                   path: `/shop?category=${subSub.slug}`
                 })));
@@ -86,6 +90,7 @@ export default function Header() {
               };
             });
           }
+        }
 
           return {
             name,
@@ -152,10 +157,37 @@ export default function Header() {
 
     if (path.includes('?')) {
       const [pPath, pQuery] = path.split('?');
-      return location.pathname === pPath && location.search.includes(pQuery);
+      if (location.pathname !== pPath) return false;
+      
+      const targetParams = new URLSearchParams(pQuery);
+      const currentParams = new URLSearchParams(location.search);
+      
+      let isMatch = true;
+      targetParams.forEach((value, key) => {
+        if (currentParams.get(key) !== value) {
+          isMatch = false;
+        }
+      });
+      return isMatch;
     }
 
-    return location.pathname.startsWith(path);
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
+  const isLinkOrChildActive = (link: any) => {
+    if (isActive(link.path)) return true;
+    
+    if (link.megaMenu) {
+      for (const column of link.megaMenu) {
+        if (column.links) {
+          for (const subLink of column.links) {
+            const path = typeof subLink === 'string' ? `/shop?search=${encodeURIComponent(subLink)}` : subLink.path;
+            if (isActive(path)) return true;
+          }
+        }
+      }
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -212,7 +244,11 @@ export default function Header() {
               ))}
             </div>
           ) : (
-            navLinks.map((link) => (
+            navLinks.map((link) => {
+              const isHighlighted = (hoveredNav || navLinks.find(l => isLinkOrChildActive(l))?.name) === link.name;
+              const linkTextColor = isHighlighted && !isTransparent ? 'text-[#E32227]' : textColor;
+              
+              return (
               <div
                 key={link.name}
                 className="h-full flex items-center px-3 xl:px-4 relative group cursor-pointer"
@@ -226,7 +262,7 @@ export default function Header() {
                       setHoveredNav(hoveredNav === link.name ? null : link.name);
                     }}
                   >
-                    <span className={`text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.1em] ${textColor} whitespace-nowrap transition-colors duration-300`}>
+                    <span className={`text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.1em] ${linkTextColor} whitespace-nowrap transition-colors duration-300`}>
                       {link.name}
                     </span>
                     <motion.div
@@ -234,11 +270,11 @@ export default function Header() {
                       transition={{ duration: 0.3 }}
                       className="flex items-center"
                     >
-                      <ChevronDown size={14} className={`${textColor} transition-colors duration-300`} strokeWidth={2.5} />
+                      <ChevronDown size={14} className={`${linkTextColor} transition-colors duration-300`} strokeWidth={2.5} />
                     </motion.div>
                     
                     {/* Animated Underline */}
-                    {(hoveredNav === link.name || isActive(link.path)) && (
+                    {isHighlighted && (
                       <motion.div
                         layoutId="nav-underline"
                         className={`absolute left-0 right-0 -bottom-[4px] h-[2px] ${isTransparent ? 'bg-white' : 'bg-[#E32227]'}`}
@@ -251,12 +287,12 @@ export default function Header() {
                   </div>
                 ) : (
                   <Link to={link.path} className="flex items-center gap-1.5 py-1 relative group-hover:opacity-100">
-                    <span className={`text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.1em] ${textColor} whitespace-nowrap transition-colors duration-300`}>
+                    <span className={`text-[12px] xl:text-[13px] font-bold uppercase tracking-[0.1em] ${linkTextColor} whitespace-nowrap transition-colors duration-300`}>
                       {link.name}
                     </span>
                     
                     {/* Animated Underline */}
-                    {(hoveredNav === link.name || isActive(link.path)) && (
+                    {isHighlighted && (
                       <motion.div
                         layoutId="nav-underline"
                         className={`absolute left-0 right-0 -bottom-[4px] h-[2px] ${isTransparent ? 'bg-white' : 'bg-[#E32227]'}`}
@@ -269,7 +305,8 @@ export default function Header() {
                   </Link>
                 )}
               </div>
-            ))
+              );
+            })
           )}
         </nav>
 
@@ -305,28 +342,37 @@ export default function Header() {
             exit={{ opacity: 0, y: -15, rotateX: -5 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="absolute top-[90px] left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-lg z-40 overflow-y-auto overflow-x-hidden custom-scrollbar origin-top"
-            style={{ minHeight: '280px', maxHeight: 'calc(100vh - 90px)' }}
+            style={{ minHeight: 'auto', maxHeight: 'calc(100vh - 90px)' }}
           >
-            <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 py-10 flex">
+            <div className="max-w-[1800px] mx-auto px-4 md:px-8 xl:px-12 py-6 flex">
               {/* Left Side: Columns */}
-              <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10 lg:pr-10">
+              <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 lg:pr-8">
                 {navLinks.find(n => n.name === hoveredNav)?.megaMenu?.map((column: any, idx: number) => (
                   <div key={idx} className="flex flex-col">
-                    <h3 className="text-[13px] uppercase tracking-[0.1em] font-semibold text-[#1a1a1a] mb-6 pb-3 border-b border-gray-100 flex items-center justify-between group cursor-default">
+                    <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-3 pb-2 border-b border-gray-100/70 flex items-center justify-between group cursor-default">
                       {column.title}
-                      <ArrowRight size={14} className="text-gray-300 transition-transform group-hover:translate-x-1" strokeWidth={2} />
                     </h3>
-                    <ul className="space-y-3.5">
+                    <ul className="space-y-1.5">
                       {column.links.map((link: any, lIdx: number) => (
-                        <li key={lIdx}>
+                        <motion.li 
+                          key={lIdx}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: lIdx * 0.05 + idx * 0.1 }}
+                        >
                           <Link
                             to={typeof link === 'string' ? `/shop?search=${encodeURIComponent(link)}` : link.path}
-                            className="text-[14px] text-gray-500 hover:text-[#E32227] hover:pl-2 transition-all duration-300 block"
+                            className="text-[14px] text-gray-700 font-medium hover:text-[#E32227] flex items-center group/link transition-colors duration-300"
                             onClick={() => setHoveredNav(null)}
                           >
-                            {typeof link === 'string' ? link : link.label}
+                            <span className="w-0 opacity-0 overflow-hidden group-hover/link:w-4 group-hover/link:opacity-100 transition-all duration-300 ease-out flex items-center justify-start text-[#E32227]">
+                              <ArrowRight size={12} strokeWidth={3} />
+                            </span>
+                            <span className="transform group-hover/link:translate-x-1 transition-transform duration-300 ease-out">
+                              {typeof link === 'string' ? link : link.label}
+                            </span>
                           </Link>
-                        </li>
+                        </motion.li>
                       ))}
                     </ul>
                   </div>
@@ -334,8 +380,8 @@ export default function Header() {
               </div>
 
               {/* Right Side: Promotional Banner (Desktop only) */}
-              <div className="hidden lg:block w-[320px] xl:w-[380px] shrink-0 border-l border-gray-100 pl-8 xl:pl-10">
-                <div className="relative w-full h-full min-h-[320px] flex flex-col items-center justify-center group rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+              <div className="hidden lg:block w-[260px] xl:w-[300px] shrink-0 border-l border-gray-100 pl-6 xl:pl-8">
+                <div className="relative w-full h-full min-h-[220px] flex flex-col items-center justify-center group rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white">
                   {/* Local Background Image */}
                   <img 
                     src="/Images/hospital_furniture.png" 
@@ -350,13 +396,13 @@ export default function Header() {
                     <img 
                       src="/ICON%20SET/LOGO.gif" 
                       alt="Talukder Furniture Logo" 
-                      className="w-48 h-48 object-contain mb-2 mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
+                      className="w-32 h-32 object-contain mb-1 mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                       onError={(e) => { e.currentTarget.src = "/ICON SET/LOGO.gif"; }}
                     />
                   </div>
                   
                   {/* Content */}
-                  <div className="relative z-10 flex flex-col items-center text-center px-6 pb-4">
+                  <div className="relative z-10 flex flex-col items-center text-center px-4 pb-3">
                     <span className="text-[#E32227] text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                        <span className="w-4 h-[2px] bg-[#E32227] rounded-full"></span> 
                        Featured

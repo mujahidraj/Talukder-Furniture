@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, X, UploadCloud, Search } from 'lucide-react';
+import { ArrowLeft, Save, X, UploadCloud, Search, Package } from 'lucide-react';
 import api from '../../../lib/api';
 
 export default function SetFormPage() {
@@ -28,6 +28,7 @@ export default function SetFormPage() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [availableProducts, setAvailableProducts] = useState<any[]>([]);
+  const [initialSetProducts, setInitialSetProducts] = useState<any[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [productSearch, setProductSearch] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -58,6 +59,7 @@ export default function SetFormPage() {
           setImageUrls(setItem.imageUrls || []);
           if (setItem.products) {
             setSelectedProductIds(setItem.products.map((p: any) => p.id));
+            setInitialSetProducts(setItem.products);
           }
         })
         .catch(err => {
@@ -367,49 +369,90 @@ export default function SetFormPage() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-          <div className="flex justify-between items-center border-b border-gray-100 pb-2">
-            <h2 className="text-lg font-bold text-primary">Included Products</h2>
-            <span className="text-sm text-gray-500">{selectedProductIds.length} selected</span>
+          <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-primary/5 rounded-lg text-primary">
+                <Package size={20} />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 tracking-tight">Included Products</h2>
+            </div>
+            <span className="px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
+              {selectedProductIds.length} selected
+            </span>
           </div>
           
-          <div className="relative pt-2">
+          {selectedProductIds.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-3 pb-2 border-b border-gray-100">
+              {selectedProductIds.map(id => {
+                const product = availableProducts.find(p => p.id === id) || initialSetProducts.find(p => p.id === id) || { id, name: `Product #${id}` };
+                return (
+                  <div key={product.id} className="group flex items-center gap-3 bg-white border border-gray-200 pr-3 py-1.5 rounded-full text-sm shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5">
+                    <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-50 flex-shrink-0 ml-1 border border-gray-100 shadow-inner">
+                      {product.images?.[0] ? (
+                        <img src={product.images[0].url} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400 font-medium">N/A</div>
+                      )}
+                    </div>
+                    <div className="flex flex-col max-w-[200px]">
+                      <span className="font-semibold truncate leading-tight text-gray-800 transition-colors group-hover:text-primary" title={product.name}>{product.name}</span>
+                      <span className="text-[10px] text-gray-400 font-medium tracking-wide leading-tight mt-0.5">ID: {product.id} {product.sku ? `• ${product.sku}` : ''}</span>
+                    </div>
+                    <button type="button" onClick={() => handleProductToggle(product.id)} className="text-gray-400 hover:text-red-500 transition-all duration-200 p-1.5 ml-1 rounded-full hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200">
+                      <X size={14} strokeWidth={2.5} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          
+          <div className="relative pt-3">
             <div className="absolute inset-y-0 left-0 pl-3 top-2 flex items-center pointer-events-none">
-              <Search size={18} className="text-gray-400" />
+              <Search size={18} className="text-gray-400 transition-colors group-focus-within:text-primary" />
             </div>
             <input
               type="text"
               placeholder="Search products by name or SKU..."
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all duration-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/40 placeholder:text-gray-400"
             />
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[400px] overflow-y-auto p-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[450px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent pr-4">
             {availableProducts.filter(p => p.name.toLowerCase().includes(productSearch.toLowerCase()) || p.sku?.toLowerCase().includes(productSearch.toLowerCase())).map(product => {
               const isSelected = selectedProductIds.includes(product.id);
               return (
                 <div 
                   key={product.id}
                   onClick={() => handleProductToggle(product.id)}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all flex items-center gap-3 ${isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-gray-200 hover:border-gray-300'}`}
+                  className={`group relative p-3 border rounded-xl cursor-pointer transition-all duration-300 flex items-center gap-4 overflow-hidden ${isSelected ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/40 shadow-[0_4px_12px_rgba(227,34,39,0.08)]' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5'}`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => {}} // handled by div click
-                    className="rounded border-gray-300 text-primary focus:ring-primary pointer-events-none"
-                  />
-                  <div className="w-10 h-10 rounded bg-gray-100 flex-shrink-0 overflow-hidden">
+                  <div className="absolute inset-y-0 left-0 w-1 bg-primary transform transition-transform duration-300 origin-left ${isSelected ? 'scale-x-100' : 'scale-x-0'}" style={{ transform: isSelected ? 'scaleX(1)' : 'scaleX(0)' }}></div>
+                  
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => {}} // handled by div click
+                      className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary pointer-events-none transition-all duration-300"
+                    />
+                  </div>
+                  
+                  <div className="w-12 h-12 rounded-lg bg-gray-50 border border-gray-100 flex-shrink-0 overflow-hidden shadow-sm relative">
                     {product.images?.[0] ? (
-                      <img src={product.images[0].url} alt={product.name} className="w-full h-full object-cover" />
+                      <img src={product.images[0].url} alt={product.name} className={`w-full h-full object-cover transition-transform duration-500 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`} />
                     ) : (
-                      <div className="w-full h-full bg-gray-200"></div>
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <Package size={16} />
+                      </div>
                     )}
                   </div>
-                  <div className="flex-1 truncate">
-                    <p className="text-sm font-medium text-gray-800 truncate" title={product.name}>{product.name}</p>
-                    <p className="text-xs text-gray-500">{product.sku || 'No SKU'}</p>
+                  
+                  <div className="flex-1 min-w-0 pr-2">
+                    <p className={`text-sm font-semibold truncate transition-colors duration-300 ${isSelected ? 'text-primary' : 'text-gray-800 group-hover:text-primary'}`} title={product.name}>{product.name}</p>
+                    <p className="text-xs text-gray-500 font-medium tracking-wide mt-0.5 truncate">{product.sku || 'NO SKU'}</p>
                   </div>
                 </div>
               );
