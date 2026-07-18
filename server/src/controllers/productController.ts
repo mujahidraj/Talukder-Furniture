@@ -2,7 +2,8 @@ import * as productService from '../services/productService.js';
 
 export const list = async (req, res, next) => {
   try {
-    const query = { ...req.query, isAdmin: !!(req as any).admin };
+    const isAdmin = !!(req as any).admin && req.query.admin === 'true';
+    const query = { ...req.query, isAdmin };
     const result = await productService.getProducts(query);
     res.json(result);
   } catch (error) {
@@ -22,7 +23,8 @@ export const search = async (req, res, next) => {
 
 export const getBySlug = async (req, res, next) => {
   try {
-    const product = await productService.getProductBySlug(req.params.slug);
+    const isAdmin = !!(req as any).admin;
+    const product = await productService.getProductBySlug(req.params.slug, isAdmin);
     res.json(product);
   } catch (error) {
     next(error);

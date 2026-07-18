@@ -3,7 +3,9 @@ import * as setService from '../services/setService.js';
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await setService.getSets(req.query);
+    const isAdmin = !!(req as any).admin && req.query.admin === 'true';
+    const query = { ...req.query, isAdmin };
+    const result = await setService.getSets(query);
     res.json(result);
   } catch (error) {
     next(error);
@@ -12,7 +14,8 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
 
 export const getBySlug = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const set = await setService.getSetBySlug(req.params.slug as string);
+    const isAdmin = !!(req as any).admin;
+    const set = await setService.getSetBySlug(req.params.slug as string, isAdmin);
     res.json(set);
   } catch (error) {
     next(error);

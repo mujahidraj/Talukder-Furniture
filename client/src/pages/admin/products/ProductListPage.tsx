@@ -24,7 +24,7 @@ export default function ProductListPage() {
   }, [sort, search, filterStatus, filterFeatured, filterCategory, currentPage]); 
 
   useEffect(() => {
-    api.get('/categories').then(res => {
+    api.get('/categories?admin=true').then(res => {
       const flatCats: any[] = [];
       res.data.forEach((main: any) => {
         flatCats.push(main);
@@ -52,6 +52,20 @@ export default function ProductListPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (product: any) => {
+    const newStatus = !product.isActive;
+    // Optimistic update
+    setProducts(prev => prev.map(p => p.id === product.id ? { ...p, isActive: newStatus } : p));
+    try {
+      await api.put(`/products/${product.id}`, { ...product, categoryId: product.categoryId || product.category?.id, isActive: newStatus, images: product.images?.map((img: any) => img.url) });
+    } catch (err) {
+      console.error(err);
+      // Revert on failure
+      setProducts(prev => prev.map(p => p.id === product.id ? { ...p, isActive: !newStatus } : p));
+      alert('Failed to update product status.');
     }
   };
 
@@ -330,11 +344,18 @@ export default function ProductListPage() {
                       <span className="bg-gray-50 text-gray-700 py-1 px-2.5 rounded-full">{product.images?.length || 0}</span>
                     </td>
                     <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        product.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {product.isActive ? 'Active' : 'Draft'}
-                      </span>
+                      <button
+                        onClick={() => handleToggleStatus(product)}
+                        className="flex items-center gap-2 group/toggle"
+                        title={product.isActive ? 'Click to deactivate' : 'Click to activate'}
+                      >
+                        <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${product.isActive ? 'bg-green-500' : 'bg-gray-300'}`}>
+                          <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${product.isActive ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                        <span className={`text-xs font-medium ${product.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                          {product.isActive ? 'Active' : 'Draft'}
+                        </span>
+                      </button>
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -411,11 +432,18 @@ export default function ProductListPage() {
                             )
                           : product.priceDisplay || '-'}
                       </span>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                        product.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {product.isActive ? 'Active' : 'Draft'}
-                      </span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleToggleStatus(product); }}
+                        className="flex items-center gap-1.5"
+                        title={product.isActive ? 'Click to deactivate' : 'Click to activate'}
+                      >
+                        <div className={`relative w-7 h-4 rounded-full transition-colors duration-200 ${product.isActive ? 'bg-green-500' : 'bg-gray-300'}`}>
+                          <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow transition-transform duration-200 ${product.isActive ? 'translate-x-3' : 'translate-x-0'}`} />
+                        </div>
+                        <span className={`text-[10px] font-medium ${product.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                          {product.isActive ? 'Active' : 'Draft'}
+                        </span>
+                      </button>
                       {product.isFeatured && <span className="text-[10px] uppercase tracking-wider text-accent font-bold">Featured</span>}
                       {product.colors && Array.isArray(product.colors) && product.colors.length > 0 && (
                         <div className="flex items-center gap-1 ml-1">

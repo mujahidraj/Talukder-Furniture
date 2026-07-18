@@ -43,7 +43,7 @@ export default function ProductFormPage() {
 
   useEffect(() => {
     // Fetch categories
-    api.get('/categories').then(res => setCategories(res.data)).catch(console.error);
+    api.get('/categories?admin=true').then(res => setCategories(res.data)).catch(console.error);
 
     if (isEditing) {
       api.get(`/products/admin/${id}`)

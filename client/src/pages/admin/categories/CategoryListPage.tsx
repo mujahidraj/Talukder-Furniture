@@ -18,7 +18,7 @@ export default function CategoryListPage() {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get('/categories');
+      const { data } = await api.get('/categories?admin=true');
       setCategories(data);
       // Expand all by default
       const expanded: Record<number, boolean> = {};
@@ -93,6 +93,22 @@ export default function CategoryListPage() {
       alert(`Failed to ${editingId ? 'edit' : 'add'} sub-category`);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleToggleActive = async (cat: any) => {
+    const newStatus = !cat.isActive;
+    try {
+      await api.put(`/categories/${cat.id}`, {
+        name: cat.name,
+        parentId: cat.parentId || null,
+        order: cat.order || 0,
+        isActive: newStatus,
+      });
+      fetchCategories();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update category status.');
     }
   };
 
@@ -212,9 +228,18 @@ export default function CategoryListPage() {
                       <span className="bg-blue-50 text-blue-700 py-1 px-2.5 rounded-full">{cat.totalProducts || 0}</span>
                     </td>
                     <td className="p-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {cat.isActive ? 'Active' : 'Inactive'}
-                      </span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleToggleActive(cat); }}
+                        className="flex items-center gap-2"
+                        title={cat.isActive ? 'Click to deactivate' : 'Click to activate'}
+                      >
+                        <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${cat.isActive ? 'bg-green-500' : 'bg-gray-300'}`}>
+                          <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${cat.isActive ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                        <span className={`text-xs font-medium ${cat.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                          {cat.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </button>
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -246,9 +271,18 @@ export default function CategoryListPage() {
                           <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(sub._count?.products || 0) + (sub._count?.sets || 0)}</span>
                         </td>
                         <td className="p-4">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {sub.isActive ? 'Active' : 'Inactive'}
-                          </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleToggleActive(sub); }}
+                            className="flex items-center gap-2"
+                            title={sub.isActive ? 'Click to deactivate' : 'Click to activate'}
+                          >
+                            <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${sub.isActive ? 'bg-green-500' : 'bg-gray-300'}`}>
+                              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${sub.isActive ? 'translate-x-4' : 'translate-x-0'}`} />
+                            </div>
+                            <span className={`text-xs font-medium ${sub.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                              {sub.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                          </button>
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
@@ -277,9 +311,18 @@ export default function CategoryListPage() {
                             <span className="bg-gray-100 text-gray-700 py-1 px-2.5 rounded-full">{(subSub._count?.products || 0) + (subSub._count?.sets || 0)}</span>
                           </td>
                           <td className="p-4">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              {subSub.isActive ? 'Active' : 'Inactive'}
-                            </span>
+                            <button
+                              onClick={() => handleToggleActive(subSub)}
+                              className="flex items-center gap-2"
+                              title={subSub.isActive ? 'Click to deactivate' : 'Click to activate'}
+                            >
+                              <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${subSub.isActive ? 'bg-green-500' : 'bg-gray-300'}`}>
+                                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${subSub.isActive ? 'translate-x-4' : 'translate-x-0'}`} />
+                              </div>
+                              <span className={`text-xs font-medium ${subSub.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                                {subSub.isActive ? 'Active' : 'Inactive'}
+                              </span>
+                            </button>
                           </td>
                           <td className="p-4 text-right">
                             <div className="flex items-center justify-end gap-2">

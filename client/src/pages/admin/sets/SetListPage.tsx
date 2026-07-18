@@ -60,6 +60,20 @@ export default function SetListPage() {
     }
   };
 
+  const handleToggleStatus = async (set: any) => {
+    const newStatus = !set.isActive;
+    // Optimistic update
+    setSets(prev => prev.map(s => s.id === set.id ? { ...s, isActive: newStatus } : s));
+    try {
+      await api.put(`/sets/${set.id}`, { name: set.name, isActive: newStatus });
+    } catch (err) {
+      console.error(err);
+      // Revert on failure
+      setSets(prev => prev.map(s => s.id === set.id ? { ...s, isActive: !newStatus } : s));
+      alert('Failed to update set status.');
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -175,11 +189,18 @@ export default function SetListPage() {
                       {set.basePrice ? `৳${set.basePrice.toLocaleString()}` : '-'}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        set.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        {set.isActive ? 'Active' : 'Draft'}
-                      </span>
+                      <button
+                        onClick={() => handleToggleStatus(set)}
+                        className="flex items-center gap-2 group/toggle"
+                        title={set.isActive ? 'Click to deactivate' : 'Click to activate'}
+                      >
+                        <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${set.isActive ? 'bg-green-500' : 'bg-gray-300'}`}>
+                          <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${set.isActive ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                        <span className={`text-xs font-medium ${set.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                          {set.isActive ? 'Active' : 'Draft'}
+                        </span>
+                      </button>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">

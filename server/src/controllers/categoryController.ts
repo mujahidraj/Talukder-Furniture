@@ -2,7 +2,8 @@ import * as categoryService from '../services/categoryService.js';
 
 export const getTree = async (req, res, next) => {
   try {
-    const categories = await categoryService.getTree();
+    const isAdmin = !!(req as any).admin && req.query.admin === 'true';
+    const categories = await categoryService.getTree(isAdmin);
     res.json(categories);
   } catch (error) {
     next(error);
@@ -11,7 +12,8 @@ export const getTree = async (req, res, next) => {
 
 export const getBySlug = async (req, res, next) => {
   try {
-    const category = await categoryService.getCategoryBySlug(req.params.slug);
+    const isAdmin = !!(req as any).admin;
+    const category = await categoryService.getCategoryBySlug(req.params.slug, isAdmin);
     res.json(category);
   } catch (error) {
     next(error);

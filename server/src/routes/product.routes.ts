@@ -37,7 +37,7 @@ const productSchema = Joi.object({
 // Public endpoints
 router.get('/', optionalAuthMiddleware, productController.list);
 router.get('/search', productController.search);
-router.get('/:slug', productController.getBySlug);
+router.get('/:slug', optionalAuthMiddleware, productController.getBySlug);
 
 const viewLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute

@@ -4,14 +4,14 @@ import { AppError } from '../middleware/errorHandler.js';
 import { deleteFilesByUrls } from '../utils/fileCleaner.js';
 
 export const getSets = async (query: any = {}) => {
-  const { page = 1, limit = 20, category, admin, q, price, sort = 'default' } = query;
+  const { page = 1, limit = 20, category, isAdmin, q, price, sort = 'default' } = query;
   const parsedLimit = parseInt(limit, 10);
   const take = Math.min(Math.max(parsedLimit, 1), 100); // Max 100 per page to prevent DoS
   const skip = (parseInt(page, 10) - 1) * take;
 
   const where: any = {};
 
-  if (admin !== 'true') {
+  if (!isAdmin) {
     where.isActive = true;
   }
 
@@ -101,7 +101,7 @@ export const getSets = async (query: any = {}) => {
   };
 };
 
-export const getSetBySlug = async (slug: string) => {
+export const getSetBySlug = async (slug: string, isAdmin = false) => {
   const set = await prisma.set.findUnique({
     where: { slug },
     include: {
@@ -117,6 +117,11 @@ export const getSetBySlug = async (slug: string) => {
   });
 
   if (!set) {
+    throw new AppError('Set not found', 404);
+  }
+
+  // Block inactive sets for public users
+  if (!isAdmin && !set.isActive) {
     throw new AppError('Set not found', 404);
   }
 

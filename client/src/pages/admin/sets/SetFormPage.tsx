@@ -35,7 +35,7 @@ export default function SetFormPage() {
 
   useEffect(() => {
     // Fetch categories
-    api.get('/categories').then(res => setCategories(res.data)).catch(console.error);
+    api.get('/categories?admin=true').then(res => setCategories(res.data)).catch(console.error);
 
     // Fetch products
     api.get('/products?admin=true&limit=1000')

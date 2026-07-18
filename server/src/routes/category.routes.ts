@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as categoryController from '../controllers/categoryController.js';
 import { validateRequest } from '../middleware/validateRequest.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
 import Joi from 'joi';
 
 const router = Router();
@@ -16,8 +16,8 @@ const categorySchema = Joi.object({
 });
 
 // Public endpoints
-router.get('/', categoryController.getTree);
-router.get('/:slug', categoryController.getBySlug);
+router.get('/', optionalAuthMiddleware, categoryController.getTree);
+router.get('/:slug', optionalAuthMiddleware, categoryController.getBySlug);
 
 // Protected endpoints
 router.use(authMiddleware);

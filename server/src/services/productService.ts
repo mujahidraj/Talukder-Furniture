@@ -144,7 +144,7 @@ export const getProducts = async (query: any = {}) => {
   };
 };
 
-export const getProductBySlug = async (slug) => {
+export const getProductBySlug = async (slug, isAdmin = false) => {
   const product = await prisma.product.findUnique({
     where: { slug },
     include: {
@@ -159,6 +159,11 @@ export const getProductBySlug = async (slug) => {
   });
 
   if (!product) {
+    throw new AppError('Product not found', 404);
+  }
+
+  // Block inactive products for public users
+  if (!isAdmin && !product.isActive) {
     throw new AppError('Product not found', 404);
   }
 

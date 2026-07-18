@@ -3,20 +3,25 @@ import slugify from 'slugify';
 import { AppError } from '../middleware/errorHandler.js';
 import { deleteFilesByUrls } from '../utils/fileCleaner.js';
 
-export const getTree = async () => {
+export const getTree = async (isAdmin = false) => {
+  const activeFilter = isAdmin ? {} : { isActive: true };
+
   const categories = await prisma.category.findMany({
+    where: activeFilter,
     orderBy: { order: 'asc' },
     include: {
       _count: {
         select: { products: true, sets: true }
       },
       children: {
+        where: activeFilter,
         orderBy: { order: 'asc' },
         include: {
           _count: {
             select: { products: true, sets: true }
           },
           children: {
+            where: activeFilter,
             orderBy: { order: 'asc' },
             include: {
               _count: {
@@ -51,7 +56,7 @@ export const getTree = async () => {
   return rootCategories;
 };
 
-export const getCategoryBySlug = async (slug) => {
+export const getCategoryBySlug = async (slug, isAdmin = false) => {
   const category = await prisma.category.findUnique({
     where: { slug },
     include: {
@@ -62,6 +67,16 @@ export const getCategoryBySlug = async (slug) => {
 
   if (!category) {
     throw new AppError('Category not found', 404);
+  }
+
+  // Block inactive categories for public users
+  if (!isAdmin && !category.isActive) {
+    throw new AppError('Category not found', 404);
+  }
+
+  // Filter out inactive children for public users
+  if (!isAdmin && category.children) {
+    category.children = category.children.filter(c => c.isActive);
   }
 
   return category;

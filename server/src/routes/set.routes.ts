@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as setController from '../controllers/setController.js';
 import { validateRequest } from '../middleware/validateRequest.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
 import Joi from 'joi';
 
 const router = Router();
@@ -21,8 +21,8 @@ const setSchema = Joi.object({
 });
 
 // Public endpoints
-router.get('/', setController.list);
-router.get('/:slug', setController.getBySlug);
+router.get('/', optionalAuthMiddleware, setController.list);
+router.get('/:slug', optionalAuthMiddleware, setController.getBySlug);
 
 // Protected admin endpoints
 router.use(authMiddleware);
