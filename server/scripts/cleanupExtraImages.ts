@@ -19,10 +19,10 @@ async function deleteFileByUrl(url: string | null | undefined) {
     if (!url.startsWith('/uploads/')) return;
     const relativePath = url.substring('/uploads/'.length);
     const absolutePath = path.resolve(UPLOAD_DIR, relativePath);
-    
+
     const uploadBaseDir = path.resolve(UPLOAD_DIR);
     if (!absolutePath.startsWith(uploadBaseDir + path.sep)) return;
-    
+
     await fs.unlink(absolutePath);
     console.log(`  🗑️  Deleted file: ${absolutePath}`);
   } catch (err: any) {

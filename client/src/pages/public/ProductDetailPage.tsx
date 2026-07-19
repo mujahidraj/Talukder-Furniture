@@ -532,8 +532,8 @@ export default function ProductDetailPage() {
                   <ShieldCheck size={17} className="text-primary" />
                 </div>
                 <div>
-                  <span className="text-sm font-semibold text-primary block">10-Year Warranty</span>
-                  <span className="text-xs text-gray-400">On solid wood frames</span>
+                  <span className="text-sm font-semibold text-primary block">1-Year Warranty</span>
+                  <span className="text-xs text-gray-400">On solid wood or Melamine Face Chip Board</span>
                 </div>
               </div>
               <div className="flex items-start gap-3.5">
