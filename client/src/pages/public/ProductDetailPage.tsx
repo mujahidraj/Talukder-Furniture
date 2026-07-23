@@ -416,7 +416,7 @@ export default function ProductDetailPage() {
                   </span>
                   {hasDiscount && (
                     <>
-                      <span className="text-lg text-gray-300 line-through font-medium mb-0.5">
+                      <span className="text-lg text-gray-500 line-through font-medium mb-0.5">
                         ৳ {currentPrice.toLocaleString()}
                       </span>
                       <span className="text-sm font-bold text-red-500 bg-red-50 px-4 py-1.5 rounded-full mb-0.5 tracking-wider">
@@ -548,6 +548,56 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* ━━━ Set Furniture ━━━ */}
+        {product.sets && product.sets.length > 0 && (
+          <div className="space-y-12 mb-12">
+            {product.sets.map((currentSet: any) => {
+              const otherProducts = currentSet.products?.filter((p: any) => p.id !== product.id) || [];
+              if (otherProducts.length === 0) return null;
+              
+              return (
+                <div key={currentSet.id} className="border-t border-gray-100 pt-12 md:pt-16">
+                  <div className="mb-8">
+                    <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary mb-2">Also in this Collection</h2>
+                    <p className="text-gray-500">Complete the look with other pieces from the {currentSet.name} collection.</p>
+                  </div>
+                  
+                  <div className="flex overflow-x-auto gap-5 md:gap-7 pb-4 snap-x" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {otherProducts.map((p: any) => (
+                      <div key={p.id} className="group flex flex-col w-[160px] sm:w-[200px] shrink-0 snap-start bg-white/50 p-2 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-shadow">
+                        <Link to={`/products/${p.slug}`} className="relative aspect-[4/3] overflow-hidden rounded-xl mb-3 bg-white block">
+                          {p.images && p.images.length > 0 ? (
+                            <img
+                              src={p.images[0].url}
+                              alt={p.name}
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-300 font-serif italic text-xs">No Image</div>
+                          )}
+                        </Link>
+                        <Link to={`/products/${p.slug}`} className="group/link px-1">
+                          <h3 className="font-bold text-primary text-sm truncate group-hover/link:text-gray-600 transition-colors duration-200">{p.name}</h3>
+                        </Link>
+                        <span className="text-[11px] text-gray-400 mb-1 tracking-wide px-1">{currentSet.name}</span>
+                        <div className="flex items-center gap-2 px-1 pb-1">
+                          <span className="text-sm font-bold text-primary">৳ {p.basePrice?.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-6 text-center sm:text-left">
+                    <Link to={`/collections/${currentSet.slug}`} className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-gray-600 uppercase tracking-wider transition-colors">
+                      View Full {currentSet.name} Collection <ChevronRight size={16} />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* ━━━ Tabs Section ━━━ */}
         <div className="border-t border-gray-100 pt-12 md:pt-16 pb-16 md:pb-24">

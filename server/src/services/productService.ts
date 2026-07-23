@@ -155,6 +155,20 @@ export const getProductBySlug = async (slug, isAdmin = false) => {
       variants: {
         orderBy: { order: 'asc' },
       },
+      sets: {
+        include: {
+          products: {
+            where: { isActive: true },
+            include: {
+              images: {
+                orderBy: { order: 'asc' },
+                take: 1
+              },
+              category: true
+            }
+          }
+        }
+      }
     },
   });
 

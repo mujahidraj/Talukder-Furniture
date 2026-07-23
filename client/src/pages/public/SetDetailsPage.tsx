@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Heart, Share2, ShieldCheck, Truck, Ruler, X, Phone, ShoppingBag, Info, ExternalLink, MessageSquare, ArrowLeft } from 'lucide-react';
+import { ChevronRight, Heart, Share2, ShieldCheck, Truck, Ruler, X, Phone, ShoppingBag, Info, ExternalLink, MessageSquare, ArrowLeft, Wrench } from 'lucide-react';
 import api from '../../lib/api';
 import useWishlistStore from '../../stores/useWishlistStore';
 import FormattedText from '../../components/ui/FormattedText';
@@ -238,7 +238,7 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                               </span>
                             </div>
                             {product.discountPercentage > 0 && (
-                              <span className="text-gray-400 line-through text-sm mt-1 font-medium">
+                              <span className="text-gray-500 line-through text-sm mt-1 font-medium">
                                 ৳ {currentPrice.toLocaleString()} (-{product.discountPercentage}%)
                               </span>
                             )}
@@ -291,7 +291,6 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                   </div>
                 )}
 
-                <div className="prose prose-sm text-gray-600 mb-8 line-clamp-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.overview || '') }} />
 
                 {/* Actions */}
                 <div className="flex flex-col gap-3 mt-auto">
@@ -445,11 +444,113 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
 };
 
 
+// Custom Formatter to make the Set Description look ultra-premium with Tabs
+const SetDescriptionFormatter = ({ content }: { content: string }) => {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  if (!content) return null;
+
+  const lines = content.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+  const overviewLines: string[] = [];
+  const materialLines: string[] = [];
+  const measurementLines: string[] = [];
+
+  let currentSection = 'overview';
+
+  lines.forEach(line => {
+    const lowerLine = line.toLowerCase();
+    if (lowerLine.includes('material & finish') || lowerLine.includes('materials & finish')) {
+      currentSection = 'material';
+      return; // skip the header line itself
+    }
+    if (lowerLine.includes('measurements')) {
+      currentSection = 'measurements';
+      return; // skip the header line itself
+    }
+
+    if (currentSection === 'overview') overviewLines.push(line);
+    else if (currentSection === 'material') materialLines.push(line);
+    else if (currentSection === 'measurements') measurementLines.push(line);
+  });
+
+  const renderSectionLines = (sectionLines: string[], sectionType: string) => {
+    return (
+      <div className="flex flex-col gap-4 animate-fade-in pt-2">
+        {sectionLines.map((line, idx) => {
+          // Heading / Subtitle
+          if (idx === 0 && sectionType === 'overview' && !line.includes(':') && !line.toLowerCase().includes('material')) {
+            return <h4 key={`desc-${idx}`} className="text-xl md:text-2xl font-serif text-gray-800 mb-2 leading-snug">{line}</h4>;
+          }
+
+          // Key-Value pairs
+          if (line.includes(':')) {
+            const [key, ...rest] = line.split(':');
+            const value = rest.join(':').trim();
+            return (
+              <div key={`desc-${idx}`} className="text-sm md:text-base leading-relaxed text-gray-600 bg-gray-50/50 p-4 rounded-xl border border-gray-100/50 hover:border-gray-200 transition-colors shadow-[0_2px_10px_rgba(0,0,0,0.01)]">
+                <strong className="text-gray-900 font-bold tracking-wide">{key.trim()}:</strong> <span className="text-gray-600">{value}</span>
+              </div>
+            );
+          }
+
+          // Standard paragraph
+          return (
+            <p key={`desc-${idx}`} className="text-sm md:text-base leading-relaxed text-gray-600 pl-1">
+              {line}
+            </p>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'material', label: 'Material & Finish' },
+    { id: 'measurements', label: 'Measurements' }
+  ];
+
+  return (
+    <div>
+      <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200 mb-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        {tabs.map((tab) => {
+          if (tab.id === 'material' && materialLines.length === 0) return null;
+          if (tab.id === 'measurements' && measurementLines.length === 0) return null;
+          
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative py-4 px-6 text-sm font-bold tracking-wide transition-colors whitespace-nowrap ${
+                activeTab === tab.id ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              {tab.label}
+              <span
+                className={`absolute bottom-0 left-0 right-0 h-[2px] bg-primary transition-all duration-300 ${
+                  activeTab === tab.id ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
+                }`}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      {activeTab === 'overview' && renderSectionLines(overviewLines, 'overview')}
+      {activeTab === 'material' && renderSectionLines(materialLines, 'material')}
+      {activeTab === 'measurements' && renderSectionLines(measurementLines, 'measurements')}
+    </div>
+  );
+};
+
+
 export default function SetDetailsPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [setItem, setSetItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [relatedSets, setRelatedSets] = useState<any[]>([]);
 
   // Modal / Drawer state
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -462,9 +563,8 @@ export default function SetDetailsPage() {
   // Hero Slider State
   const [heroIdx, setHeroIdx] = useState(0);
 
-  // No auto slider effect needed anymore
-
   useEffect(() => {
+    window.scrollTo(0, 0);
     setLoading(true);
     api.get(`/sets/${slug}`)
       .then(res => {
@@ -472,6 +572,17 @@ export default function SetDetailsPage() {
         if (!data.imageUrls) data.imageUrls = [];
         if (data.imageUrls.length === 0 && data.imageUrl) data.imageUrls = [data.imageUrl];
         setSetItem(data);
+
+        // Fetch related sets
+        const categorySlug = data.category?.slug;
+        const url = categorySlug ? `/sets?category=${categorySlug}&limit=5` : `/sets?limit=5`;
+        api.get(url)
+          .then(relatedRes => {
+            const setsArray = relatedRes.data.sets || [];
+            const filtered = setsArray.filter((s: any) => s.id !== data.id).slice(0, 4);
+            setRelatedSets(filtered);
+          })
+          .catch(console.error);
       })
       .catch(err => {
         console.error(err);
@@ -588,20 +699,63 @@ export default function SetDetailsPage() {
           {/* Right Column: Details & Actions */}
           <div className="w-full lg:w-[40%] flex flex-col">
             <div className="sticky top-[120px]">
-              <div className="flex items-baseline gap-4 mb-8">
+              <div className="flex items-baseline gap-4 mb-6">
                 <span className="text-3xl font-bold text-gray-900">৳ {discountedPrice.toLocaleString()}</span>
                 {setItem.discountPercentage > 0 && (
-                  <span className="text-lg text-gray-400 line-through font-medium">৳ {setItem.basePrice.toLocaleString()}</span>
+                  <span className="text-lg text-gray-500 line-through font-medium">৳ {setItem.basePrice.toLocaleString()}</span>
                 )}
               </div>
 
-              {setItem.description && (
-                <div className="prose prose-gray text-gray-600 mb-10 text-base leading-relaxed">
-                  <FormattedText content={setItem.description} defaultText="" />
+              {/* Items in this Collection (Moved to Right Sidebar) */}
+              {setItem.products && setItem.products.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-primary mb-4 border-b border-gray-200 pb-2">Includes {setItem.products.length} Items</h3>
+                  <div className="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {setItem.products.map((product: any) => (
+                      <div key={product.id} className="flex items-center gap-4 p-3 bg-white rounded-xl border border-gray-100 shadow-sm cursor-pointer hover:border-primary transition-colors group" onClick={() => setSelectedProduct(product)}>
+                        <div className="w-20 h-20 bg-[#f8f8f8] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center p-2">
+                           {product.images?.[0] ? (
+                            <img src={product.images[0].url} alt={product.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">No Image</div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors">{product.name}</h4>
+                          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            {product.basePrice ? (
+                              <>
+                                <span className="text-sm font-bold text-primary">
+                                  ৳{(product.discountPercentage > 0 ? product.basePrice * (1 - product.discountPercentage / 100) : product.basePrice).toLocaleString()}
+                                </span>
+                                {product.discountPercentage > 0 && (
+                                  <>
+                                    <span className="text-xs text-gray-500 line-through">
+                                      ৳{product.basePrice.toLocaleString()}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-white bg-accent px-1.5 py-0.5 rounded">
+                                      -{product.discountPercentage}%
+                                    </span>
+                                  </>
+                                )}
+                              </>
+                            ) : (
+                              <span className="text-sm font-bold text-primary">
+                                {product.priceDisplay || `$${product.price}`}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
+                          <ChevronRight size={16} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              <div className="pt-8 border-t border-gray-200">
+              <div className="pt-6 border-t border-gray-200">
                 <button
                   onClick={() => setIsSetEnquireOpen(true)}
                   className="w-full btn bg-black text-white hover:bg-gray-900 py-4 rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-xl shadow-black/10 hover:shadow-black/20 flex items-center justify-center gap-3"
@@ -618,54 +772,51 @@ export default function SetDetailsPage() {
           </div>
         </div>
 
-        {/* Pieces in this Collection - GRID */}
-        {setItem.products && setItem.products.length > 0 && (
-          <div className="mt-24 md:mt-32">
+        {/* Set Description Section (Moved Below) */}
+        {setItem.description && (
+          <div className="mt-16 md:mt-24 w-full bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="text-2xl md:text-3xl font-serif text-primary mb-8 font-bold border-b border-gray-100 pb-4">Collection Details</h3>
+            <SetDescriptionFormatter content={setItem.description} />
+          </div>
+        )}
+
+        {/* Recommended Collections */}
+        {relatedSets.length > 0 && (
+          <div className="mt-24 md:mt-32 pb-12">
             <div className="flex flex-col items-center text-center mb-12">
-              <h3 className="text-3xl md:text-4xl font-serif text-primary mb-4">Pieces in this Collection</h3>
+              <h3 className="text-3xl md:text-4xl font-serif text-primary mb-4">You May Also Like</h3>
               <div className="w-12 h-1 bg-accent mb-6 rounded-full"></div>
-              <p className="text-gray-500 max-w-2xl text-lg">Discover the individual pieces that make up this stunning collection.</p>
+              <p className="text-gray-500 max-w-2xl text-lg">Explore other beautiful collections that might catch your eye.</p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-              {setItem.products.map((product: any) => (
-                <div key={product.id} className="group cursor-pointer flex flex-col h-full" onClick={() => setSelectedProduct(product)}>
-                  <div className="relative aspect-[4/5] mb-5 overflow-hidden bg-[#f8f8f8] rounded-2xl flex items-center justify-center border border-gray-100 transition-shadow duration-300 group-hover:shadow-lg">
-                    {product.images?.[0] ? (
-                      <img
-                        src={product.images[0].url}
-                        alt={product.name}
-                        className="w-full h-full object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
-                      />
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {relatedSets.map((set) => (
+                <Link key={set.id} to={`/collections/${set.slug}`} className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                  <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
+                    {set.imageUrls && set.imageUrls.length > 0 ? (
+                      <img src={set.imageUrls[0]} alt={set.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     ) : (
-                      <div className="text-gray-400 font-medium">No Image</div>
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
                     )}
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-                      <button className="w-full bg-white/95 backdrop-blur-sm text-black text-xs font-bold tracking-widest uppercase py-3.5 rounded-lg shadow-lg flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors">
-                        View Details
-                      </button>
+                    {set.discountPercentage > 0 && (
+                      <div className="absolute top-4 left-4 bg-accent text-white px-3 py-1 text-xs font-bold rounded-full shadow-md">
+                        -{set.discountPercentage}%
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5 flex flex-col flex-1">
+                    <h4 className="text-lg font-serif font-bold text-gray-900 group-hover:text-primary transition-colors mb-1.5 line-clamp-2">{set.name}</h4>
+                    {set.category && <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-4">{set.category.name}</p>}
+                    <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                      <span className="font-bold text-primary text-lg">
+                        {set.basePrice ? `৳${(set.discountPercentage > 0 ? set.basePrice * (1 - set.discountPercentage/100) : set.basePrice).toLocaleString()}` : 'View Details'}
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                        <ChevronRight size={16} />
+                      </div>
                     </div>
                   </div>
-
-                  <div className="flex flex-col flex-1 px-2 text-center">
-                    <h4 className="text-lg font-serif font-medium text-gray-900 group-hover:text-accent transition-colors mb-2 line-clamp-1">
-                      {product.name}
-                    </h4>
-                    <div className="mt-auto">
-                      {product.basePrice ? (
-                        <p className="font-semibold text-gray-600 text-lg">
-                          ৳{product.discountPercentage > 0
-                            ? (product.basePrice * (1 - product.discountPercentage / 100)).toLocaleString()
-                            : product.basePrice.toLocaleString()
-                          }
-                        </p>
-                      ) : (
-                        <p className="font-semibold text-gray-600 text-lg">{product.priceDisplay || `$${product.price}`}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

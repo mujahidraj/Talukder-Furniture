@@ -112,13 +112,15 @@ export default function Header() {
                 if (!categoriesWithSets.has(s.category.slug)) {
                   categoriesWithSets.set(s.category.slug, {
                     label: s.category.name,
-                    path: `/shop?category=${s.category.slug}&type=sets`
+                    path: `/shop?category=${s.category.slug}&type=sets`,
+                    order: s.category.order || 0
                   });
                 }
               }
             });
 
             const links = Array.from(categoriesWithSets.values());
+            links.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
 
             collectionsMenu = {
               name: 'Collections',

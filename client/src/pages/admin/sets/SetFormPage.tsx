@@ -146,6 +146,27 @@ export default function SetFormPage() {
     setImageUrl(url);
   };
 
+  useEffect(() => {
+    const allProductsToSearch = [...availableProducts, ...initialSetProducts];
+    const uniqueProducts = Array.from(new Map(allProductsToSearch.map(p => [p.id, p])).values());
+
+    let total = 0;
+    selectedProductIds.forEach(id => {
+      const prod = uniqueProducts.find(p => p.id === id);
+      if (prod && prod.basePrice) {
+        total += Number(prod.basePrice);
+      }
+    });
+
+    const newBasePrice = total > 0 ? total.toString() : '';
+    setFormData(prev => {
+      if (prev.basePrice !== newBasePrice) {
+        return { ...prev, basePrice: newBasePrice };
+      }
+      return prev;
+    });
+  }, [selectedProductIds, availableProducts, initialSetProducts]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -272,11 +293,11 @@ export default function SetFormPage() {
                 type="number"
                 name="basePrice"
                 value={formData.basePrice}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                placeholder="Optional custom price for the whole set"
+                readOnly
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+                placeholder="Auto-calculated from products"
               />
+              <p className="text-[11px] text-gray-400 mt-1">Automatically summed from selected products.</p>
             </div>
 
             <div>
