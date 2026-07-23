@@ -225,7 +225,7 @@ export default function ProductDetailPage() {
   // ─── Not Found ──────────────────────────────────────────────────────────
   if (!product) {
     return (
-      <div className="bg-secondary min-h-screen flex flex-col items-center justify-center px-4 text-center">
+      <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen flex flex-col items-center justify-center px-4 text-center">
         <img src="/ICON SET/LOGO.gif" alt="Not Found" className="w-80 h-80 object-contain mb-2" />
         <h1 className="text-4xl font-serif font-bold text-primary mb-3">Product Not Found</h1>
         <p className="text-gray-500 mb-8 max-w-md">The product you are looking for does not exist or has been removed.</p>
@@ -249,7 +249,7 @@ export default function ProductDetailPage() {
 
   // ─── Render ─────────────────────────────────────────────────────────────
   return (
-    <div className="bg-white min-h-screen pt-[20px] md:pt-[10px]">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pt-[20px] md:pt-[10px]">
       <SEO
         title={product.metaTitle || product.name}
         description={product.metaDescription || product.overview || `Buy the premium ${product.name} from Talukder Furniture Ltd.`}
@@ -480,9 +480,9 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Overview text */}
-            {product.overview && (
-              <div className="prose prose-sm text-gray-500 leading-relaxed mb-8 [&_p]:mb-2 [&_strong]:text-primary" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.overview) }} />
+            {/* Materials text */}
+            {product.materials && (
+              <div className="prose prose-sm text-gray-500 leading-relaxed mb-8 [&_p]:mb-2 [&_strong]:text-primary" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.materials) }} />
             )}
 
             {/* ── Action Buttons ── */}

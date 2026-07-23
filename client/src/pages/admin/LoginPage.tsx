@@ -39,7 +39,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
         <title>Admin Login | Talukder Furniture</title>

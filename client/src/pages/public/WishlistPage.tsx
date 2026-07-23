@@ -7,7 +7,7 @@ export default function WishlistPage() {
   const { items, removeItem, clearWishlist } = useWishlistStore();
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-20">
       {/* Banner */}
       <div className="relative py-20 px-4 md:px-8 xl:px-12 overflow-hidden mb-16">
         <div className="absolute inset-0 z-0">

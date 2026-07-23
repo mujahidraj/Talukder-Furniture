@@ -197,7 +197,7 @@ export default function ShopPage() {
   }, []);
 
   return (
-    <div className="bg-secondary min-h-screen pb-20">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-20">
       {/* Hero Banner Section */}
       <div
         className="relative w-full h-[250px] md:h-[350px] flex items-center mb-12"

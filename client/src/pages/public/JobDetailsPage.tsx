@@ -54,7 +54,7 @@ export default function JobDetailsPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20 pt-10">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-20 pt-10">
       <div className="max-w-4xl mx-auto px-4 md:px-8">
         
         <Link to="/career" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary mb-8 transition-colors font-medium">

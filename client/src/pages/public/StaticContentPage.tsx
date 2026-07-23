@@ -1227,7 +1227,7 @@ export default function StaticContentPage() {
   }, [path]);
 
   return (
-    <div className="bg-secondary min-h-screen pb-24">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-24">
       {/* ─── Hero Banner ─── */}
       <div
         className="relative w-full h-[250px] md:h-[320px] flex items-center justify-center mb-12"

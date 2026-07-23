@@ -50,7 +50,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex font-sans">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen flex font-sans">
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>

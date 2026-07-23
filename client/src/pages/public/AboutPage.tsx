@@ -25,7 +25,7 @@ const InstagramIcon = ({ size = 18 }) => (
 
 export default function AboutPage() {
   return (
-    <div className="bg-secondary min-h-screen pb-20 font-sans">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-20 font-sans">
       <SEO 
         title="About Us"
         description="Learn more about Talukder Furniture's legacy of premium craftsmanship, our mission, and our dedication to providing the best furniture in Bangladesh."

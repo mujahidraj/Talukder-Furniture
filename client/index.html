@@ -47,11 +47,10 @@
         inset: 0;
         z-index: 99999;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         background: #ffffff;
-        transition: opacity 1s cubic-bezier(0.7, 0, 0.3, 1), visibility 1s;
+        transition: opacity 0.5s ease, visibility 0.5s;
       }
 
       #app-splash.hide {
@@ -59,66 +58,10 @@
         visibility: hidden;
       }
 
-      /* Orbit container — holds the rings and logo together */
-      .splash-orbit-container {
-        position: relative;
-        width: 380px;
-        height: 380px;
+      .splash-logo-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-
-      /* Orbital ring 1 */
-      .splash-orbit {
-        position: absolute;
-        inset: 0;
-        border: 1.5px solid rgba(0, 0, 0, 0.06);
-        border-radius: 50%;
-        animation: orbitSpin 20s linear infinite;
-      }
-      .splash-orbit::after {
-        content: "";
-        position: absolute;
-        top: -4px;
-        left: 50%;
-        width: 8px;
-        height: 8px;
-        background: #1a1a1a;
-        border-radius: 50%;
-        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.15);
-      }
-
-      /* Orbital ring 2 — counter-rotating, slightly larger */
-      .splash-orbit-2 {
-        position: absolute;
-        inset: -30px;
-        border: 1px solid rgba(0, 0, 0, 0.03);
-        border-radius: 50%;
-        animation: orbitSpin 30s linear infinite reverse;
-      }
-      .splash-orbit-2::after {
-        content: "";
-        position: absolute;
-        bottom: -3px;
-        right: 28%;
-        width: 5px;
-        height: 5px;
-        background: rgba(0, 0, 0, 0.25);
-        border-radius: 50%;
-        box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.1);
-      }
-
-      @keyframes orbitSpin {
-        0%   { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-
-      /* Logo — centered inside the orbit */
-      .splash-logo-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
       }
 
       .splash-logo-wrapper img {
@@ -126,116 +69,17 @@
         height: auto;
         max-height: 260px;
         object-fit: contain;
-        opacity: 0;
-        animation: logoReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
-      }
-
-      @keyframes logoReveal {
-        0%   { opacity: 0; transform: scale(0.88); filter: blur(8px); }
-        100% { opacity: 1; transform: scale(1); filter: blur(0) drop-shadow(0 4px 12px rgba(0,0,0,0.04)); }
-      }
-
-      /* Loading area below the circle */
-      .splash-loading {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        margin-top: 40px;
-        opacity: 0;
-        animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
-      }
-
-      @keyframes fadeUp {
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .splash-bar-track {
-        width: 200px;
-        height: 2px;
-        background: rgba(0, 0, 0, 0.06);
-        border-radius: 2px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .splash-bar-fill {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 0%;
-        border-radius: 2px;
-        background: #1a1a1a;
-        animation: splashFill 3s cubic-bezier(0.7, 0, 0.3, 1) 0.3s forwards;
-      }
-
-      @keyframes splashFill {
-        0%   { width: 0%; }
-        15%  { width: 15%; }
-        40%  { width: 45%; }
-        70%  { width: 78%; }
-        90%  { width: 92%; }
-        100% { width: 100%; }
-      }
-
-      .splash-pct {
-        font-family: 'Inter', sans-serif;
-        font-size: 11px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.3);
-        letter-spacing: 0.2em;
-      }
-
-      .splash-slogan {
-        font-family: 'Playfair Display', serif;
-        font-style: italic;
-        font-size: 15px;
-        color: rgba(0, 0, 0, 0.4);
-        letter-spacing: 0.25em;
-        margin-top: -12px;
-        opacity: 0;
-        animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
       }
     </style>
   </head>
-  <body>
+  <body class="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen text-gray-900 antialiased">
     <!-- Initial splash screen — visible before React loads -->
     <div id="app-splash">
-      <!-- Orbit container with rings + logo -->
-      <div class="splash-orbit-container">
-        <div class="splash-orbit"></div>
-        <div class="splash-orbit-2"></div>
-        <div class="splash-logo-wrapper">
-          <img src="/ICON SET/LOGO.gif" alt="Talukder Furniture" />
-          <span class="splash-slogan">for quality life</span>
-        </div>
-      </div>
-
-      <!-- Loading bar below -->
-      <div class="splash-loading">
-        <div class="splash-bar-track">
-          <div class="splash-bar-fill"></div>
-        </div>
-        <span class="splash-pct" id="splash-pct">0%</span>
+      <div class="splash-logo-wrapper">
+        <img src="/ICON SET/LOGO.gif" alt="Talukder Furniture" />
       </div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      (function() {
-        var duration = 3000;
-        var start = Date.now();
-        var el = document.getElementById('splash-pct');
-        function tick() {
-          var elapsed = Date.now() - start;
-          var pct = Math.min(100, Math.round((elapsed / duration) * 100));
-          if (el) el.textContent = pct + '%';
-          if (pct < 100) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      })();
-    </script>
   </body>
 </html>

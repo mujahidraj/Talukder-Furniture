@@ -197,7 +197,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 flex flex-col min-h-screen">
       <SEO
         title="Home"
         description="Talukder Furniture — Premium craftsmanship for your home."
@@ -228,7 +228,7 @@ export default function HomePage() {
                 {({ isActive }) => (
                   <div className="relative w-full h-screen overflow-hidden group">
                     {/* Cinematic Ken Burns Background Zoom */}
-                    <motion.div 
+                    <motion.div
                       className="absolute inset-0 w-full h-full"
                       initial={{ scale: 1.15 }}
                       animate={isActive ? { scale: 1 } : { scale: 1.15 }}
@@ -359,10 +359,10 @@ export default function HomePage() {
                   alt={cat.name}
                   className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
+
                 {/* Text Content */}
                 <div className="absolute inset-0 p-4 xl:p-5 flex flex-col justify-end">
                   <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
@@ -418,7 +418,7 @@ export default function HomePage() {
                       className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100"
                     />
                   )}
-                  
+
                   {/* Discount Badge on Image */}
                   {product.basePrice && product.discountPercentage > 0 && (
                     <div className="absolute top-4 left-4 bg-[#E32227] text-white text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-full uppercase shadow-md z-10">
@@ -432,7 +432,7 @@ export default function HomePage() {
                       View Details
                     </span>
                   </div>
-                  
+
                   {/* Gradient Overlay for bottom button contrast */}
                   <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
                 </div>
@@ -474,7 +474,7 @@ export default function HomePage() {
               {/* Subtle background glow/gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#222] to-transparent opacity-50 pointer-events-none"></div>
               <div className="absolute -top-40 -left-40 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none transition-transform duration-1000 group-hover/text:translate-x-10 group-hover/text:translate-y-10"></div>
-              
+
               <div className="relative z-10">
                 <span className="text-[#a0a0a0] uppercase tracking-[0.35em] text-[11px] font-bold mb-8 block flex items-center gap-4">
                   <span className="w-8 h-[1px] bg-[#a0a0a0]"></span>
@@ -563,14 +563,14 @@ export default function HomePage() {
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      
+
                       {/* Hover overlay with button */}
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
                         <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white/95 backdrop-blur-sm text-[#1a1a1a] hover:bg-black hover:text-white text-[12px] font-semibold tracking-wider uppercase px-6 py-2.5 rounded-full shadow-lg">
                           View Details
                         </span>
                       </div>
-                      
+
                       {/* Discount Badge on Image */}
                       {product.basePrice && product.discountPercentage > 0 && (
                         <div className="absolute top-3 left-3 bg-[#E32227] text-white text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-full uppercase shadow-sm z-30">

@@ -527,7 +527,7 @@ export default function SetDetailsPage() {
   const currentHeroImage = heroImages[heroIdx % heroImages.length];
 
   return (
-    <div className="bg-[#FAF9F6] min-h-screen pb-20 pt-[76px]">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-20 pt-[76px]">
       <SEO
         title={`${setItem.name} | Talukder Furniture Collections`}
         description={setItem.description || `Explore the ${setItem.name} collection.`}

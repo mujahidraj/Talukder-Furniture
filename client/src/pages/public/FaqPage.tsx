@@ -39,7 +39,7 @@ export default function FaqPage() {
   };
 
   return (
-    <div className="bg-secondary min-h-screen pt-12 pb-24">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pt-12 pb-24">
       <div className="container-custom max-w-4xl">
         <div className="text-center mb-16">
           <MessageCircleQuestion size={48} className="text-primary mx-auto mb-6" />

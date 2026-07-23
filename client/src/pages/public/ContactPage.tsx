@@ -27,7 +27,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-secondary min-h-screen pb-20 font-sans">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-blue-50 min-h-screen pb-20 font-sans">
       <SEO 
         title="Contact Us"
         description="Get in touch with Talukder Furniture. We are here to help you with your premium furniture needs in Bangladesh."
