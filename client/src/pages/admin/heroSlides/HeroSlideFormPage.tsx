@@ -279,7 +279,7 @@ export default function HeroSlideFormPage() {
 
         <div className="pt-6 border-t border-gray-100 flex justify-end gap-3">
           <Link to="/admin/hero-slides" className="btn btn-outline text-sm">Cancel</Link>
-          <button type="submit" disabled={saving} className="btn bg-black text-white hover:bg-gray-900 text-sm flex items-center gap-2">
+          <button type="submit" disabled={saving} className="btn bg-accent text-white hover:bg-[#E51C2A] text-sm flex items-center gap-2">
             {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             {isEdit ? 'Update Slide' : 'Create Slide'}
           </button>

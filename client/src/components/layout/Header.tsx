@@ -351,7 +351,7 @@ export default function Header() {
               <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 lg:pr-8">
                 {navLinks.find(n => n.name === hoveredNav)?.megaMenu?.map((column: any, idx: number) => (
                   <div key={idx} className="flex flex-col">
-                    <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-3 pb-2 border-b border-gray-100/70 flex items-center justify-between group cursor-default">
+                    <h3 className="text-[15px] uppercase tracking-wider font-extrabold text-[#263B90] mb-3 pb-2 border-b border-gray-200 flex items-center justify-between group cursor-default">
                       {column.title}
                     </h3>
                     <ul className="space-y-1.5">

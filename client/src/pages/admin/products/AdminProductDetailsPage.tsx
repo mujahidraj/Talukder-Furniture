@@ -161,7 +161,7 @@ export default function AdminProductDetailsPage() {
                     <span className="text-3xl font-bold text-primary">৳ {currentPrice.toLocaleString()}</span>
                     {hasDiscount && (
                       <>
-                        <span className="text-lg text-gray-400 line-through mb-1">৳ {product.basePrice.toLocaleString()}</span>
+                        <span className="text-lg text-red-700 line-through font-semibold mb-1">৳ {product.basePrice.toLocaleString()}</span>
                         <span className="text-sm font-bold text-red-600 bg-red-50 px-2 py-1 rounded mb-1">
                           -{product.discountPercentage}% OFF
                         </span>

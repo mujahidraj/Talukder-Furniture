@@ -10,7 +10,7 @@ export default function Footer() {
   };
 
   return (
-    <footer style={{ backgroundColor: '#1a1a1a', color: '#fff', fontFamily: 'sans-serif' }}>
+    <footer style={{ backgroundColor: '#263B90', color: '#fff', fontFamily: 'sans-serif' }}>
       <div style={{ width: '100%', padding: '80px 24px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '110px' }} className="flex-col md:flex-row">
 
         {/* Column 1: Brand & Contact */}
@@ -63,7 +63,7 @@ export default function Footer() {
         </div>
 
         {/* Column 2: Categories */}
-        <div style={{ borderLeft: '1px solid #333', paddingLeft: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', fontWeight: 400, color: '#fff' }}>
             Categories
           </h2>
@@ -77,7 +77,7 @@ export default function Footer() {
         </div>
 
         {/* Column 3: Customer Services */}
-        <div style={{ borderLeft: '1px solid #333', paddingLeft: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', fontWeight: 400, color: '#fff' }}>
             Customer Services
           </h2>
@@ -98,7 +98,7 @@ export default function Footer() {
         </div>
 
         {/* Column 3: Information */}
-        <div style={{ borderLeft: '1px solid #333', paddingLeft: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', fontWeight: 400, color: '#fff' }}>
             Information
           </h2>
@@ -119,7 +119,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Copyright */}
-      <div style={{ backgroundColor: '#111', padding: '24px' }}>
+      <div style={{ backgroundColor: '#1c2d6e', padding: '24px' }}>
         <div style={{ maxWidth: '1800px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px' }}>
           <p style={{ color: '#fff', fontSize: '13px', margin: 0, fontWeight: 300 }}>
             Copyright ©{currentYear} Talukder. All Rights Reserved.
@@ -128,12 +128,12 @@ export default function Footer() {
             <button
               onClick={scrollToTop}
               style={{
-                width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#222',
+                width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.15)',
                 border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', color: '#fff', transition: 'background-color 0.2s'
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#333'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#222'}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.25)'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.15)'}
             >
               <ArrowUp size={18} strokeWidth={1.5} />
             </button>

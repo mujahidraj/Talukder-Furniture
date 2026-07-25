@@ -416,7 +416,7 @@ export default function ProductDetailPage() {
                   </span>
                   {hasDiscount && (
                     <>
-                      <span className="text-lg text-gray-500 line-through font-medium mb-0.5">
+                      <span className="text-lg text-red-700 line-through font-semibold mb-0.5">
                         ৳ {currentPrice.toLocaleString()}
                       </span>
                       <span className="text-sm font-bold text-red-500 bg-red-50 px-4 py-1.5 rounded-full mb-0.5 tracking-wider">
@@ -446,8 +446,8 @@ export default function ProductDetailPage() {
                       key={idx}
                       onClick={() => setActiveSizeIdx(idx)}
                       className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${activeSizeIdx === idx
-                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                        : 'bg-[#f5f3f0] text-gray-600 hover:bg-gray-200 hover:text-primary'
+                        ? 'bg-accent text-white shadow-lg shadow-accent/20'
+                        : 'bg-[#f5f3f0] text-gray-600 hover:bg-[#E51C2A] hover:text-white'
                         }`}
                     >
                       {size.label}
@@ -470,9 +470,9 @@ export default function ProductDetailPage() {
                         className="w-9 h-9 rounded-full cursor-pointer shadow-sm transition-all duration-300 hover:scale-110 hover:shadow-md ring-2 ring-offset-2 ring-transparent hover:ring-gray-300"
                         style={{ backgroundColor: color.hex }}
                       />
-                      <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0 bg-primary text-white text-[10px] py-1 px-2.5 rounded-md whitespace-nowrap z-10 pointer-events-none font-medium">
+                      <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0 bg-accent text-white text-[10px] py-1 px-2.5 rounded-md whitespace-nowrap z-10 pointer-events-none font-medium">
                         {color.name}
-                        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
+                        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-accent rotate-45" />
                       </div>
                     </div>
                   ))}
@@ -489,7 +489,7 @@ export default function ProductDetailPage() {
             <div className="flex flex-col gap-3 mb-8">
               <button
                 onClick={() => setIsEnquireOpen(true)}
-                className="w-full py-4 px-8 bg-primary text-white text-sm font-bold uppercase tracking-[0.15em] rounded-xl hover:bg-gray-900 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 active:scale-[0.98]"
+                className="w-full py-4 px-8 bg-accent text-white text-sm font-bold uppercase tracking-[0.15em] rounded-xl hover:bg-[#E51C2A] transition-all duration-300 hover:shadow-xl hover:shadow-accent/20 active:scale-[0.98]"
               >
                 Enquire About This Item
               </button>
@@ -499,7 +499,7 @@ export default function ProductDetailPage() {
                   onClick={handleWishlistToggle}
                   className={`flex-1 py-3.5 px-6 rounded-xl text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] ${isWishlisted
                     ? 'bg-red-50 text-red-500 border border-red-200 hover:bg-red-100'
-                    : 'bg-[#f5f3f0] text-gray-600 hover:bg-gray-200 hover:text-primary border border-transparent'
+                    : 'bg-accent text-white hover:bg-[#E51C2A] border border-transparent'
                     }`}
                 >
                   <Heart size={18} className={isWishlisted ? "fill-current" : ""} />
@@ -508,7 +508,7 @@ export default function ProductDetailPage() {
 
                 <button
                   onClick={handleShare}
-                  className="py-3.5 px-5 bg-[#f5f3f0] text-gray-600 rounded-xl hover:bg-gray-200 hover:text-primary transition-all duration-300 flex items-center gap-2 text-sm font-semibold active:scale-[0.98] border border-transparent"
+                  className="py-3.5 px-5 bg-accent text-white rounded-xl hover:bg-[#E51C2A] transition-all duration-300 flex items-center gap-2 text-sm font-semibold active:scale-[0.98] border border-transparent"
                 >
                   {linkCopied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
                   {linkCopied ? 'Copied!' : 'Share'}
@@ -608,14 +608,14 @@ export default function ProductDetailPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`relative flex-shrink-0 py-4 px-5 md:px-8 text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${activeTab === tab.id
-                  ? 'text-primary'
-                  : 'text-gray-400 hover:text-gray-600'
+                  ? 'text-accent'
+                  : 'text-gray-400 hover:text-[#E51C2A]'
                   }`}
               >
                 {tab.label}
                 {/* Active indicator */}
                 <span
-                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-primary transition-all duration-300 ${activeTab === tab.id ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
+                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-accent transition-all duration-300 ${activeTab === tab.id ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
                     }`}
                 />
               </button>
@@ -699,14 +699,24 @@ export default function ProductDetailPage() {
                   {p.category && (
                     <span className="text-[11px] text-gray-400 mb-1 tracking-wide">{p.category.name}</span>
                   )}
-                  <span className="font-bold text-primary text-sm md:text-base">
-                    {p.basePrice
-                      ? `৳ ${(p.discountPercentage > 0
-                        ? Math.round(p.basePrice * (1 - p.discountPercentage / 100))
-                        : p.basePrice
-                      ).toLocaleString()}`
-                      : p.priceDisplay || 'Contact for Price'}
-                  </span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="font-bold text-primary text-sm md:text-base">
+                      {p.basePrice
+                        ? `৳ ${(p.discountPercentage > 0
+                          ? Math.round(p.basePrice * (1 - p.discountPercentage / 100))
+                          : p.basePrice
+                        ).toLocaleString()}`
+                        : p.priceDisplay || 'Contact for Price'}
+                    </span>
+                    {p.basePrice && p.discountPercentage > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] md:text-xs text-red-700 line-through font-semibold">
+                          ৳ {p.basePrice.toLocaleString()}
+                        </span>
+                        <span className="text-[9px] bg-[#E32227] text-white font-bold tracking-wider px-1 py-0.5 rounded-sm uppercase">-{p.discountPercentage}%</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -824,7 +834,7 @@ export default function ProductDetailPage() {
                   <button
                     type="submit"
                     disabled={enquiryStatus === 'submitting'}
-                    className="w-full py-3.5 bg-primary text-white text-sm font-bold uppercase tracking-[0.15em] rounded-xl hover:bg-gray-900 transition-all duration-300 disabled:opacity-60 flex items-center justify-center"
+                    className="w-full py-3.5 bg-accent text-white text-sm font-bold uppercase tracking-[0.15em] rounded-xl hover:bg-[#E51C2A] transition-all duration-300 disabled:opacity-60 flex items-center justify-center"
                   >
                     {enquiryStatus === 'submitting' ? (
                       <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

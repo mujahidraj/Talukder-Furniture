@@ -7,6 +7,7 @@ import { ChevronRight, ChevronLeft, Truck, RotateCcw, Headphones, Award, ArrowRi
 import type { Swiper as SwiperType } from 'swiper';
 import SEO from '../../components/seo/SEO';
 import api from '../../lib/api';
+import { OfficeIcon, LivingIcon, DiningIcon, BedIcon, KidsIcon, IndustrialIcon, HospitalIcon } from '../../components/ui/FurnitureIcons';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -98,13 +99,13 @@ const heroSlides = [
 ];
 
 const categoryPills = [
-  { name: 'Office Furniture', slug: 'office', image: IMG.catOffice },
-  { name: 'Living Furniture', slug: 'living-room', image: IMG.catLiving },
-  { name: 'Dining Room', slug: 'dining-room', image: IMG.catDining },
-  { name: 'Bed Room', slug: 'bedroom', image: IMG.catBed },
-  { name: 'Kids Room', slug: 'study-room', image: IMG.catKids },
-  { name: 'Industrial Furniture', slug: 'industrial', image: IMG.catIndustrial },
-  { name: 'Hospital Furniture', slug: 'hospital', image: IMG.catHospital },
+  { name: 'Office Furniture', slug: 'office', image: IMG.catOffice, Icon: OfficeIcon },
+  { name: 'Living Furniture', slug: 'living-room', image: IMG.catLiving, Icon: LivingIcon },
+  { name: 'Dining Room', slug: 'dining-room', image: IMG.catDining, Icon: DiningIcon },
+  { name: 'Bed Room', slug: 'bedroom', image: IMG.catBed, Icon: BedIcon },
+  { name: 'Kids Room', slug: 'study-room', image: IMG.catKids, Icon: KidsIcon },
+  { name: 'Industrial Furniture', slug: 'industrial', image: IMG.catIndustrial, Icon: IndustrialIcon },
+  { name: 'Hospital Furniture', slug: 'hospital', image: IMG.catHospital, Icon: HospitalIcon },
 ];
 
 const products = [
@@ -353,23 +354,18 @@ export default function HomePage() {
                 className="group relative w-full aspect-[4/5] rounded-[20px] overflow-hidden bg-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 block"
                 style={{ textDecoration: 'none' }}
               >
-                {/* Image */}
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
-                />
-
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                {/* Icon Background */}
+                <div className="w-full h-full flex items-center justify-center bg-[#111A42] group-hover:bg-[#E51C2A] transition-colors duration-500">
+                  <cat.Icon strokeWidth={1.5} className="w-20 h-20 text-white transition-all duration-500 transform group-hover:scale-110 mb-8" />
+                </div>
 
                 {/* Text Content */}
-                <div className="absolute inset-0 p-4 xl:p-5 flex flex-col justify-end">
-                  <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                    <h3 className="text-lg xl:text-xl font-serif text-white tracking-wide mb-1 leading-tight">
+                <div className="absolute inset-0 p-4 xl:p-5 flex flex-col justify-end items-center text-center">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    <h3 className="text-lg xl:text-xl font-serif text-white tracking-wide mb-1 leading-tight transition-colors duration-500">
                       {cat.name}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-white/90 text-[11px] xl:text-xs tracking-wider uppercase font-semibold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-75">
+                    <div className="flex items-center justify-center gap-1.5 text-white/90 text-[11px] xl:text-xs tracking-wider uppercase font-semibold opacity-0 group-hover:opacity-100 transition-all duration-500 delay-75">
                       <span>Explore</span>
                       <ArrowRight size={14} />
                     </div>
@@ -428,7 +424,7 @@ export default function HomePage() {
 
                   {/* Hover Overlay 'View Details' Button */}
                   <div className="absolute inset-x-0 bottom-0 p-5 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-6 group-hover:translate-y-0 z-20 flex justify-center">
-                    <span className="bg-white/95 backdrop-blur-md text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300 text-[13px] font-semibold tracking-widest uppercase px-8 py-3.5 rounded-full shadow-xl w-full text-center">
+                    <span className="bg-accent backdrop-blur-md text-white hover:bg-[#E51C2A] transition-colors duration-300 text-[13px] font-semibold tracking-widest uppercase px-8 py-3.5 rounded-full shadow-xl w-full text-center">
                       View Details
                     </span>
                   </div>
@@ -449,9 +445,12 @@ export default function HomePage() {
                         : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
                     </span>
                     {product.basePrice && product.discountPercentage > 0 && (
-                      <span className="text-[13px] md:text-[14px] text-gray-400 line-through font-medium">
-                        ৳ {product.basePrice.toLocaleString()}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13px] md:text-[14px] text-red-700 line-through font-semibold">
+                          ৳ {product.basePrice.toLocaleString()}
+                        </span>
+                        <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -566,7 +565,7 @@ export default function HomePage() {
 
                       {/* Hover overlay with button */}
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
-                        <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white/95 backdrop-blur-sm text-[#1a1a1a] hover:bg-black hover:text-white text-[12px] font-semibold tracking-wider uppercase px-6 py-2.5 rounded-full shadow-lg">
+                        <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-accent backdrop-blur-sm text-white hover:bg-[#E51C2A] text-[12px] font-semibold tracking-wider uppercase px-6 py-2.5 rounded-full shadow-lg">
                           View Details
                         </span>
                       </div>
@@ -591,9 +590,12 @@ export default function HomePage() {
                             : (product.priceDisplay || `৳ ${product.basePrice || product.price}`)}
                         </p>
                         {product.basePrice && product.discountPercentage > 0 && (
-                          <span className="text-[13px] md:text-[14px] text-gray-400 line-through font-medium">
-                            ৳ {product.basePrice.toLocaleString()}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[13px] text-red-700 line-through font-semibold">
+                              ৳ {product.basePrice.toLocaleString()}
+                            </span>
+                            <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -639,15 +641,9 @@ export default function HomePage() {
                 to={`/shop?category=${cat.slug}`}
                 className="group flex flex-col items-center w-[130px] sm:w-[150px] lg:w-[180px]"
               >
-                <div className="w-full aspect-square rounded-full bg-white mb-5 p-2 shadow-sm border border-gray-100 group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)] group-hover:border-transparent transition-all duration-500 transform group-hover:-translate-y-1">
-                  <div className="w-full h-full rounded-full overflow-hidden relative bg-gray-50">
-                    <img
-                      src={cat.image}
-                      alt={cat.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
+                <div className="w-full aspect-square rounded-full bg-white mb-5 shadow-sm border border-gray-100 group-hover:shadow-md group-hover:border-[#E51C2A] transition-all duration-300 transform group-hover:-translate-y-1 flex items-center justify-center p-2">
+                  <div className="w-full h-full rounded-full bg-[#263B90] group-hover:bg-[#E51C2A] transition-colors duration-300 flex items-center justify-center">
+                    <cat.Icon className="w-[45%] h-[45%] text-white transition-colors duration-300" />
                   </div>
                 </div>
                 <h4 className="text-[#1a1a1a] font-semibold text-[15px] lg:text-[16px] text-center group-hover:text-[#E32227] transition-colors duration-300">

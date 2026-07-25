@@ -57,11 +57,11 @@ body {
   }
 
   .btn-primary {
-    @apply bg-black text-white hover:bg-gray-800;
+    @apply bg-accent text-white hover:bg-[#E51C2A];
   }
 
   .btn-accent {
-    @apply bg-accent text-white hover:bg-accent-dark;
+    @apply bg-accent text-white hover:bg-[#E51C2A];
   }
 
   .btn-outline {

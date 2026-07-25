@@ -233,7 +233,7 @@ export default function ShopPage() {
             <div className="flex xl:hidden w-full items-center justify-between border-b border-gray-100 pb-3 mb-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center justify-center gap-2 text-primary font-medium px-4 min-h-[44px]"
+                className="flex items-center justify-center gap-2 bg-accent text-white hover:bg-[#E51C2A] font-medium px-4 min-h-[44px] rounded transition-colors"
               >
                 <Filter size={18} /> Filter
               </button>
@@ -334,7 +334,7 @@ export default function ShopPage() {
                       searchParams.delete('q');
                       setSearchParams(searchParams);
                     }}
-                    className="text-sm font-medium text-gray-500 hover:text-red-600 underline py-2.5 sm:py-2 px-2 text-center sm:text-left transition-colors whitespace-nowrap"
+                    className="text-sm font-medium text-gray-500 hover:text-[#E51C2A] underline py-2.5 sm:py-2 px-2 text-center sm:text-left transition-colors whitespace-nowrap"
                   >
                     Reset Filters
                   </button>
@@ -351,10 +351,10 @@ export default function ShopPage() {
               <div className="flex items-center gap-4">
                 <div className="hidden md:flex items-center gap-2 border-r pr-4">
                   <span className="text-sm text-gray-500">View:</span>
-                  <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded ${viewMode === 'grid' ? 'bg-gray-100 text-primary' : 'text-gray-400 hover:text-primary'}`}>
+                  <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-accent text-white' : 'text-gray-400 hover:text-[#E51C2A]'}`}>
                     <LayoutGrid size={20} />
                   </button>
-                  <button onClick={() => setViewMode('list')} className={`p-1.5 rounded ${viewMode === 'list' ? 'bg-gray-100 text-primary' : 'text-gray-400 hover:text-primary'}`}>
+                  <button onClick={() => setViewMode('list')} className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-accent text-white' : 'text-gray-400 hover:text-[#E51C2A]'}`}>
                     <List size={20} />
                   </button>
                 </div>
@@ -463,7 +463,7 @@ export default function ShopPage() {
                         (product.imageUrls && product.imageUrls.length > 1)
                       ) && (
                           <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[#1a1a1a] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg">
+                            <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-accent text-white hover:bg-[#E51C2A] text-[13px] font-semibold tracking-wider uppercase px-6 py-3 shadow-lg rounded-full">
                               View Details
                             </span>
                           </div>
@@ -494,7 +494,7 @@ export default function ShopPage() {
                               </span>
                               {product.discountPercentage > 0 && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[12px] sm:text-[13px] text-gray-400 line-through">
+                                  <span className="text-[12px] sm:text-[13px] text-red-700 line-through font-semibold">
                                     ৳ {product.basePrice.toLocaleString()}
                                   </span>
                                   <span className="text-[10px] bg-[#E32227] text-white font-bold tracking-wider px-1.5 py-0.5 uppercase">-{product.discountPercentage}%</span>
@@ -589,8 +589,8 @@ export default function ShopPage() {
                           setSearchParams(newParams);
                         }}
                         className={`w-10 h-10 text-[14px] font-medium flex items-center justify-center transition-all duration-300 ${pageParam === pageNum
-                          ? 'bg-[#1a1a1a] text-white rounded-full'
-                          : 'text-gray-500 hover:text-[#1a1a1a] hover:bg-gray-100 rounded-full'
+                          ? 'bg-accent text-white rounded-full shadow-md'
+                          : 'text-gray-500 hover:text-white hover:bg-[#E51C2A] rounded-full'
                           }`}
                       >
                         {pageNum}

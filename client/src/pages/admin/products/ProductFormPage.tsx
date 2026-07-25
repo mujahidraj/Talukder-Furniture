@@ -207,7 +207,7 @@ export default function ProductFormPage() {
             </h1>
           </div>
         </div>
-        <button type="submit" disabled={saving} className="btn bg-black text-white hover:bg-gray-900 transition-colors flex items-center gap-2 px-4 py-2 rounded-lg">
+        <button type="submit" disabled={saving} className="btn bg-accent text-white hover:bg-[#E51C2A] transition-colors flex items-center gap-2 px-4 py-2 rounded-lg">
           {saving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save size={18} />}
           {saving ? 'Saving...' : 'Save Product'}
         </button>

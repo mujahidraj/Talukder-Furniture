@@ -231,7 +231,7 @@ export default function BulkImportPage() {
                 className="flex justify-end overflow-hidden"
               >
                 <button 
-                  className="flex items-center gap-2 bg-black text-white hover:bg-gray-800 hover:shadow-xl hover:-translate-y-0.5 px-8 py-3.5 rounded-xl font-medium transition-all" 
+                  className="flex items-center gap-2 bg-accent text-white hover:bg-[#E51C2A] hover:shadow-xl hover:-translate-y-0.5 px-8 py-3.5 rounded-xl font-medium transition-all" 
                   onClick={handleUpload}
                 >
                   <Server size={18} />

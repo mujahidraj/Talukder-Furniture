@@ -22,11 +22,6 @@ export const getDashboardStats = async () => {
     setCategoryCount,
     activeProducts,
     inactiveProducts,
-    missingPrice,
-    missingOverview,
-    missingSku,
-    missingMaterials,
-    missingImages
   ] = await Promise.all([
     prisma.product.count(),
     prisma.contactLead.count(),
@@ -64,12 +59,6 @@ export const getDashboardStats = async () => {
     // Product status counts
     prisma.product.count({ where: { isActive: true } }),
     prisma.product.count({ where: { isActive: false } }),
-    // Products with incomplete data
-    prisma.product.count({ where: { basePrice: null } }),
-    prisma.product.count({ where: { OR: [{ overview: null }, { overview: '' }] } }),
-    prisma.product.count({ where: { sku: null } }),
-    prisma.product.count({ where: { OR: [{ materials: null }, { materials: '' }] } }),
-    prisma.product.count({ where: { images: { none: {} } } })
   ]);
 
   const oldTotalProducts = totalProducts - newProductsLast30;
@@ -89,6 +78,12 @@ export const getDashboardStats = async () => {
   const viewsChange = parseFloat(((productsChange + leadsChange) / 2).toFixed(1)) || 0;
   const inquiryRateChange = leadsChange > 0 ? parseFloat((leadsChange * 0.1).toFixed(1)) : 0;
 
+  // Helper to cleanly check HTML fields
+  const cleanHtml = (html: string | null | undefined) => {
+    if (!html) return false;
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim().length > 0;
+  };
+
   // Count products with at least one missing field
   const allProducts = await prisma.product.findMany({
     select: {
@@ -100,13 +95,20 @@ export const getDashboardStats = async () => {
       _count: { select: { images: true } }
     }
   });
-  const incompleteProducts = allProducts.filter(p =>
-    p.basePrice === null ||
-    !p.overview ||
-    p.sku === null ||
-    !p.materials ||
-    p._count.images === 0
-  ).length;
+
+  let missingPrice = 0, missingOverview = 0, missingSku = 0, missingMaterials = 0, missingImages = 0;
+  let incompleteProducts = 0;
+
+  allProducts.forEach(p => {
+    let isIncomplete = false;
+    if (p.basePrice === null || p.basePrice === undefined || p.basePrice === 0) { missingPrice++; isIncomplete = true; }
+    if (!cleanHtml(p.overview)) { missingOverview++; isIncomplete = true; }
+    if (!p.sku || p.sku.trim() === '') { missingSku++; isIncomplete = true; }
+    if (!cleanHtml(p.materials)) { missingMaterials++; isIncomplete = true; }
+    if (p._count?.images === 0) { missingImages++; isIncomplete = true; }
+    
+    if (isIncomplete) incompleteProducts++;
+  });
 
   return {
     totalProducts,
@@ -182,14 +184,20 @@ export const getIncompleteProducts = async () => {
     orderBy: { updatedAt: 'desc' }
   });
 
+  // Helper to cleanly check HTML fields
+  const cleanHtml = (html: string | null | undefined) => {
+    if (!html) return false;
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim().length > 0;
+  };
+
   const incompleteProducts = products
     .map(p => {
       const missingFields: string[] = [];
-      if (p.basePrice === null) missingFields.push('Price');
-      if (!p.overview) missingFields.push('Overview');
-      if (p.sku === null) missingFields.push('SKU');
-      if (!p.materials) missingFields.push('Materials');
-      if (p._count.images === 0) missingFields.push('Images');
+      if (p.basePrice === null || p.basePrice === undefined || p.basePrice === 0) missingFields.push('Price');
+      if (!cleanHtml(p.overview)) missingFields.push('Overview');
+      if (!p.sku || p.sku.trim() === '') missingFields.push('SKU');
+      if (!cleanHtml(p.materials)) missingFields.push('Materials');
+      if (p._count?.images === 0) missingFields.push('Images');
       
       if (missingFields.length === 0) return null;
       

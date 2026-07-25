@@ -210,7 +210,7 @@ export default function LeadsPage() {
               </div>
               <div className="mt-6 flex justify-end gap-3">
                 <button onClick={() => setViewLead(null)} className="btn btn-outline border-gray-300 text-gray-700">Close</button>
-                <button onClick={() => { setViewLead(null); handleReply(viewLead); }} className="btn bg-black text-white hover:bg-gray-900 border-none flex items-center gap-2">
+                <button onClick={() => { setViewLead(null); handleReply(viewLead); }} className="btn bg-accent text-white hover:bg-[#E51C2A] border-none flex items-center gap-2">
                   <Mail size={16} /> Reply via Email
                 </button>
               </div>

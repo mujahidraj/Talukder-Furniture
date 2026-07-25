@@ -126,7 +126,7 @@ export default function BulkImageImportPage() {
               <button 
                 onClick={handleImport}
                 disabled={!folderPath.trim() || status === 'processing'}
-                className="flex items-center gap-2 bg-black text-white hover:bg-gray-800 disabled:bg-gray-400 hover:shadow-lg px-8 py-3.5 rounded-xl font-medium transition-all"
+                className="flex items-center gap-2 bg-accent text-white hover:bg-[#E51C2A] disabled:bg-gray-400 hover:shadow-lg px-8 py-3.5 rounded-xl font-medium transition-all"
               >
                 {status === 'processing' ? (
                   <>

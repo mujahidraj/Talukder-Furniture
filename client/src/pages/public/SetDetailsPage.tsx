@@ -238,7 +238,7 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                               </span>
                             </div>
                             {product.discountPercentage > 0 && (
-                              <span className="text-gray-500 line-through text-sm mt-1 font-medium">
+                              <span className="text-red-700 line-through text-sm mt-1 font-semibold">
                                 ৳ {currentPrice.toLocaleString()} (-{product.discountPercentage}%)
                               </span>
                             )}
@@ -262,7 +262,7 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                         <button
                           key={idx}
                           onClick={() => setActiveSizeIdx(idx)}
-                          className={`px-3 py-1.5 border rounded-lg text-sm font-medium transition-colors ${activeSizeIdx === idx ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-700 hover:border-black'}`}
+                          className={`px-3 py-1.5 border rounded-lg text-sm font-medium transition-colors ${activeSizeIdx === idx ? 'border-accent bg-accent text-white' : 'border-gray-200 text-gray-700 hover:border-[#E51C2A] hover:text-[#E51C2A]'}`}
                         >
                           {size.label}
                         </button>
@@ -282,7 +282,7 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                             className="w-8 h-8 rounded-full border border-gray-200 hover:ring-2 hover:ring-offset-2 hover:ring-accent cursor-pointer shadow-sm transition-all"
                             style={{ backgroundColor: color.hex }}
                           />
-                          <div className="absolute -bottom-8 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none">
+                          <div className="absolute -bottom-8 opacity-0 group-hover:opacity-100 transition-opacity bg-accent text-white text-xs py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none">
                             {color.name}
                           </div>
                         </div>
@@ -296,21 +296,21 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                 <div className="flex flex-col gap-3 mt-auto">
                   <button
                     onClick={handleWishlistToggle}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 border-2 border-black text-black hover:bg-black hover:text-white font-medium rounded transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-accent text-white hover:bg-[#E51C2A] font-medium rounded transition-colors"
                   >
                     <Heart size={18} className={isWishlisted ? "fill-current text-[#E32227] border-none" : ""} />
                     {isWishlisted ? 'Saved to Wishlist' : 'Save for Later'}
                   </button>
                   <button
                     onClick={() => setIsEnquireOpen(true)}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-accent text-white font-medium rounded hover:bg-red-700 transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-accent text-white font-medium rounded hover:bg-[#E51C2A] transition-colors"
                   >
                     <MessageSquare size={18} />
                     Enquire About This Item
                   </button>
                   <Link
                     to={`/products/${product.slug}`}
-                    className="w-full flex items-center justify-center gap-2 py-3 text-sm text-gray-500 hover:text-primary transition-colors mt-2"
+                    className="w-full flex items-center justify-center gap-2 py-3 text-sm text-gray-500 hover:text-[#E51C2A] transition-colors mt-2"
                   >
                     View Independent Page <ExternalLink size={14} />
                   </Link>
@@ -430,7 +430,7 @@ const ProductDrawer = ({ product, isOpen, onClose }: { product: any, isOpen: boo
                     <label className="block text-sm font-medium text-gray-700 mb-1">Your Message *</label>
                     <textarea required rows={4} value={enquiryForm.message} onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })} placeholder="I would like to know more about..." className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none resize-none"></textarea>
                   </div>
-                  <button type="submit" disabled={enquiryStatus === 'submitting'} className="w-full btn py-4 flex justify-center items-center bg-black text-white hover:bg-gray-900 border-none rounded mt-4">
+                  <button type="submit" disabled={enquiryStatus === 'submitting'} className="w-full btn py-4 flex justify-center items-center bg-accent text-white hover:bg-[#E51C2A] border-none rounded mt-4">
                     {enquiryStatus === 'submitting' ? <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span> : 'Send Enquiry'}
                   </button>
                 </form>
@@ -523,12 +523,12 @@ const SetDescriptionFormatter = ({ content }: { content: string }) => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`relative py-4 px-6 text-sm font-bold tracking-wide transition-colors whitespace-nowrap ${
-                activeTab === tab.id ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
+                activeTab === tab.id ? 'text-accent' : 'text-gray-400 hover:text-[#E51C2A]'
               }`}
             >
               {tab.label}
               <span
-                className={`absolute bottom-0 left-0 right-0 h-[2px] bg-primary transition-all duration-300 ${
+                className={`absolute bottom-0 left-0 right-0 h-[2px] bg-accent transition-all duration-300 ${
                   activeTab === tab.id ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
                 }`}
               />
@@ -702,7 +702,7 @@ export default function SetDetailsPage() {
               <div className="flex items-baseline gap-4 mb-6">
                 <span className="text-3xl font-bold text-gray-900">৳ {discountedPrice.toLocaleString()}</span>
                 {setItem.discountPercentage > 0 && (
-                  <span className="text-lg text-gray-500 line-through font-medium">৳ {setItem.basePrice.toLocaleString()}</span>
+                  <span className="text-lg text-red-700 line-through font-semibold">৳ {setItem.basePrice.toLocaleString()}</span>
                 )}
               </div>
 
@@ -730,10 +730,10 @@ export default function SetDetailsPage() {
                                 </span>
                                 {product.discountPercentage > 0 && (
                                   <>
-                                    <span className="text-xs text-gray-500 line-through">
+                                    <span className="text-xs text-red-700 line-through font-semibold">
                                       ৳{product.basePrice.toLocaleString()}
                                     </span>
-                                    <span className="text-[10px] font-bold text-white bg-accent px-1.5 py-0.5 rounded">
+                                    <span className="text-[10px] font-bold text-white bg-[#E32227] px-1.5 py-0.5 rounded uppercase tracking-wider">
                                       -{product.discountPercentage}%
                                     </span>
                                   </>
@@ -746,7 +746,7 @@ export default function SetDetailsPage() {
                             )}
                           </div>
                         </div>
-                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#E51C2A] group-hover:text-white transition-colors flex-shrink-0">
                           <ChevronRight size={16} />
                         </div>
                       </div>
@@ -758,7 +758,7 @@ export default function SetDetailsPage() {
               <div className="pt-6 border-t border-gray-200">
                 <button
                   onClick={() => setIsSetEnquireOpen(true)}
-                  className="w-full btn bg-black text-white hover:bg-gray-900 py-4 rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-xl shadow-black/10 hover:shadow-black/20 flex items-center justify-center gap-3"
+                  className="w-full btn bg-accent text-white hover:bg-[#E51C2A] py-4 rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-xl shadow-accent/20 flex items-center justify-center gap-3"
                 >
                   <MessageSquare size={18} />
                   Enquire About Collection
@@ -808,10 +808,20 @@ export default function SetDetailsPage() {
                     <h4 className="text-lg font-serif font-bold text-gray-900 group-hover:text-primary transition-colors mb-1.5 line-clamp-2">{set.name}</h4>
                     {set.category && <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-4">{set.category.name}</p>}
                     <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                      <span className="font-bold text-primary text-lg">
-                        {set.basePrice ? `৳${(set.discountPercentage > 0 ? set.basePrice * (1 - set.discountPercentage/100) : set.basePrice).toLocaleString()}` : 'View Details'}
-                      </span>
-                      <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                      <div className="flex flex-col items-start gap-1">
+                        <span className="font-bold text-primary text-lg">
+                          {set.basePrice ? `৳${(set.discountPercentage > 0 ? Math.round(set.basePrice * (1 - set.discountPercentage/100)) : set.basePrice).toLocaleString()}` : 'View Details'}
+                        </span>
+                        {set.basePrice && set.discountPercentage > 0 && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[12px] text-red-700 line-through font-semibold">
+                              ৳{set.basePrice.toLocaleString()}
+                            </span>
+                            <span className="text-[9px] bg-[#E32227] text-white font-bold tracking-wider px-1 py-0.5 rounded-sm uppercase">-{set.discountPercentage}%</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#E51C2A] group-hover:text-white transition-colors">
                         <ChevronRight size={16} />
                       </div>
                     </div>
@@ -883,7 +893,7 @@ export default function SetDetailsPage() {
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">Your Message *</label>
                     <textarea required rows={4} value={enquiryForm.message} onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })} placeholder="I would like to know more about customizing this collection..." className="w-full px-5 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none resize-none transition-all bg-gray-50 focus:bg-white"></textarea>
                   </div>
-                  <button type="submit" disabled={enquiryStatus === 'submitting'} className="w-full btn py-4 mt-2 flex justify-center items-center bg-black text-white hover:bg-gray-900 border-none rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-lg hover:shadow-xl">
+                  <button type="submit" disabled={enquiryStatus === 'submitting'} className="w-full btn py-4 mt-2 flex justify-center items-center bg-accent text-white hover:bg-[#E51C2A] border-none rounded-xl text-sm font-bold tracking-widest uppercase transition-all shadow-lg">
                     {enquiryStatus === 'submitting' ? <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span> : 'Send Enquiry'}
                   </button>
                 </form>

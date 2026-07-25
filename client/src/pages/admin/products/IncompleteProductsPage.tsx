@@ -82,7 +82,7 @@ export default function IncompleteProductsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64">
         <p className="text-red-500 mb-4">{error}</p>
-        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90 transition-colors">
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-accent text-white rounded hover:bg-[#E51C2A] transition-colors">
           Retry
         </button>
       </div>

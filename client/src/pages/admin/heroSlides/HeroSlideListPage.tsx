@@ -51,7 +51,7 @@ export default function HeroSlideListPage() {
           <p className="text-sm text-gray-500">Manage the homepage banner slides.</p>
         </div>
         <div className="flex gap-3">
-          <Link to="/admin/hero-slides/new" className="btn bg-black text-white hover:bg-gray-900 text-sm flex items-center gap-2 transition-colors">
+          <Link to="/admin/hero-slides/new" className="btn bg-accent text-white hover:bg-[#E51C2A] text-sm flex items-center gap-2 transition-colors">
             <Plus size={16} /> Add Slide
           </Link>
         </div>
