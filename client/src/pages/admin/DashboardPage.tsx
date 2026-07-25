@@ -13,7 +13,15 @@ import {
   Briefcase,
   Star,
   UploadCloud,
-  Layers
+  Layers,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  Image,
+  FileText,
+  DollarSign,
+  Hash,
+  Palette
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../lib/api';
@@ -73,6 +81,9 @@ export default function DashboardPage() {
 
   const statCards = [
     { title: 'Total Products', value: stats.totalProducts, icon: Package, change: stats.productsChange, isPositive: true },
+    { title: 'Active Products', value: stats.activeProducts, icon: CheckCircle, change: 0, isPositive: true, accent: 'text-emerald-500', accentBg: 'bg-emerald-50' },
+    { title: 'Inactive Products', value: stats.inactiveProducts, icon: XCircle, change: 0, isPositive: false, accent: 'text-red-500', accentBg: 'bg-red-50' },
+    { title: 'Incomplete Data', value: stats.incompleteProducts, icon: AlertTriangle, change: 0, isPositive: false, accent: 'text-amber-500', accentBg: 'bg-amber-50' },
     { title: 'New Inquiries', value: stats.totalLeads, icon: MessageSquare, change: stats.leadsChange, isPositive: true },
     { title: 'Product Views', value: stats.totalViews.toLocaleString(), icon: Eye, change: stats.viewsChange, isPositive: true },
     { title: 'Inquiry Rate', value: stats.inquiryRate, icon: TrendingUp, change: stats.inquiryRateChange, isPositive: true },
@@ -81,7 +92,6 @@ export default function DashboardPage() {
     { title: 'Active Jobs', value: stats.activeJobs, icon: Briefcase, change: 0, isPositive: true },
     { title: 'Featured Products', value: stats.featuredProducts, icon: Star, change: 0, isPositive: true },
     { title: 'Total Sets', value: stats.totalSets || 0, icon: Layers, change: 0, isPositive: true },
-    { title: 'Set Categories', value: stats.setCategoryCount || 0, icon: Grid, change: 0, isPositive: true },
   ];
 
   return (
@@ -92,16 +102,20 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
+          const iconColor = (stat as any).accent || 'text-accent';
+          const iconBg = (stat as any).accentBg || 'bg-gray-50';
           return (
             <div key={idx} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-lg bg-gray-50 text-accent">
+                <div className={`p-3 rounded-lg ${iconBg} ${iconColor}`}>
                   <Icon size={24} />
                 </div>
-                <div className={`flex items-center gap-1 text-sm font-medium ${stat.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                  {stat.isPositive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                  <span>{Math.abs(stat.change)}%</span>
-                </div>
+                {stat.change !== 0 && (
+                  <div className={`flex items-center gap-1 text-sm font-medium ${stat.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                    {stat.isPositive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+                    <span>{Math.abs(stat.change)}%</span>
+                  </div>
+                )}
               </div>
               <h3 className="text-gray-500 text-sm font-medium mb-1">{stat.title}</h3>
               <p className="text-3xl font-bold text-primary">{stat.value}</p>
@@ -160,6 +174,71 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Product Data Health Widget */}
+      {stats.missingDataBreakdown && (
+        <div className="mt-8 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-amber-50 text-amber-500">
+                <AlertTriangle size={20} />
+              </div>
+              <div>
+                <h2 className="font-bold text-primary text-lg">Product Data Health</h2>
+                <p className="text-sm text-gray-500">Products missing important information</p>
+              </div>
+            </div>
+            <Link to="/admin/products" className="text-sm text-accent hover:text-primary font-medium transition-colors">Fix Products →</Link>
+          </div>
+          <div className="p-6">
+            {/* Overall completeness bar */}
+            {(() => {
+              const complete = stats.totalProducts > 0
+                ? Math.round(((stats.totalProducts - stats.incompleteProducts) / stats.totalProducts) * 100)
+                : 100;
+              return (
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">Overall Completeness</span>
+                    <span className={`text-sm font-bold ${complete >= 80 ? 'text-emerald-600' : complete >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+                      {complete}%
+                    </span>
+                  </div>
+                  <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${complete >= 80 ? 'bg-emerald-500' : complete >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
+                      style={{ width: `${complete}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {stats.totalProducts - stats.incompleteProducts} of {stats.totalProducts} products have complete data
+                  </p>
+                </div>
+              );
+            })()}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {[
+                { label: 'Missing Price', count: stats.missingDataBreakdown.missingPrice, icon: DollarSign, color: 'text-red-500', bg: 'bg-red-50' },
+                { label: 'No Images', count: stats.missingDataBreakdown.missingImages, icon: Image, color: 'text-orange-500', bg: 'bg-orange-50' },
+                { label: 'No Overview', count: stats.missingDataBreakdown.missingOverview, icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
+                { label: 'No Materials', count: stats.missingDataBreakdown.missingMaterials, icon: Palette, color: 'text-purple-500', bg: 'bg-purple-50' },
+                { label: 'Missing SKU', count: stats.missingDataBreakdown.missingSku, icon: Hash, color: 'text-gray-500', bg: 'bg-gray-50' },
+              ].map((item, idx) => {
+                const ItemIcon = item.icon;
+                return (
+                  <div key={idx} className={`p-4 rounded-xl border ${item.count > 0 ? 'border-gray-200' : 'border-gray-100'} flex flex-col items-center text-center transition-all hover:shadow-md`}>
+                    <div className={`p-2.5 rounded-full ${item.bg} ${item.color} mb-3`}>
+                      <ItemIcon size={18} />
+                    </div>
+                    <span className={`text-2xl font-bold ${item.count > 0 ? 'text-primary' : 'text-gray-300'}`}>{item.count}</span>
+                    <span className="text-xs text-gray-500 mt-1 font-medium">{item.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Second Row of Widgets */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">

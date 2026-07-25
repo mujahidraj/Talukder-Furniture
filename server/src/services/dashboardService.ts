@@ -19,7 +19,14 @@ export const getDashboardStats = async () => {
     newProductsLast30,
     newLeadsLast30,
     totalSets,
-    setCategoryCount
+    setCategoryCount,
+    activeProducts,
+    inactiveProducts,
+    missingPrice,
+    missingOverview,
+    missingSku,
+    missingMaterials,
+    missingImages
   ] = await Promise.all([
     prisma.product.count(),
     prisma.contactLead.count(),
@@ -53,7 +60,16 @@ export const getDashboardStats = async () => {
     prisma.product.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
     prisma.contactLead.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
     prisma.set.count(),
-    prisma.category.count({ where: { sets: { some: {} } } })
+    prisma.category.count({ where: { sets: { some: {} } } }),
+    // Product status counts
+    prisma.product.count({ where: { isActive: true } }),
+    prisma.product.count({ where: { isActive: false } }),
+    // Products with incomplete data
+    prisma.product.count({ where: { basePrice: null } }),
+    prisma.product.count({ where: { OR: [{ overview: null }, { overview: '' }] } }),
+    prisma.product.count({ where: { sku: null } }),
+    prisma.product.count({ where: { OR: [{ materials: null }, { materials: '' }] } }),
+    prisma.product.count({ where: { images: { none: {} } } })
   ]);
 
   const oldTotalProducts = totalProducts - newProductsLast30;
@@ -73,6 +89,25 @@ export const getDashboardStats = async () => {
   const viewsChange = parseFloat(((productsChange + leadsChange) / 2).toFixed(1)) || 0;
   const inquiryRateChange = leadsChange > 0 ? parseFloat((leadsChange * 0.1).toFixed(1)) : 0;
 
+  // Count products with at least one missing field
+  const allProducts = await prisma.product.findMany({
+    select: {
+      id: true,
+      basePrice: true,
+      overview: true,
+      sku: true,
+      materials: true,
+      _count: { select: { images: true } }
+    }
+  });
+  const incompleteProducts = allProducts.filter(p =>
+    p.basePrice === null ||
+    !p.overview ||
+    p.sku === null ||
+    !p.materials ||
+    p._count.images === 0
+  ).length;
+
   return {
     totalProducts,
     productsChange, 
@@ -87,6 +122,16 @@ export const getDashboardStats = async () => {
     totalSets,
     setCategoryCount,
     activeJobs,
+    activeProducts,
+    inactiveProducts,
+    incompleteProducts,
+    missingDataBreakdown: {
+      missingPrice,
+      missingOverview,
+      missingSku,
+      missingMaterials,
+      missingImages
+    },
     featuredProducts,
     recentLeads: recentLeads.map(lead => ({
       id: lead.id,
