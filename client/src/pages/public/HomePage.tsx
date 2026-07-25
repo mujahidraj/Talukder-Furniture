@@ -498,11 +498,11 @@ export default function HomePage() {
             <div className="w-full lg:w-[55%] h-[600px] lg:h-auto">
               <div className="grid grid-cols-3 grid-rows-4 gap-2 lg:gap-2 w-full h-full">
                 {[
-                  { src: '/Images/Elevate-section/03.jpg', span: 'col-span-1 row-span-2' },
-                  { src: '/Images/Elevate-section/37.png', span: 'col-span-1 row-span-2' },
-                  { src: '/Images/Elevate-section/TFL-BKS-102-WD-1.jpg', span: 'col-span-1 row-span-3' },
-                  { src: '/Images/Elevate-section/TFL-CFT-102-WD-1.jpg', span: 'col-span-2 row-span-2' },
-                  { src: '/Images/Elevate-section/TFL-SOF-104-WD-1.jpg', span: 'col-span-1 row-span-1' },
+                  { src: '/Images/Elevate-section/great_1.png', span: 'col-span-1 row-span-2' },
+                  { src: '/Images/Elevate-section/great_2.png', span: 'col-span-1 row-span-2' },
+                  { src: '/Images/Elevate-section/great_3.png', span: 'col-span-1 row-span-3' },
+                  { src: '/Images/Elevate-section/great_4.png', span: 'col-span-2 row-span-2' },
+                  { src: '/Images/Elevate-section/great_5.png', span: 'col-span-1 row-span-1' },
                 ].map((img, i) => (
                   <div key={i} className={`relative group overflow-hidden rounded-xl bg-gray-50 shadow-sm ${img.span}`}>
                     <img
@@ -677,10 +677,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-3">
             {[
-              { name: 'Talukder Prestige Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/03.jpg', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
-              { name: 'Cozy Sofa Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/06.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
-              { name: 'Dining Elegance Collection', link: '/shop?category=dining-room', img: '/Images/Signature-section/15.jpg', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
-              { name: 'Comfortable Bedroom Collection', link: '/shop?category=bedroom&type=sets', img: '/Images/Signature-section/BST-113.webp', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Talukder Prestige Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/sig_prestige.png', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
+              { name: 'Cozy Sofa Collection', link: '/shop?category=living-room', img: '/Images/Signature-section/sig_sofa.png', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Dining Elegance Collection', link: '/shop?category=dining-room', img: '/Images/Signature-section/sig_dining.png', span: 'aspect-[4/3] md:aspect-square lg:aspect-[4/3]' },
+              { name: 'Comfortable Bedroom Collection', link: '/shop?category=bedroom&type=sets', img: '/Images/Signature-section/sig_bedroom.png', span: 'md:col-span-2 aspect-[16/9] lg:aspect-[21/9]' },
             ].map((col, idx) => (
               <Link key={idx} to={col.link} className={`group relative block overflow-hidden rounded-xl ${col.span}`}>
                 <img
