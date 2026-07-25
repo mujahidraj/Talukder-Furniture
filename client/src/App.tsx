@@ -31,6 +31,7 @@ const AdminProductForm = lazy(() => import('./pages/admin/products/ProductFormPa
 const AdminProductDetails = lazy(() => import('./pages/admin/products/AdminProductDetailsPage'));
 const AdminBulkImport = lazy(() => import('./pages/admin/products/BulkImportPage'));
 const AdminBulkImageImport = lazy(() => import('./pages/admin/products/BulkImageImportPage'));
+const AdminIncompleteProducts = lazy(() => import('./pages/admin/products/IncompleteProductsPage'));
 const AdminCategories = lazy(() => import('./pages/admin/categories/CategoryListPage'));
 const AdminStores = lazy(() => import('./pages/admin/stores/StoreListPage'));
 const AdminStoreForm = lazy(() => import('./pages/admin/stores/StoreFormPage'));
@@ -108,6 +109,7 @@ function App() {
           <Route path="products/:id/edit" element={<AdminProductForm />} />
           <Route path="products/bulk-import" element={<AdminBulkImport />} />
           <Route path="products/bulk-image-import" element={<AdminBulkImageImport />} />
+          <Route path="products/incomplete" element={<AdminIncompleteProducts />} />
           <Route path="products/:id" element={<AdminProductDetails />} />
           <Route path="sets" element={<AdminSets />} />
           <Route path="sets/new" element={<AdminSetForm />} />

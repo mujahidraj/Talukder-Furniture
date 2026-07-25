@@ -23,7 +23,7 @@ import {
   Hash,
   Palette
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import useAuthStore from '../../stores/useAuthStore';
 
@@ -80,18 +80,18 @@ export default function DashboardPage() {
   }
 
   const statCards = [
-    { title: 'Total Products', value: stats.totalProducts, icon: Package, change: stats.productsChange, isPositive: true },
-    { title: 'Active Products', value: stats.activeProducts, icon: CheckCircle, change: 0, isPositive: true, accent: 'text-emerald-500', accentBg: 'bg-emerald-50' },
-    { title: 'Inactive Products', value: stats.inactiveProducts, icon: XCircle, change: 0, isPositive: false, accent: 'text-red-500', accentBg: 'bg-red-50' },
-    { title: 'Incomplete Data', value: stats.incompleteProducts, icon: AlertTriangle, change: 0, isPositive: false, accent: 'text-amber-500', accentBg: 'bg-amber-50' },
-    { title: 'New Inquiries', value: stats.totalLeads, icon: MessageSquare, change: stats.leadsChange, isPositive: true },
-    { title: 'Product Views', value: stats.totalViews.toLocaleString(), icon: Eye, change: stats.viewsChange, isPositive: true },
-    { title: 'Inquiry Rate', value: stats.inquiryRate, icon: TrendingUp, change: stats.inquiryRateChange, isPositive: true },
-    { title: 'Categories', value: stats.totalCategories, icon: Grid, change: 0, isPositive: true },
-    { title: 'Physical Stores', value: stats.totalStores, icon: Store, change: 0, isPositive: true },
-    { title: 'Active Jobs', value: stats.activeJobs, icon: Briefcase, change: 0, isPositive: true },
-    { title: 'Featured Products', value: stats.featuredProducts, icon: Star, change: 0, isPositive: true },
-    { title: 'Total Sets', value: stats.totalSets || 0, icon: Layers, change: 0, isPositive: true },
+    { title: 'Total Products', value: stats.totalProducts, icon: Package, change: stats.productsChange, isPositive: true, link: '/admin/products' },
+    { title: 'Active Products', value: stats.activeProducts, icon: CheckCircle, change: 0, isPositive: true, accent: 'text-emerald-500', accentBg: 'bg-emerald-50', link: '/admin/products?status=active' },
+    { title: 'Inactive Products', value: stats.inactiveProducts, icon: XCircle, change: 0, isPositive: false, accent: 'text-red-500', accentBg: 'bg-red-50', link: '/admin/products?status=inactive' },
+    { title: 'Incomplete Data', value: stats.incompleteProducts, icon: AlertTriangle, change: 0, isPositive: false, accent: 'text-amber-500', accentBg: 'bg-amber-50', link: '/admin/products/incomplete' },
+    { title: 'New Inquiries', value: stats.totalLeads, icon: MessageSquare, change: stats.leadsChange, isPositive: true, link: '/admin/leads' },
+    { title: 'Product Views', value: stats.totalViews.toLocaleString(), icon: Eye, change: stats.viewsChange, isPositive: true, link: '/admin/products' },
+    { title: 'Inquiry Rate', value: stats.inquiryRate, icon: TrendingUp, change: stats.inquiryRateChange, isPositive: true, link: '/admin/leads' },
+    { title: 'Categories', value: stats.totalCategories, icon: Grid, change: 0, isPositive: true, link: '/admin/categories' },
+    { title: 'Physical Stores', value: stats.totalStores, icon: Store, change: 0, isPositive: true, link: '/admin/stores' },
+    { title: 'Active Jobs', value: stats.activeJobs, icon: Briefcase, change: 0, isPositive: true, link: '/admin/jobs' },
+    { title: 'Featured Products', value: stats.featuredProducts, icon: Star, change: 0, isPositive: true, link: '/admin/products?featured=true' },
+    { title: 'Total Sets', value: stats.totalSets || 0, icon: Layers, change: 0, isPositive: true, link: '/admin/sets' },
   ];
 
   return (
@@ -105,9 +105,9 @@ export default function DashboardPage() {
           const iconColor = (stat as any).accent || 'text-accent';
           const iconBg = (stat as any).accentBg || 'bg-gray-50';
           return (
-            <div key={idx} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col">
+            <Link key={idx} to={(stat as any).link || '/admin'} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col hover:shadow-md hover:border-gray-200 transition-all cursor-pointer group">
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-lg ${iconBg} ${iconColor}`}>
+                <div className={`p-3 rounded-lg ${iconBg} ${iconColor} group-hover:scale-110 transition-transform`}>
                   <Icon size={24} />
                 </div>
                 {stat.change !== 0 && (
@@ -119,7 +119,7 @@ export default function DashboardPage() {
               </div>
               <h3 className="text-gray-500 text-sm font-medium mb-1">{stat.title}</h3>
               <p className="text-3xl font-bold text-primary">{stat.value}</p>
-            </div>
+            </Link>
           );
         })}
       </div>
@@ -188,7 +188,7 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-500">Products missing important information</p>
               </div>
             </div>
-            <Link to="/admin/products" className="text-sm text-accent hover:text-primary font-medium transition-colors">Fix Products →</Link>
+            <Link to="/admin/products/incomplete" className="text-sm text-accent hover:text-primary font-medium transition-colors">Fix Products →</Link>
           </div>
           <div className="p-6">
             {/* Overall completeness bar */}

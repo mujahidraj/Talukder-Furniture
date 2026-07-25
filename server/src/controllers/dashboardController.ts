@@ -8,3 +8,12 @@ export const getStats = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getIncompleteProducts = async (req, res, next) => {
+  try {
+    const result = await dashboardService.getIncompleteProducts();
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};

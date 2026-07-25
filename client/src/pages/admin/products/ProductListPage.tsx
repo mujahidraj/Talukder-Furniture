@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, Filter, Eye, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import api from '../../../lib/api';
 import useAuthStore from '../../../stores/useAuthStore';
 
 export default function ProductListPage() {
   const { admin } = useAuthStore();
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('newest');
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterFeatured, setFilterFeatured] = useState('all');
+  const [filterStatus, setFilterStatus] = useState(() => {
+    const s = searchParams.get('status');
+    if (s === 'active') return 'active';
+    if (s === 'inactive' || s === 'draft') return 'draft';
+    return 'all';
+  });
+  const [filterFeatured, setFilterFeatured] = useState(() => {
+    return searchParams.get('featured') === 'true' ? 'true' : 'all';
+  });
   const [filterCategory, setFilterCategory] = useState('all');
   const [categories, setCategories] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);

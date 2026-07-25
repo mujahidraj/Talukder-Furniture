@@ -163,3 +163,52 @@ export const getDashboardStats = async () => {
     }))
   };
 };
+
+export const getIncompleteProducts = async () => {
+  const products = await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      sku: true,
+      basePrice: true,
+      overview: true,
+      materials: true,
+      isActive: true,
+      category: { select: { name: true } },
+      _count: { select: { images: true } },
+      updatedAt: true
+    },
+    orderBy: { updatedAt: 'desc' }
+  });
+
+  const incompleteProducts = products
+    .map(p => {
+      const missingFields: string[] = [];
+      if (p.basePrice === null) missingFields.push('Price');
+      if (!p.overview) missingFields.push('Overview');
+      if (p.sku === null) missingFields.push('SKU');
+      if (!p.materials) missingFields.push('Materials');
+      if (p._count.images === 0) missingFields.push('Images');
+      
+      if (missingFields.length === 0) return null;
+      
+      return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        sku: p.sku,
+        category: p.category?.name || 'Uncategorized',
+        isActive: p.isActive,
+        missingFields,
+        missingCount: missingFields.length,
+        updatedAt: p.updatedAt
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    total: incompleteProducts.length,
+    products: incompleteProducts
+  };
+};

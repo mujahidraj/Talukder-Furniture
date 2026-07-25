@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Upload,
-  Users
+  Users,
+  AlertTriangle
 } from 'lucide-react';
 import useAuthStore from '../../stores/useAuthStore';
 import useUIStore from '../../stores/useUIStore';
@@ -23,6 +24,7 @@ import { Helmet } from 'react-helmet-async';
 const adminLinks = [
   { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
   { name: 'Products', path: '/admin/products', icon: Package },
+  { name: 'Incomplete Products', path: '/admin/products/incomplete', icon: AlertTriangle },
   { name: 'Bulk Import', path: '/admin/products/bulk-import', icon: Upload, requireSuperAdmin: true },
   { name: 'Categories', path: '/admin/categories', icon: Grid },
   { name: 'Sets (Collections)', path: '/admin/sets', icon: Package },
