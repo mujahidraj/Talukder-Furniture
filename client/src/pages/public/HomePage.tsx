@@ -333,6 +333,24 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
+          1.5 DEVELOPMENT NOTICE MARQUEE
+         ═══════════════════════════════════════════ */}
+      <div className="bg-[#E51C2A] text-white py-2 overflow-hidden flex whitespace-nowrap relative">
+        <motion.div
+          className="flex whitespace-nowrap text-[13px] md:text-sm font-medium tracking-wide items-center"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
+        >
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span key={i} className="px-6 flex items-center gap-6">
+              <span>This website is currently under development. If you find any issues, please report them through Contact Us.</span>
+              <span className="text-white/50 text-[10px]">●</span>
+            </span>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* ═══════════════════════════════════════════
           2. POPULAR FURNITURE (HATIL Style)
          ═══════════════════════════════════════════ */}
       <section style={{ padding: '100px 0 80px', backgroundColor: 'white' }}>
